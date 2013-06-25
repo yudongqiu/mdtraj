@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDTraj HDF5 Format Specification &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="next" title="Direct Access to Files" href="file_formats.html" />
+    <link rel="prev" title="Building the documentation" href="building_docs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building_docs.html" title="Building the documentation"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mdtraj-hdf5-format-specification">
+<h1>MDTraj HDF5 Format Specification<a class="headerlink" href="#mdtraj-hdf5-format-specification" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This is the specification for a molecular dynamics trajectory file
+format based on HDF5 which is supported by the MDTraj package.</p>
+</div>
+<div class="section" id="why-hdf5">
+<h2>Why HDF5?<a class="headerlink" href="#why-hdf5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="design-goals">
+<h3>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h3>
+<p>In storing MD trajectory data for the for purposes including building
+MSMs, there are a few design goals. (1) The trajectories should be small
+and space efficient on disk. (2) The trajectories should be fast to
+write and fast to read. (3) The data format should support flexible read
+options. For instance, random access to different frames in the
+trajectory should be possible. It should be possible to easily query the
+dimensions of the trajectory (<tt class="docutils literal"><span class="pre">n_frames</span></tt>, <tt class="docutils literal"><span class="pre">n_atoms</span></tt>, etc) without
+loading the file into memory. It should be possible to load only every
+n-th frame, or to directly only a subset of the atoms with limited
+memory overhead. (5) The trajectory format should be easily extensible
+in a backward compatible manner. For instance, it should be possible to
+add new arrays/fields like the potential energy or the topology without
+breaking backwards compatibility.</p>
+</div>
+<div class="section" id="other-formats">
+<h3>Other Formats<a class="headerlink" href="#other-formats" title="Permalink to this headline">¶</a></h3>
+<p>Currently, MDTraj is able to read and write trajectories in dcd, xtc,
+trr, binpos, and amber netcdf formats, in addition to hdf5. This
+presents an opportunity to compare these formats and see how they fit
+our design goals. The most space efficient is xtc, because it uses 16bit
+fixed precision encoding. For some reason, the xtc read times are quite
+slow though. dcd is fast to read and write, but relatively inflexible.
+netcdf is fast and flexible. binpos is garbage &#8211; it&#8217;s neither fast,
+small, nor flexible.</p>
+</div>
+<div class="section" id="what-s-lacking">
+<h3>What&#8217;s lacking?<a class="headerlink" href="#what-s-lacking" title="Permalink to this headline">¶</a></h3>
+<p>Of the formats we currently have, AMBER NetCDF is the best, in that it
+it satisfies all of the design goals except for the first. But the
+trajectories are twice as big on disk as XTC, which is really quite
+unfortunate. For dealing with FAH data, size matters. So let&#8217;s define a
+HDF5 standard that has the benefits of AMBER NetCDF and the benefits of
+XTC mixed together. We&#8217;ll use an extensible data format (HDF5), we&#8217;ll
+provide options for lossy and lossless compression, and we&#8217;ll store the
+topology inside the trajectory.</p>
+</div>
+</div>
+<div class="section" id="details">
+<h2>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h2>
+<p>This specification is heavily influenced by the AMBER NetCDF
+<a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">standard</a>. Significant
+portions of the text are copied verbatim.</p>
+<div class="section" id="encoding">
+<h3>Encoding<a class="headerlink" href="#encoding" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Files will be encoded in HDF5, <a class="reference external" href="http://www.hdfgroup.org/HDF5/">a data model, library, and file
+format for storing and managing
+data</a> produced at NCSA.</li>
+<li>Arrays may be encoded with zlib compression.</li>
+<li>Libraries implementing this standard may, at their desecration, round
+the data to an appropriate number of significant digits, which can
+significantly enhance zlib compression ratios.</li>
+</ul>
+</div>
+<div class="section" id="recommended-file-extensions">
+<h3>Recommended file extensions<a class="headerlink" href="#recommended-file-extensions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <tt class="docutils literal"><span class="pre">.h5</span></tt> extension will be preferred, although not required.</li>
+</ul>
+</div>
+<div class="section" id="global-attributes">
+<h3>Global Attributes<a class="headerlink" href="#global-attributes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><strong>Conventions (required)</strong> Contents of this attribute are a comma or
+space delimited list of tokens representing all of the conventions to
+which the file conforms. Creators shall include the string Pande as
+one of the tokens in this list. In the usual case, where the file
+conforms only to this convention, the value of the attribute will
+simply be ``Pande&#8217;&#8216;. Readers may fail if this attribute is not
+present or none of the tokens in the list are Pande. Optionally, if
+the reader does not expect HDF5 files other than those conforming to
+the Pande convention, it may emit a warning and attempt to read the
+file even when the Conventions attribute is missing.</li>
+<li><strong>ConventionVersion (required)</strong> Contents are a string representation
+of the version number of this convention. Future revisions of this
+convention having the same version number may include definitions of
+additional variables, dimensions or attributes, but are guaranteed to
+have no incompatible changes to variables, dimensions or attributes
+specified in previous revisions. Creators shall set this attribute to
+&#8220;1.0&#8221;. If this attribute is present and has a value other than &#8220;1.0&#8221;,
+readers may fail or may emit a warning and continue. It is expected
+that the version of this convention will change rarely, if ever.</li>
+<li><strong>application (optional)</strong> If the creator is part of a suite of
+programs or modules, this attribute shall be set to the name of the
+suite.</li>
+<li><strong>program (required)</strong> Creators shall set this attribute to the name
+of the creating program or module.</li>
+<li><strong>programVersion (required)</strong> Creators shall set this attribute to
+the preferred textual formatting of the current version number of the
+creating program or module.</li>
+<li><strong>title (optional)</strong> Creators may set use this attribute to represent
+a user-defined title for the data represented in the file. Absence of
+a title may be indicated by omitting the attribute or by including it
+with an empty string value.</li>
+<li><strong>randomState (optional), ASCII-encoded string</strong> Creators may
+optionally describe the state of their internal random number
+generators at the start of their simulation. The semantics of this
+string are specific to the MD code and are not specified by this
+standard.</li>
+<li><strong>forcefield (optional), ASCII-encoded string</strong> For data from a
+molecular dynamics simulation, creators may optionally describe the
+Hamiltonian used. This should be a short, human readable string, like
+&#8220;AMBER99sbildn&#8221;.</li>
+<li><strong>reference (optional), ASCII-encoded string</strong> Creators may
+optionally specify published a reference that documents the program
+or parameters used to generate the data. The reference should be
+listed in a simple, human readable format. Multiple references may be
+listed simply by separating the references with a human readable
+delimiter within the string, like a newline.</li>
+</ul>
+</div>
+<div class="section" id="arrays">
+<h3>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><strong>coordinates (required) shape=(n_frames, n_atoms, 3),
+type=Float32, units=&#8221;nanometers&#8221;</strong>. This variable shall contain the
+Cartesian coordinates of the specified particle for the specified.</li>
+<li><strong>time (optional), shape=(n_frames), dtype=Float32,
+units=&#8221;picoseconds&#8221;</strong> When coordinates on the frame dimension have a
+temporal sequence (e.g. they form a molecular dynamics trajectory),
+creators shall define this dimension and write a float for each frame
+coordinate representing the simulated time value in picoseconds
+associated with the frame. Time zero is arbitrary, but typically will
+correspond to the start of the simulation. When the file stores a
+collection of conformations having no temporal sequence, creators
+shall omit this variable.</li>
+<li><strong>cell_lengths (optional), shape=(n_frames, 3, 3), dtype=Float32,
+units=&#8221;nanometers&#8221;</strong> When the data in the coordinates variable come
+from a simulation with periodic boundaries, creators shall include
+this variable. his variable shall represent the lengths (a,b,c) of
+the unit cell for each frame. The edge with length a lies along the x
+axis; the edge with length b lies in the x-y plane. The origin (point
+of invariance under scaling) of the unit cell is defined as (0,0,0).
+If the simulation has one or two dimensional periodicity, then the
+length(s) corresponding to spatial dimensions in which there is no
+periodicity shall be set to zero.</li>
+<li><strong>cell_angles shape=(n_frames, 3, 3), dtype=Float32,
+units=&#8221;degrees&#8221;</strong> Creators shall include this variable if and only if
+they include the cell_lengths variable. This variable shall
+represent the angles (, , ) defining the unit cell for each frame.
+defines the angle between the b and c vectors, defines the angle
+between the a and c vectors and defines the angle between the a and b
+vectors. Angles that are undefined due to less than three dimensional
+periodicity shall be set to zero.</li>
+<li><strong>velocities (optional), shape=(n_frames, n_atoms, 3),
+type=Float32, units=&#8221;nanometers/picosecond&#8221;</strong> When the velocities
+variable is present, it shall represent the cartesian components of
+the velocity for the specified particle and frame. It is recognized
+that due to the nature of commonly used integrators in molecular
+dynamics, it may not be possible for the creator to write a set of
+velocities corresponding to exactly the same point in time as defined
+by the time variable and represented in the coordinates variable. In
+such cases, the creator shall write a set of velocities from the
+nearest point in time to that represented by the specified frame.</li>
+<li><strong>kineticEnergy (optional), shape=(n_frames), type=Float32,
+units=&#8221;kJ/mol&#8221;</strong> Creators may optionally specify the kinetic energy
+of the system at each frame.</li>
+<li><strong>potentialEnergy (optional), shape=(n_frames), type=Float32,
+units=&#8221;kJ/mol&#8221;</strong> Creators may optionally specify the potential energy
+of the system at each frame.</li>
+<li><strong>temperature (optional), shape=(n_frames), type=Float32,
+units=&#8221;Kelvin&#8221;</strong> Creators may optionally specify the temperature of
+the system at each frame.</li>
+<li><strong>lambda (optional), shape=(n_frames), type=Floa32 units=&#8221;&#8220;</strong> For
+describing an alchemical free energy simulation, a creator may
+optionally notate each frame in the simulation with a value of
+lambda.</li>
+<li><strong>constraints (optional), shape=(n_constraints, 3),
+type=CompoundType(int, int, float) units=[None, None, &#8220;nanometers&#8221;]</strong>
+Creators may optionally describe any constraints applied to the bond
+lengths. <tt class="docutils literal"><span class="pre">constraints</span></tt> shall be a compound-type table (referred to
+a table as opposed to an array in the pytables documentation), such
+that the first two entries are the indices of the two atoms involved
+in the constant, and the final entry is the distance those atoms are
+constrained to.</li>
+<li><strong>topology (optional, but highly recommended), shape=(1,
+length_as_needed) type=string</strong> For protein systems, creators shall
+describe the topology of the system in ASCII encoded JSON. The format
+for the topology definition is described in the topology subsection
+of this document. The JSON string encoding the topology shall be
+stored as the sole row in an array of strings.</li>
+</ul>
+</div>
+<div class="section" id="array-metadata">
+<h3>Array Metadata<a class="headerlink" href="#array-metadata" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>For arrays that contain naturally unitted numbers (which is all of
+them except for &#8216;topology&#8217;), creators shall explicitly declare their
+units. The unit system of length=nanometers, time=picoseconds,
+mass=daltons, temperature=Kelvin, energy=kJ/mol, force=kJ/mol/nm
+shall be used everywhere. For angles, degrees shall be used. The
+units shall be set as an &#8220;attribute&#8221;, on the array, under the key
+&#8220;units&#8221;, within the parlance of HDF5. It shall be a string.</li>
+<li>For arrays that contain numbers which have been rounded to a certain
+number of significant digits, creators shall declare the number of
+significant digits by setting the &#8220;least_significant_digit&#8221;
+attribue, which should be a positive integer.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="topology">
+<h2>Topology<a class="headerlink" href="#topology" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rational">
+<h3>Rational<a class="headerlink" href="#rational" title="Permalink to this headline">¶</a></h3>
+<p>It is our experience that not having the topology stored in the same
+file as the the trajectory&#8217;s coordinate data is a pain. It&#8217;s just really
+inconvenient. And generally, the trajectories are long enough that it
+doesn&#8217;t take up much incremental storage space to store the topology in
+there too. The topology is not that complicated.</p>
+</div>
+<div class="section" id="format">
+<h3>Format<a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h3>
+<p>The topology will be stored in JSON. The JSON will then be serialized as
+a string and stored in the HDF5 file with an ASCII encoding.</p>
+<p>The topology stores a hierarchical description of the chains, residues,
+and atoms in the system. Each chain is associated with an <tt class="docutils literal"><span class="pre">index</span></tt> and
+a list of residues. Each residue is associated with a <tt class="docutils literal"><span class="pre">name</span></tt>, an
+<tt class="docutils literal"><span class="pre">index</span></tt>, and a list of <tt class="docutils literal"><span class="pre">atom</span></tt>s. Each <tt class="docutils literal"><span class="pre">atom</span></tt> is associated with a
+<tt class="docutils literal"><span class="pre">name</span></tt>, an <tt class="docutils literal"><span class="pre">element</span></tt>, and an <tt class="docutils literal"><span class="pre">index</span></tt>. All of the indicies should
+be zero-based.</p>
+<p>The <tt class="docutils literal"><span class="pre">name</span></tt> of a residue is not strictly proscribed, but should
+generally be one of the three letter codes for amino acids, or the
+commonly used extensions thereof, e.g. &#8220;HOH&#8221; for water. The <tt class="docutils literal"><span class="pre">element</span></tt>
+of an atom shall be one of the one or two letter element abbreviations
+from the periodic table. The <tt class="docutils literal"><span class="pre">name</span></tt> of an atom shall indicate some
+information about the type of the atom beyond just its element, such as
+&#8216;CA&#8217; for the alpha carbom, &#8216;HG&#8217; for a gamma hydrogen, etc. This format
+does not specify exactly what atom names are allowed &#8211; creators should
+follow the conventions from the forcefield they are using.</p>
+<p>In addition to the chains, the topology shall also contain a list of the
+bonds. The bonds shall be a list of length-2 lists of integers, where
+the integers refer to the index of the two <tt class="docutils literal"><span class="pre">atoms</span></tt> that are bonded.</p>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>The following shows the topology of alanine dipeptide in this format.
+Since it&#8217;s JSON, the whitespace is optional and just for readability.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;bonds&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">]],</span>
+ <span class="s">&#39;chains&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="s">&#39;residues&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;atoms&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H1&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;CH3&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H2&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H3&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;O&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;O&#39;</span><span class="p">}],</span>
+                           <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                           <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;ACE&#39;</span><span class="p">},</span>
+                          <span class="p">{</span><span class="s">&#39;atoms&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;N&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;N&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;CA&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;HA&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;CB&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;HB1&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;HB2&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;HB3&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;O&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;O&#39;</span><span class="p">}],</span>
+                           <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                           <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;ALA&#39;</span><span class="p">},</span>
+                          <span class="p">{</span><span class="s">&#39;atoms&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;N&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;N&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;C&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H1&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H2&#39;</span><span class="p">},</span>
+                                     <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+                                      <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;H3&#39;</span><span class="p">}],</span>
+                           <span class="s">&#39;index&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                           <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;NME&#39;</span><span class="p">}]}]}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">MDTraj HDF5 Format Specification</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#why-hdf5">Why HDF5?</a><ul>
+<li><a class="reference internal" href="#design-goals">Design Goals</a></li>
+<li><a class="reference internal" href="#other-formats">Other Formats</a></li>
+<li><a class="reference internal" href="#what-s-lacking">What&#8217;s lacking?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#details">Details</a><ul>
+<li><a class="reference internal" href="#encoding">Encoding</a></li>
+<li><a class="reference internal" href="#recommended-file-extensions">Recommended file extensions</a></li>
+<li><a class="reference internal" href="#global-attributes">Global Attributes</a></li>
+<li><a class="reference internal" href="#arrays">Arrays</a></li>
+<li><a class="reference internal" href="#array-metadata">Array Metadata</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#topology">Topology</a><ul>
+<li><a class="reference internal" href="#rational">Rational</a></li>
+<li><a class="reference internal" href="#format">Format</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="building_docs.html"
+                        title="previous chapter">Building the documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="file_formats.html"
+                        title="next chapter">Direct Access to Files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/hdf5_format.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/hdf5_format.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building_docs.html" title="Building the documentation"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
