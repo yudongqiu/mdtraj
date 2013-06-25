@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HDF5TrajectoryFile &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="up" title="Direct Access to Files" href="file_formats.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hdf5trajectoryfile">
+<h1>HDF5TrajectoryFile<a class="headerlink" href="#hdf5trajectoryfile" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mdtraj.HDF5TrajectoryFile">
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">HDF5TrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em>, <em>compression='zlib'</em><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for reading and writing to a MDTraj HDF5 molecular
+dynanmics trajectory file, whose format is described
+<a class="reference external" href="https://github.com/rmcgibbo/mdtraj/issues/36">here</a>.</p>
+<p>This is a file-like object, that both reading or writing depending
+on the <cite>mode</cite> flag. It implements the context manager protocol,
+so you can also use it with the python &#8216;with&#8217; statement.</p>
+<p>The format is extremely flexible and high performance. It can hold a wide
+variety of information about a trajectory, including fields like the
+temperature and energies. Because it&#8217;s built on the fantastic HDF5 library,
+it&#8217;s easily extensible too.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Path to the file to open</p>
+</div></blockquote>
+<p><strong>mode</strong> :  {&#8216;r, &#8216;w&#8217;}</p>
+<blockquote>
+<div><p>Mode in which to open the file. &#8216;r&#8217; is for reading and &#8216;w&#8217; is for
+writing</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool</p>
+<blockquote>
+<div><p>In mode=&#8217;w&#8217;, how do you want to behave if a file by the name of <cite>filename</cite>
+already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p>
+</div></blockquote>
+<p><strong>compression</strong> : {&#8216;zlib&#8217;, None}</p>
+<blockquote class="last">
+<div><p>Apply compression to the file? This will save space, and does not
+cost too many cpu cycles, so it&#8217;s recommended.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.HDF5TrajectoryFile.close" title="mdtraj.HDF5TrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
+<td>Close the HDF5 file handle</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.HDF5TrajectoryFile.flush" title="mdtraj.HDF5TrajectoryFile.flush"><tt class="xref py py-obj docutils literal"><span class="pre">flush</span></tt></a>()</td>
+<td>Write all buffered data in the to the disk file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.HDF5TrajectoryFile.read" title="mdtraj.HDF5TrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td>Read one or more frames of data from the file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.HDF5TrajectoryFile.write" title="mdtraj.HDF5TrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<td>Write one or more frames of data to the file</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.read">
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read one or more frames of data from the file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>n_frames</strong> : {int, None}</p>
+<blockquote>
+<div><p>The number of frames to read. If not supplied, all of the
+remaining frames will be read.</p>
+</div></blockquote>
+<p><strong>stride</strong> : {int, None}</p>
+<blockquote>
+<div><p>By default all of the frames will be read, but you can pass this
+flag to read a subset of of the data by grabbing only every
+<cite>stride</cite>-th frame from disk.</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : {int, None}</p>
+<blockquote>
+<div><p>By default all of the atom  will be read, but you can pass this
+flag to read only a subsets of the atoms for the <cite>coordinates</cite> and
+<cite>velocities</cite> fields. Note that you will have to carefully manage
+the indices and the offsets, since the <cite>i</cite>-th atom in the topology
+will not necessarily correspond to the <cite>i</cite>-th atom in your subset.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>frames</strong> : namedtuple</p>
+<blockquote class="last">
+<div><p>The returned namedtuple will have the fields &#8220;coordinates&#8221;, &#8220;time&#8221;, &#8220;cell_lengths&#8221;,
+&#8220;cell_angles&#8221;, &#8220;velocities&#8221;, &#8220;kineticEnergy&#8221;, &#8220;potentialEnergy&#8221;,
+&#8220;temperature&#8221; and &#8220;alchemicalLambda&#8221;. Each of the fields in the
+returned namedtuple will either be a numpy array or None, dependening
+on if that data was saved in the trajectory. All of the data shall be
+n units of &#8220;nanometers&#8221;, &#8220;picoseconds&#8221;, &#8220;kelvin&#8221;, &#8220;degrees&#8221; and
+&#8220;kilojoules_per_mole&#8221;.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If you&#8217;d like more flexible access to the data, that is available by
+using the pytables group directly, which is accessible via the
+<cite>root</cite> property on this class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.write">
+<tt class="descname">write</tt><big>(</big><em>coordinates</em>, <em>time=None</em>, <em>cell_lengths=None</em>, <em>cell_angles=None</em>, <em>velocities=None</em>, <em>kineticEnergy=None</em>, <em>potentialEnergy=None</em>, <em>temperature=None</em>, <em>alchemicalLambda=None</em><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write one or more frames of data to the file</p>
+<p>This method saves data that is associated with one or more simulation
+frames. Note that all of the arguments can either be raw numpy arrays
+or unitted arrays (with simtk.unit.Quantity). If the arrays are unittted,
+a unit conversion will be automatically done from the supplied units
+into the proper units for saving on disk. You won&#8217;t have to worry about
+it.</p>
+<p>Furthermore, if you wish to save a single frame of simulation data, you
+can do so naturally, for instance by supplying a 2d array for the
+coordinates and a single float for the time. This &#8220;shape deficiency&#8221;
+will be recognized, and handled appropriately.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>coordinates</strong> : np.ndarray, shape=(n_frames, n_atoms, 3)</p>
+<blockquote>
+<div><p>The cartesian coordinates of the atoms to write. By convention, the
+lengths should be in units of nanometers.</p>
+</div></blockquote>
+<p><strong>time</strong> : np.ndarray, shape=(n_frames,), optional</p>
+<blockquote>
+<div><p>You may optionally specify the simulation time, in picoseconds
+corresponding to each frame.</p>
+</div></blockquote>
+<p><strong>cell_lengths</strong> : np.ndarray, shape=(n_frames, 3), dtype=float32, optional</p>
+<blockquote>
+<div><p>You may optionally specify the unitcell lengths.
+The length of the periodic box in each frame, in each direction,
+<cite>a</cite>, <cite>b</cite>, <cite>c</cite>. By convention the lengths should be in units
+of angstroms.</p>
+</div></blockquote>
+<p><strong>cell_angles</strong> : np.ndarray, shape=(n_frames, 3), dtype=float32, optional</p>
+<blockquote>
+<div><p>You may optionally specify the unitcell angles in each frame.
+Organized analogously to cell_lengths. Gives the alpha, beta and
+gamma angles respectively. By convention, the angles should be
+in units of degrees.</p>
+</div></blockquote>
+<p><strong>velocities</strong> :  np.ndarray, shape=(n_frames, n_atoms, 3), optional</p>
+<blockquote>
+<div><p>You may optionally specify the cartesian components of the velocity
+for each atom in each frame. By convention, the velocities
+should be in units of nanometers / picosecond.</p>
+</div></blockquote>
+<p><strong>kineticEnergy</strong> : np.ndarray, shape=(n_frames,), optional</p>
+<blockquote>
+<div><p>You may optionally specify the kinetic energy in each frame. By
+convention the kinetic energies should b in units of kilojoules per
+mole.</p>
+</div></blockquote>
+<p><strong>potentialEnergy</strong> : np.ndarray, shape=(n_frames,), optional</p>
+<blockquote>
+<div><p>You may optionally specify the potential energy in each frame. By
+convention the kinetic energies should b in units of kilojoules per
+mole.</p>
+</div></blockquote>
+<p><strong>temperature</strong> : np.ndarray, shape=(n_frames,), optional</p>
+<blockquote>
+<div><p>You may optionally specify the temperature in each frame. By
+convention the temperatures should b in units of Kelvin.</p>
+</div></blockquote>
+<p><strong>alchemicalLambda</strong> : np.ndarray, shape=(n_frames,), optional</p>
+<blockquote class="last">
+<div><p>You may optionally specify the alchemical lambda in each frame. These
+have no units, but are generally between zero and one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the HDF5 file handle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write all buffered data in the to the disk file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/hdf5.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/hdf5.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

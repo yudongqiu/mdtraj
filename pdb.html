@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PDBTrajectoryFile &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="up" title="Direct Access to Files" href="file_formats.html" />
+    <link rel="prev" title="Direct Access to Files" href="file_formats.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pdbtrajectoryfile">
+<h1>PDBTrajectoryFile<a class="headerlink" href="#pdbtrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mdtraj.PDBTrajectoryFile">
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">PDBTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for reading and writing Protein Data Bank (PDB) files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>The filename to open. A path to a file on disk.</p>
+</div></blockquote>
+<p><strong>mode</strong> : {&#8216;r&#8217;, &#8216;w&#8217;}</p>
+<blockquote>
+<div><p>The mode in which to open the file, either &#8216;r&#8217; for read or &#8216;w&#8217; for write.</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool</p>
+<blockquote class="last">
+<div><p>If opened in write mode, and a file by the name of <cite>filename</cite> already
+exists on disk, should we overwrite it?</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">positions</span></tt></td>
+<td>Get the cartesian coordinates of all of the atoms in each frame.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">topology</span></tt></td>
+<td>Get the topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.close" title="mdtraj.PDBTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
+<td>Close the PDB file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.write" title="mdtraj.PDBTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(positions,&nbsp;topology,&nbsp;modelIndex)</td>
+<td>Write a PDB file</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.PDBTrajectoryFile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the PDB file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.PDBTrajectoryFile.write">
+<tt class="descname">write</tt><big>(</big><em>positions</em>, <em>topology</em>, <em>modelIndex</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a PDB file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>positions</strong> : array_like</p>
+<blockquote>
+<div><p>The list of atomic positions to write.</p>
+</div></blockquote>
+<p><strong>topology</strong> : mdtraj.Topology</p>
+<blockquote>
+<div><p>The Topology defining the model to write.</p>
+</div></blockquote>
+<p><strong>modelIndex</strong> : {int, None}</p>
+<blockquote class="last">
+<div><p>If not None, the model will be surrounded by MODEL/ENDMDL records
+with this index</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="file_formats.html"
+                        title="previous chapter">Direct Access to Files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pdb.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/pdb.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

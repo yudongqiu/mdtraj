@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdtraj &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+<li><a href="../index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for mdtraj</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2012 mdtraj developers</span>
+<span class="c">#</span>
+<span class="c"># This file is part of mdtraj</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is free software: you can redistribute it and/or modify it under the</span>
+<span class="c"># terms of the GNU General Public License as published by the Free Software</span>
+<span class="c"># Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c"># version.</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is distributed in the hope that it will be useful, but WITHOUT ANY</span>
+<span class="c"># WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR</span>
+<span class="c"># A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License along with</span>
+<span class="c"># mdtraj. If not, see http://www.gnu.org/licenses/.</span>
+<span class="sd">&quot;&quot;&quot;The mdtraj package contains tools for loading and saving molecular dynamics</span>
+<span class="sd">trajectories in a variety of formats, including Gromacs XTC &amp; TRR, CHARMM/NAMD</span>
+<span class="sd">DCD, AMBER BINPOS, PDB, and HDF5.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;binpos&#39;</span><span class="p">,</span> <span class="s">&#39;xtc&#39;</span><span class="p">,</span> <span class="s">&#39;dcd&#39;</span><span class="p">,</span> <span class="s">&#39;io&#39;</span><span class="p">,</span> <span class="s">&#39;pdb&#39;</span><span class="p">,</span> <span class="s">&#39;netcdf&#39;</span><span class="p">,</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> <span class="s">&quot;hdf5&quot;</span>
+            <span class="s">&#39;testing&#39;</span><span class="p">,</span> <span class="s">&#39;trajectory&#39;</span><span class="p">,</span> <span class="s">&#39;topology&#39;</span><span class="p">,</span> <span class="s">&#39;reporters&#39;</span><span class="p">,</span> <span class="s">&#39;geometry&#39;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">mdtraj.xtc</span> <span class="kn">import</span> <span class="n">XTCTrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">mdtraj.trr</span> <span class="kn">import</span> <span class="n">TRRTrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">.hdf5</span> <span class="kn">import</span> <span class="n">HDF5TrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">.netcdf</span> <span class="kn">import</span> <span class="n">NetCDFTrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">mdtraj.dcd</span> <span class="kn">import</span> <span class="n">DCDTrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">mdtraj.binpos</span> <span class="kn">import</span> <span class="n">BINPOSTrajectoryFile</span>
+<span class="kn">from</span> <span class="nn">mdtraj.pdb</span> <span class="kn">import</span> <span class="n">PDBTrajectoryFile</span>
+
+<span class="kn">from</span> <span class="nn">.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">.trajectory</span> <span class="kn">import</span> <span class="n">Trajectory</span>  <span class="c"># needs to be last</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+<li><a href="../index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

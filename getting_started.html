@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="next" title="Direct Access to Files" href="file_formats.html" />
+    <link rel="prev" title="MDTraj" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MDTraj"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-mdtraj">
+<h2>Installing MDTraj<a class="headerlink" href="#installing-mdtraj" title="Permalink to this headline">¶</a></h2>
+<p>MDTraj currently runs best on Python 2.7.x; earlier versions of Python are
+not supported. We are working on support for Python 3.3+.</p>
+<p>You can install MDTraj by cloning the repository from github:</p>
+<div class="highlight-python"><pre>$ git clone git://github.com/rmcgibbo/mdtraj.git
+$ cd mdtraj
+$ python setup.py install</pre>
+</div>
+<p>Or by installing it directly with <a class="reference external" href="http://www.pip-installer.org/">pip</a>:</p>
+<div class="highlight-python"><pre>pip install git+git://github.com/rmcgibbo/mdtraj.git</pre>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>MDTraj requires a few external libraries to work properly. Some of them are
+optional. You&#8217;ll definitely need <tt class="docutils literal"><span class="pre">numpy</span></tt> and <tt class="docutils literal"><span class="pre">scipy</span></tt>. You&#8217;ll also need
+a working C compiler and build environment, to compile the C-level extensions
+that connect the python code to the bit-twiddling C libraries that read and write
+most of these binary formats.</p>
+<p>For the MDTraj HDF5 format, you&#8217;ll need the python <a class="reference external" href="http://www.pytables.org/moin">HDF5</a> library, <tt class="docutils literal"><span class="pre">pytables</span></tt>.
+For the AMBER NetCDF interface, you&#8217;ll need the python <a class="reference external" href="https://pypi.python.org/pypi/netCDF4/1.0.4">netcdf</a> library,
+<tt class="docutils literal"><span class="pre">netcdf4-python</span></tt>. Both of these are installed by default if you use the
+<a class="reference external" href="https://www.enthought.com/products/epd/">Enthought</a> python distribution.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#installing-mdtraj">Installing MDTraj</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">MDTraj</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="file_formats.html"
+                        title="next chapter">Direct Access to Files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/getting_started.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/getting_started.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="file_formats.html" title="Direct Access to Files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MDTraj"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
