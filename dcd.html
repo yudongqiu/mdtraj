@@ -25,7 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
-    <link rel="up" title="Direct Access to Files" href="file_formats.html" /> 
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="XTCTrajectoryFile" href="xtc.html" />
+    <link rel="prev" title="PDBTrajectoryFile" href="pdb.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,9 +36,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="xtc.html" title="XTCTrajectoryFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pdb.html" title="PDBTrajectoryFile"
+             accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,10 +54,10 @@
           <div class="body">
             
   <div class="section" id="dcdtrajectoryfile">
-<h1>DCDTrajectoryFile<a class="headerlink" href="#dcdtrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>DCDTrajectoryFile<a class="headerlink" href="#dcdtrajectoryfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="mdtraj.DCDTrajectoryFile">
-<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">DCDTrajectoryFile</tt><a class="headerlink" href="#mdtraj.DCDTrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">DCDTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface for reading and writing to a CHARMM/NAMD DCD file.
 This is a file-like object, that both reading or writing depending
 on the <cite>mode</cite> flag. It implements the context manager protocol,
@@ -77,6 +85,13 @@ already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="loading.html#mdtraj.load_dcd" title="mdtraj.load_dcd"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.load_dcd</span></tt></a></dt>
+<dd>High-level wrapper that returns a <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></dd>
+</dl>
+</div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># read a single frame, and then read the remaining frames</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">DCDTrajectoryFile</span><span class="p">(</span><span class="s">&#39;mytrajectory.dcd&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
@@ -109,13 +124,13 @@ already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.close" title="mdtraj.DCDTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.close" title="mdtraj.DCDTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
 <td>Close the DCD file handle</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.read" title="mdtraj.DCDTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.read" title="mdtraj.DCDTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;atom_indices])</td>
 <td>Read the data from a DCD file</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.write" title="mdtraj.DCDTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.write" title="mdtraj.DCDTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz[,&nbsp;cell_lengths,&nbsp;cell_angles])</td>
 <td>Write one or more frames of data to the DCD file</td>
 </tr>
 </tbody>
@@ -128,7 +143,7 @@ already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p
 
 <dl class="method">
 <dt id="mdtraj.DCDTrajectoryFile.read">
-<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>int stride=1</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the data from a DCD file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -178,7 +193,7 @@ angles in the dcd file are stored in units of degrees.</p>
 
 <dl class="method">
 <dt id="mdtraj.DCDTrajectoryFile.write">
-<tt class="descname">write</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>xyz</em>, <em>cell_lengths=None</em>, <em>cell_angles=None</em><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write one or more frames of data to the DCD file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -217,6 +232,12 @@ in units of degrees.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pdb.html"
+                        title="previous chapter">PDBTrajectoryFile</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="xtc.html"
+                        title="next chapter">XTCTrajectoryFile</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/dcd.txt"
@@ -250,9 +271,15 @@ in units of degrees.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="xtc.html" title="XTCTrajectoryFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pdb.html" title="PDBTrajectoryFile"
+             >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

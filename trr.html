@@ -25,7 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
-    <link rel="up" title="Direct Access to Files" href="file_formats.html" /> 
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="BINPOSTrajectoryFile" href="binpos.html" />
+    <link rel="prev" title="XTCTrajectoryFile" href="xtc.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,9 +36,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="binpos.html" title="BINPOSTrajectoryFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="xtc.html" title="XTCTrajectoryFile"
+             accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,10 +54,10 @@
           <div class="body">
             
   <div class="section" id="trrtrajectoryfile">
-<h1>TRRTrajectoryFile<a class="headerlink" href="#trrtrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>TRRTrajectoryFile<a class="headerlink" href="#trrtrajectoryfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="mdtraj.TRRTrajectoryFile">
-<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">TRRTrajectoryFile</tt><a class="headerlink" href="#mdtraj.TRRTrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">TRRTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.TRRTrajectoryFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface for reading and writing to a GROMACS TRR file.
 This is a file-like objec that supports both reading and writing.
 It also supports the context manager protocol, so you can use it
@@ -76,8 +84,7 @@ exists on disk, should we overwrite it?</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><strong>min_chunk_size</strong> : int, default=100</p>
+<tr class="field-even field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first"><strong>min_chunk_size</strong> : int, default=100</p>
 <blockquote>
 <div><p>In read mode, we need to allocate a buffer in which to store the data
 without knowing how many frames are in the file. This parameter is the
@@ -94,6 +101,13 @@ This parameter inflates the guess by a multiplicative factor.</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="loading.html#mdtraj.load_trr" title="mdtraj.load_trr"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.load_trr</span></tt></a></dt>
+<dd>High-level wrapper that returns a <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></dd>
+</dl>
+</div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># load up the data from a trr</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">XTCTrajectoryFile</span><span class="p">(</span><span class="s">&#39;traj.trr&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -107,13 +121,13 @@ This parameter inflates the guess by a multiplicative factor.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.close" title="mdtraj.TRRTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.close" title="mdtraj.TRRTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
 <td>Close the TRR file</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.read" title="mdtraj.TRRTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.read" title="mdtraj.TRRTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;stride,&nbsp;atom_indices])</td>
 <td>Read data from a TRR file</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.write" title="mdtraj.TRRTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.TRRTrajectoryFile.write" title="mdtraj.TRRTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz[,&nbsp;time,&nbsp;step,&nbsp;box,&nbsp;lambd])</td>
 <td>Write data to a TRR file</td>
 </tr>
 </tbody>
@@ -126,7 +140,7 @@ This parameter inflates the guess by a multiplicative factor.</p>
 
 <dl class="method">
 <dt id="mdtraj.TRRTrajectoryFile.read">
-<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.TRRTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.TRRTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from a TRR file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -177,7 +191,7 @@ an extra copy, but will save memory.</p>
 
 <dl class="method">
 <dt id="mdtraj.TRRTrajectoryFile.write">
-<tt class="descname">write</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.TRRTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>xyz</em>, <em>time=None</em>, <em>step=None</em>, <em>box=None</em>, <em>lambd=None</em><big>)</big><a class="headerlink" href="#mdtraj.TRRTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to a TRR file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -224,6 +238,12 @@ zeros will be written.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="xtc.html"
+                        title="previous chapter">XTCTrajectoryFile</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="binpos.html"
+                        title="next chapter">BINPOSTrajectoryFile</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/trr.txt"
@@ -257,9 +277,15 @@ zeros will be written.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="binpos.html" title="BINPOSTrajectoryFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="xtc.html" title="XTCTrajectoryFile"
+             >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -24,7 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" /> 
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="next" title="MDTraj HDF5 Format Specification" href="hdf5_format.html" />
+    <link rel="prev" title="Getting started" href="getting_started.html" /> 
   </head>
   <body>
     <div class="related">
@@ -33,6 +35,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hdf5_format.html" title="MDTraj HDF5 Format Specification"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
  
       </ul>
@@ -48,25 +56,21 @@
 <p>To build the documentation and push it to github, it&#8217;s a little tricky.
 Unfortunately, I&#8217;m not sure if we can use readthedocs, since they don&#8217;t support
 compiling c code which is necessary to get the docstrings for our cython modules.
-First, you&#8217;ll need to install sphinx and numpydoc</p>
-<div class="highlight-python"><pre>pip install sphinx numpydoc</pre>
+First, you&#8217;ll need to install sphinx</p>
+<div class="highlight-python"><pre>pip install sphinx</pre>
 </div>
 <p>Next, make a new directory for the documentation that&#8217;s not inside the mdtraj
 repository. It should be &#8220;adjacent to it&#8221;. From the mdtraj project root, run</p>
-<div class="highlight-python"><pre>cd /path/to/mdtraj/..
-git checkout git@github.com:rmcgibbo/mdtraj.git mdtraj-docs</pre>
-</div>
-<p>And run these commands.:</p>
-<div class="highlight-python"><pre>git symbolic-ref HEAD refs/heads/gh-pages
-rm .git/index
-git clean -fdx
-touch .nojekyll</pre>
+<div class="highlight-python"><pre>cd /path/to/mdtraj
+cd ..
+git clone git@github.com:rmcgibbo/mdtraj.git mdtraj-docs
+cd mdtraj-docs
+git checkout gh-pages</pre>
 </div>
 <p>Now, go back to the docs subdirectory in the main repository. This will require
 push access to the mdtraj repository.</p>
 <div class="highlight-python"><pre>cd /path/to/mdtraj/docs
-make html
-make github</pre>
+make html</pre>
 </div>
 </div>
 
@@ -76,6 +80,12 @@ make github</pre>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="getting_started.html"
+                        title="previous chapter">Getting started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hdf5_format.html"
+                        title="next chapter">MDTraj HDF5 Format Specification</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/building_docs.txt"
@@ -109,6 +119,12 @@ make github</pre>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="hdf5_format.html" title="MDTraj HDF5 Format Specification"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
  
       </ul>

@@ -25,7 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
-    <link rel="up" title="Direct Access to Files" href="file_formats.html" /> 
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="HDF5TrajectoryFile" href="hdf5.html" />
+    <link rel="prev" title="BINPOSTrajectoryFile" href="binpos.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,9 +36,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="binpos.html" title="BINPOSTrajectoryFile"
+             accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,7 +54,7 @@
           <div class="body">
             
   <div class="section" id="netcdftrajectoryfile">
-<h1>NetCDFTrajectoryFile<a class="headerlink" href="#netcdftrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>NetCDFTrajectoryFile<a class="headerlink" href="#netcdftrajectoryfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="mdtraj.NetCDFTrajectoryFile">
 <em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">NetCDFTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.NetCDFTrajectoryFile" title="Permalink to this definition">¶</a></dt>
@@ -84,10 +92,10 @@ it and overwrite it.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.NetCDFTrajectoryFile.close" title="mdtraj.NetCDFTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.NetCDFTrajectoryFile.close" title="mdtraj.NetCDFTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
 <td>Close the NetCDF file handle</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.NetCDFTrajectoryFile.flush" title="mdtraj.NetCDFTrajectoryFile.flush"><tt class="xref py py-obj docutils literal"><span class="pre">flush</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.NetCDFTrajectoryFile.flush" title="mdtraj.NetCDFTrajectoryFile.flush"><tt class="xref py py-obj docutils literal"><span class="pre">flush</span></tt></a></td>
 <td>Write all buffered data in the to the disk file.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.NetCDFTrajectoryFile.read" title="mdtraj.NetCDFTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;stride,&nbsp;atom_indices])</td>
@@ -207,6 +215,12 @@ that is okay. You&#8217;ll simply be saving a single frame.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="binpos.html"
+                        title="previous chapter">BINPOSTrajectoryFile</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hdf5.html"
+                        title="next chapter">HDF5TrajectoryFile</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/netcdf.txt"
@@ -240,9 +254,15 @@ that is okay. You&#8217;ll simply be saving a single frame.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="binpos.html" title="BINPOSTrajectoryFile"
+             >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

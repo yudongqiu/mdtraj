@@ -25,7 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
-    <link rel="up" title="Direct Access to Files" href="file_formats.html" /> 
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="NetCDFTrajectoryFile" href="netcdf.html" />
+    <link rel="prev" title="TRRTrajectoryFile" href="trr.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,9 +36,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="netcdf.html" title="NetCDFTrajectoryFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="trr.html" title="TRRTrajectoryFile"
+             accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,12 +54,11 @@
           <div class="body">
             
   <div class="section" id="binpostrajectoryfile">
-<h1>BINPOSTrajectoryFile<a class="headerlink" href="#binpostrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>BINPOSTrajectoryFile<a class="headerlink" href="#binpostrajectoryfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="mdtraj.BINPOSTrajectoryFile">
-<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">BINPOSTrajectoryFile</tt><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8221;
-Interface for reading and writing to an AMBER BINPOS file.
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">BINPOSTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for reading and writing to an AMBER BINPOS file.
 This is a file-like object, that both reading or writing depending
 on the <cite>mode</cite> flag. It implements the context manager protocol,
 so you can also use it with the python &#8216;with&#8217; statement.</p>
@@ -76,14 +83,13 @@ exists on disk, should we overwrite it?</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><strong>min_chunk_size</strong> : int, default=100</p>
+<tr class="field-even field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first"><strong>min_chunk_size</strong> : int, default=100</p>
 <blockquote>
-<div><p>In read mode, we need to allocate a buffer in which to store the data
+<div><p>BINPOS, In read mode, we need to allocate a buffer in which to store the data
 without knowing how many frames are in the file. This parameter is the
 minimum size of the buffer to allocate.</p>
 </div></blockquote>
-<p><strong>chunk_size_multiplier, int, default=1.5</strong> :</p>
+<p><strong>chunk_size_multiplier</strong> : int, default=1.5</p>
 <blockquote class="last">
 <div><p>In read mode, we need to allocate a buffer in which to store the data
 without knowing how many frames are in the file. We can <em>guess</em> this
@@ -94,6 +100,13 @@ This parameter inflates the guess by a multiplicative factor.</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="loading.html#mdtraj.load_binpos" title="mdtraj.load_binpos"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.load_binpos</span></tt></a></dt>
+<dd>High-level wrapper that returns a <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></dd>
+</dl>
+</div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># copy data from one file to another</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">BINPOSTrajectoryFile</span><span class="p">(</span><span class="s">&#39;traj.binpos&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -109,13 +122,13 @@ This parameter inflates the guess by a multiplicative factor.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.close" title="mdtraj.BINPOSTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.close" title="mdtraj.BINPOSTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
 <td>Close the BINPOS file</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.read" title="mdtraj.BINPOSTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.read" title="mdtraj.BINPOSTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames])</td>
 <td>Read data from a BINPOS file</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.write" title="mdtraj.BINPOSTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.write" title="mdtraj.BINPOSTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz)</td>
 <td>Write cartesian coordinates to a binpos file</td>
 </tr>
 </tbody>
@@ -128,7 +141,7 @@ This parameter inflates the guess by a multiplicative factor.</p>
 
 <dl class="method">
 <dt id="mdtraj.BINPOSTrajectoryFile.read">
-<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from a BINPOS file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -153,7 +166,7 @@ If None, all of the remaining frames will be loaded.</p>
 
 <dl class="method">
 <dt id="mdtraj.BINPOSTrajectoryFile.write">
-<tt class="descname">write</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>xyz</em><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write cartesian coordinates to a binpos file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -179,6 +192,12 @@ If None, all of the remaining frames will be loaded.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="trr.html"
+                        title="previous chapter">TRRTrajectoryFile</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="netcdf.html"
+                        title="next chapter">NetCDFTrajectoryFile</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/binpos.txt"
@@ -212,9 +231,15 @@ If None, all of the remaining frames will be loaded.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="netcdf.html" title="NetCDFTrajectoryFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="trr.html" title="TRRTrajectoryFile"
+             >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

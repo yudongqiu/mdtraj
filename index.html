@@ -67,6 +67,79 @@ square deviation (RMSD) distances, the calculation of bond lengths, bond
 angles, dihedral angles, non-redundant internal coordinates, and radius
 of gyration.</p>
 </div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hdf5_format.html">MDTraj HDF5 Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_formats.html">Low-level access to files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loading.html">Loading Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory.html"><tt class="docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<p>Here are some examples of how you can use MDTraj to simplify access to and
+manipulation of molecular dynamics trajectories.</p>
+<p>Start by loading up a trajectory from disk. MDTraj will automatically parse the file extension and use the appropriate loader.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.xtc&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s">&#39;trajectory.pdb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span>
+<span class="go">&lt;mdtraj.Trajectory with 100 frames, 22 atoms at 0x109f0a3d0&gt;</span>
+</pre></div>
+</div>
+<p>To load files that don&#8217;t contain topology information, like Gromacs XTC files,
+we need to supply something with the <tt class="docutils literal"><span class="pre">top</span></tt> keyword argument that describes
+the topology, for example a PDB file.</p>
+<p>If I&#8217;m interest in only a subset of the frames of the trajectory, I can slice it</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># lets take a look at the first ten frames</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="go">&lt;mdtraj.Trajectory with 9 frames, 22 atoms at 0x109b91310&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># or maybe the last frame?</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">&lt;mdtraj.Trajectory with 1 frames, 22 atoms at 0x109b97810&gt;</span>
+</pre></div>
+</div>
+<p>There&#8217;s a lot of information in the trajectory object. The most obvious is the
+cartesian coordinates. They&#8217;re stored as a numpy array under <tt class="docutils literal"><span class="pre">xyz</span></tt>. All of
+the distances in the <a class="reference internal" href="trajectory.html#trajectory"><em>mdtraj.Trajectory</em></a> are stored in nanometers. The time unit
+is picoseconds. Angles are stored in degrees (not radians).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(100, 22, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">xyz</span><span class="p">)</span>
+<span class="go">0.89365752249053032</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># the simulation time (in picoseconds) of th first 10 frames</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="go">array([ 0.002,  0.004,  0.006,  0.008,  0.01 ,  0.012,  0.014,  0.016,</span>
+<span class="go">      0.018,  0.02 ], dtype=float32)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># or the unitcell lengths in the last frame? (in nanometers of course)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">unitcell_lengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">array([ 2.,  2.,  2.], dtype=float32)</span>
+</pre></div>
+</div>
+<p>Saving the trajectory back to disk is easy.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># the hdf5 format stores the topology inside the file for convenience</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;halftraj.h5&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># the format will be parsed based on the extension, or you can call the</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># format-specific save methods</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">save_dcd</span><span class="p">(</span><span class="s">&#39;first-ten-frames.dcd&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The trajectory contains a reference to a topology object, which can come in handy. For example, if you want to save a copy of your trajectory with
+only alpha carbons present, you can do that pretty easily.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">atom_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;CA&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">restrict_atoms</span><span class="p">(</span><span class="n">atoms_to_keep</span><span class="p">)</span>  <span class="c"># this acts inplace on the trajectory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;CA-only.h5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
 <p>The source code is licensed under the GPL, and available at: <a class="reference external" href="https://github.com/rmcgibbo/mdtraj">https://github.com/rmcgibbo/mdtraj</a></p>
@@ -74,46 +147,8 @@ of gyration.</p>
 <div class="section" id="feedback">
 <h2>Feedback<a class="headerlink" href="#feedback" title="Permalink to this headline">¶</a></h2>
 <p>The best way to report a bug or request a new feature is to make an issue
-on github. Don&#8217;t hesitate to fork the repository, make some changes, and submit
-a pull request!</p>
-</div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installing-mdtraj">Installing MDTraj</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#running-the-tests">Running the tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#dependencies">Dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hdf5_format.html">MDTraj HDF5 Format Specification</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hdf5_format.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hdf5_format.html#why-hdf5">Why HDF5?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hdf5_format.html#details">Details</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hdf5_format.html#topology">Topology</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="api-reference">
-<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="file_formats.html">Direct Access to Files</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pdb.html">PDBTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dcd.html">DCDTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xtc.html">XTCTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trr.html">TRRTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binpos.html">BINPOSTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="netcdf.html">NetCDFTrajectoryFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5TrajectoryFile</a></li>
-</ul>
-</li>
-</ul>
-</div>
+on github. Don&#8217;t hesitate to fork the repository, make some changes, and
+submit a pull request!</p>
 </div>
 </div>
 
@@ -127,14 +162,12 @@ a pull request!</p>
   <ul>
 <li><a class="reference internal" href="#">MDTraj</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#source-code">Source Code</a></li>
-<li><a class="reference internal" href="#feedback">Feedback</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a><ul>
 </ul>
 </li>
-<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#source-code">Source Code</a></li>
+<li><a class="reference internal" href="#feedback">Feedback</a></li>
 </ul>
 </li>
 </ul>

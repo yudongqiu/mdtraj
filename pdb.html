@@ -25,8 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
-    <link rel="up" title="Direct Access to Files" href="file_formats.html" />
-    <link rel="prev" title="Direct Access to Files" href="file_formats.html" /> 
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="DCDTrajectoryFile" href="dcd.html" />
+    <link rel="prev" title="Low-level access to files" href="file_formats.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,11 +37,14 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="file_formats.html" title="Direct Access to Files"
+          <a href="dcd.html" title="DCDTrajectoryFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="file_formats.html" title="Low-level access to files"
              accesskey="P">previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" accesskey="U">Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,7 +54,7 @@
           <div class="body">
             
   <div class="section" id="pdbtrajectoryfile">
-<h1>PDBTrajectoryFile<a class="headerlink" href="#pdbtrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>PDBTrajectoryFile<a class="headerlink" href="#pdbtrajectoryfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="mdtraj.PDBTrajectoryFile">
 <em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">PDBTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile" title="Permalink to this definition">¶</a></dt>
@@ -76,6 +80,13 @@ exists on disk, should we overwrite it?</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="loading.html#mdtraj.load_pdb" title="mdtraj.load_pdb"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.load_pdb</span></tt></a></dt>
+<dd>High-level wrapper that returns a <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></dd>
+</dl>
+</div>
 <p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -83,11 +94,14 @@ exists on disk, should we overwrite it?</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">positions</span></tt></td>
-<td>Get the cartesian coordinates of all of the atoms in each frame.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.positions" title="mdtraj.PDBTrajectoryFile.positions"><tt class="xref py py-obj docutils literal"><span class="pre">positions</span></tt></a></td>
+<td>The cartesian coordinates of all of the atoms in each frame.</td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">topology</span></tt></td>
-<td>Get the topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.topology" title="mdtraj.PDBTrajectoryFile.topology"><tt class="xref py py-obj docutils literal"><span class="pre">topology</span></tt></a></td>
+<td>The topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.closed" title="mdtraj.PDBTrajectoryFile.closed"><tt class="xref py py-obj docutils literal"><span class="pre">closed</span></tt></a></td>
+<td>Whether the file is closed</td>
 </tr>
 </tbody>
 </table>
@@ -98,7 +112,7 @@ exists on disk, should we overwrite it?</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.close" title="mdtraj.PDBTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.close" title="mdtraj.PDBTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
 <td>Close the PDB file</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.write" title="mdtraj.PDBTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(positions,&nbsp;topology,&nbsp;modelIndex)</td>
@@ -110,6 +124,24 @@ exists on disk, should we overwrite it?</p>
 <dt id="mdtraj.PDBTrajectoryFile.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the PDB file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.closed">
+<tt class="descname">closed</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the file is closed</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.positions">
+<tt class="descname">positions</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cartesian coordinates of all of the atoms in each frame. Available when a file is opened in mode=&#8217;r&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.topology">
+<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>The topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</p>
 </dd></dl>
 
 <dl class="method">
@@ -151,7 +183,10 @@ with this index</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="file_formats.html"
-                        title="previous chapter">Direct Access to Files</a></p>
+                        title="previous chapter">Low-level access to files</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dcd.html"
+                        title="next chapter">DCDTrajectoryFile</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pdb.txt"
@@ -186,11 +221,14 @@ with this index</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="file_formats.html" title="Direct Access to Files"
+          <a href="dcd.html" title="DCDTrajectoryFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="file_formats.html" title="Low-level access to files"
              >previous</a> |</li>
 <li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
 
-          <li><a href="file_formats.html" >Direct Access to Files</a> &raquo;</li> 
+          <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
