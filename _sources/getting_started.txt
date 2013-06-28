@@ -79,12 +79,11 @@ Linux
 ++++++
 If you're on ubuntu and have root, you can install everything through your package manager. ::
 
-  $ sudo apt-get install libhdf5-serial-dev python-dev python-numpy python-nose python-setuptools cython python-numexpr python-tables netcdf-bin libnetcdf-dev python-netcdf python-networkx
-  $ sudo easy_install netcdf4
+  $ sudo apt-get install libhdf5-serial-dev python-dev python-numpy python-nose python-setuptools cython python-numexpr python-tables netcdf-bin libnetcdf-dev python-netcdf python-networkx python-netcdf
 
 Mac
 +++
-If you're on mac and want a package manager, you should be using `homebrew <http://mxcl.github.io/homebrew/>`_ and ``brews``'s python see `this page <https://github.com/mxcl/homebrew/wiki/Homebrew-and-Python>`_ for details. The best way to install numpy and scipy with ``brew`` is to use
+If you're on mac and want a package manager, you should be using `homebrew <http://mxcl.github.io/homebrew/>`_ and ``brews``'s python (see `this page <https://github.com/mxcl/homebrew/wiki/Homebrew-and-Python>`_ for details). The best way to install numpy and scipy with ``brew`` is to use
 samueljohn's tap. ::
 
   $ brew tap samueljohn/python
@@ -147,7 +146,7 @@ If you don't have ``easy_install`` or ``pip`` yet, you can get them with ::
   $ python setup.py install
   $ easy_install pip
 
-Now you're home free::
+Now you're home free ::
 
   $ pip install numpy
   $ pip install scipy
