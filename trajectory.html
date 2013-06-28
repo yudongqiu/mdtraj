@@ -1,0 +1,816 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdtraj.Trajectory &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="prev" title="Loading Trajectories" href="loading.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="loading.html" title="Loading Trajectories"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mdtraj-trajectory">
+<span id="trajectory"></span><h1><a class="reference internal" href="#mdtraj.Trajectory" title="mdtraj.Trajectory"><tt class="xref py py-class docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a><a class="headerlink" href="#mdtraj-trajectory" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mdtraj.Trajectory">
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">Trajectory</tt><big>(</big><em>xyz</em>, <em>topology</em>, <em>time=None</em>, <em>unitcell_lengths=None</em>, <em>unitcell_angles=None</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container object for a molecular dynamics trajectory</p>
+<p>A Trajectory represents a collection of one or more molecular structures,
+generally (but not necessarily) from a molecular dynamics trajectory. The
+Trajectory stores a number of fields describing the system through time,
+including the cartesian coordinates of each atoms (<tt class="docutils literal"><span class="pre">xyz</span></tt>), the topology
+of the molecular system (<tt class="docutils literal"><span class="pre">topology</span></tt>), and information about the
+unitcell if appropriate (<tt class="docutils literal"><span class="pre">unitcell_vectors</span></tt>, <tt class="docutils literal"><span class="pre">unitcell_length</span></tt>,
+<tt class="docutils literal"><span class="pre">unitcell_angles</span></tt>).</p>
+<p>A Trajectory should generally be constructed by loading a file from disk.
+Trajectories can be loaded from (and saved to) the PDB, XTC, TRR, DCD,
+binpos, NetCDF or MDTraj HDF5 formats.</p>
+<p>Trajectory supports fancy indexing, so you can extract one or more frames
+from a Trajectory as a separate trajectory. For example, to form a
+trajectory with every other frame, you can slice with <tt class="docutils literal"><span class="pre">traj[::2]</span></tt>.</p>
+<p>Trajectory uses the nanometers, angstroms &amp; picoseconds unit system.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="loading.html#mdtraj.load" title="mdtraj.load"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.load</span></tt></a></dt>
+<dd>High-level function that loads files and returns an <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># loading a trajectory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.xtc&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s">&#39;native.pdb&#39;</span><span class="p">)</span>           
+<span class="go">&lt;mdtraj.Trajectory with 1000 frames, 22 atoms at 0x1058a73d0&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># slicing a trajectory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.h5&#39;</span><span class="p">)</span>                          
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span>                                               
+<span class="go">&lt;mdtraj.Trajectory with 100 frames, 22 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>                                          
+<span class="go">&lt;mdtraj.Trajectory with 50 frames, 22 atoms&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># calculating the average distance between two atoms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.h5&#39;</span><span class="p">)</span>                                              
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">t</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">21</span><span class="p">,</span> <span class="p">:])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>   
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.n_frames" title="mdtraj.Trajectory.n_frames"><tt class="xref py py-obj docutils literal"><span class="pre">n_frames</span></tt></a></td>
+<td>Number of frames in the trajectory</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.n_atoms" title="mdtraj.Trajectory.n_atoms"><tt class="xref py py-obj docutils literal"><span class="pre">n_atoms</span></tt></a></td>
+<td>Number of atoms in the trajectory</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.n_residues" title="mdtraj.Trajectory.n_residues"><tt class="xref py py-obj docutils literal"><span class="pre">n_residues</span></tt></a></td>
+<td>Number of residues (amino acids) in the trajectory</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.time" title="mdtraj.Trajectory.time"><tt class="xref py py-obj docutils literal"><span class="pre">time</span></tt></a></td>
+<td>The simulation time corresponding to each frame, in picoseconds</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.timestep" title="mdtraj.Trajectory.timestep"><tt class="xref py py-obj docutils literal"><span class="pre">timestep</span></tt></a></td>
+<td>Timestep between frames, in picoseconds</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.topology" title="mdtraj.Trajectory.topology"><tt class="xref py py-obj docutils literal"><span class="pre">topology</span></tt></a></td>
+<td>Topology of the system, describing the organization of atoms into residues, bonds, etc</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.top" title="mdtraj.Trajectory.top"><tt class="xref py py-obj docutils literal"><span class="pre">top</span></tt></a></td>
+<td>Alias for self.topology, describing the organization of atoms into residues, bonds, etc</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.xyz" title="mdtraj.Trajectory.xyz"><tt class="xref py py-obj docutils literal"><span class="pre">xyz</span></tt></a></td>
+<td>Cartesian coordinates of each atom in each simulation frame</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.unitcell_vectors" title="mdtraj.Trajectory.unitcell_vectors"><tt class="xref py py-obj docutils literal"><span class="pre">unitcell_vectors</span></tt></a></td>
+<td>The vectors that define the shape of the unit cell in each frame</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.unitcell_lengths" title="mdtraj.Trajectory.unitcell_lengths"><tt class="xref py py-obj docutils literal"><span class="pre">unitcell_lengths</span></tt></a></td>
+<td>Lengths that define the shape of the unit cell in each frame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.unitcell_angles" title="mdtraj.Trajectory.unitcell_angles"><tt class="xref py py-obj docutils literal"><span class="pre">unitcell_angles</span></tt></a></td>
+<td>Angles that define the shape of the unit cell in each frame.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.center_coordinates" title="mdtraj.Trajectory.center_coordinates"><tt class="xref py py-obj docutils literal"><span class="pre">center_coordinates</span></tt></a></td>
+<td>Remove the center of mass from each frame in trajectory.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.join" title="mdtraj.Trajectory.join"><tt class="xref py py-obj docutils literal"><span class="pre">join</span></tt></a>(other[,&nbsp;check_topology,&nbsp;...])</td>
+<td>Join two trajectories together</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.load" title="mdtraj.Trajectory.load"><tt class="xref py py-obj docutils literal"><span class="pre">load</span></tt></a>(filenames,&nbsp;\*\*kwargs)</td>
+<td>Load a trajectory from disk</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.openmm_boxes" title="mdtraj.Trajectory.openmm_boxes"><tt class="xref py py-obj docutils literal"><span class="pre">openmm_boxes</span></tt></a>(frame)</td>
+<td>OpenMM-compatable box vectors of a single frame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.openmm_positions" title="mdtraj.Trajectory.openmm_positions"><tt class="xref py py-obj docutils literal"><span class="pre">openmm_positions</span></tt></a>(frame)</td>
+<td>OpenMM-compatable positions of a single frame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.restrict_atoms" title="mdtraj.Trajectory.restrict_atoms"><tt class="xref py py-obj docutils literal"><span class="pre">restrict_atoms</span></tt></a>(atom_indices)</td>
+<td>Retain only a subset of the atoms in a trajectory (inplace)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.save" title="mdtraj.Trajectory.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(filename,&nbsp;\*\*kwargs)</td>
+<td>Save trajectory to disk, in a format determined by the filename extension</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.save_binpos" title="mdtraj.Trajectory.save_binpos"><tt class="xref py py-obj docutils literal"><span class="pre">save_binpos</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to AMBER BINPOS format</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.save_dcd" title="mdtraj.Trajectory.save_dcd"><tt class="xref py py-obj docutils literal"><span class="pre">save_dcd</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to CHARMM/NAMD DCD format</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.save_hdf5" title="mdtraj.Trajectory.save_hdf5"><tt class="xref py py-obj docutils literal"><span class="pre">save_hdf5</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to MDTraj HDF5 format</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.save_netcdf" title="mdtraj.Trajectory.save_netcdf"><tt class="xref py py-obj docutils literal"><span class="pre">save_netcdf</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory in AMBER NetCDF format</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.save_pdb" title="mdtraj.Trajectory.save_pdb"><tt class="xref py py-obj docutils literal"><span class="pre">save_pdb</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to RCSB PDB format</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.save_trr" title="mdtraj.Trajectory.save_trr"><tt class="xref py py-obj docutils literal"><span class="pre">save_trr</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to Gromacs TRR format</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.Trajectory.save_xtc" title="mdtraj.Trajectory.save_xtc"><tt class="xref py py-obj docutils literal"><span class="pre">save_xtc</span></tt></a>(filename[,&nbsp;force_overwrite])</td>
+<td>Save trajectory to Gromacs XTC format</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.Trajectory.slice" title="mdtraj.Trajectory.slice"><tt class="xref py py-obj docutils literal"><span class="pre">slice</span></tt></a>(key[,&nbsp;copy])</td>
+<td>Slice trajectory, by extracting one or more frames into a separate object</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.Trajectory.center_coordinates">
+<tt class="descname">center_coordinates</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.center_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the center of mass from each frame in trajectory.</p>
+<p>This method acts inplace on the trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.join">
+<tt class="descname">join</tt><big>(</big><em>other</em>, <em>check_topology=True</em>, <em>discard_overlapping_frames=False</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two trajectories together</p>
+<p>This method can also be called by using <cite>self + other</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>other</strong> : Trajectory</p>
+<blockquote>
+<div><p>The other trajectory to join</p>
+</div></blockquote>
+<p><strong>check_topology</strong> : bool</p>
+<blockquote>
+<div><p>Ensure that the topology of <cite>self</cite> and <cite>other</cite> are identical before
+joining them. If false, the resulting trajectory will have the
+topology of <cite>self</cite>.</p>
+</div></blockquote>
+<p><strong>discard_overlapping_frames</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>If True, compare coordinates at trajectory edges to discard overlapping
+frames.  Default: False.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="mdtraj.Trajectory.load">
+<em class="property">static </em><tt class="descname">load</tt><big>(</big><em>filenames</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a trajectory from disk</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filenames</strong> : {str, [str]}</p>
+<blockquote>
+<div><p>Either a string or list of strings</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first last"><strong>As requested by the various load functions &#8211; it depends on the extension</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.n_atoms">
+<tt class="descname">n_atoms</tt><a class="headerlink" href="#mdtraj.Trajectory.n_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of atoms in the trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>n_atoms</strong> : int</p>
+<blockquote class="last">
+<div><p>The number of atoms in the trajectory</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.n_frames">
+<tt class="descname">n_frames</tt><a class="headerlink" href="#mdtraj.Trajectory.n_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of frames in the trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>n_frames</strong> : int</p>
+<blockquote class="last">
+<div><p>The number of frames in the trajectory</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.n_residues">
+<tt class="descname">n_residues</tt><a class="headerlink" href="#mdtraj.Trajectory.n_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of residues (amino acids) in the trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>n_residues</strong> : int</p>
+<blockquote class="last">
+<div><p>The number of residues in the trajectory&#8217;s topology</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.openmm_boxes">
+<tt class="descname">openmm_boxes</tt><big>(</big><em>frame</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.openmm_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>OpenMM-compatable box vectors of a single frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>frame</strong> : int</p>
+<blockquote>
+<div><p>Return box for this single frame.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>box</strong> : tuple</p>
+<blockquote class="last">
+<div><p>The periodic box vectors for this frame, formatted for input to
+OpenMM.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.h5&#39;</span><span class="p">)</span>                          
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">openmm_positions</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.openmm_positions">
+<tt class="descname">openmm_positions</tt><big>(</big><em>frame</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.openmm_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>OpenMM-compatable positions of a single frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>frame</strong> : int</p>
+<blockquote>
+<div><p>The index of frame of the trajectory that you wish to extract</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>positions</strong> : list</p>
+<blockquote class="last">
+<div><p>The cartesian coordinates of specific trajectory frame, formatted
+for input to OpenMM</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.h5&#39;</span><span class="p">)</span>                      
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">openmm_positions</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>       
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.restrict_atoms">
+<tt class="descname">restrict_atoms</tt><big>(</big><em>atom_indices</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.restrict_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retain only a subset of the atoms in a trajectory (inplace)</p>
+<p>Deletes atoms not in <cite>atom_indices</cite>, and re-indexes those that remain</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>atom_indices</strong> : list([int])</p>
+<blockquote class="last">
+<div><p>List of atom indices to keep.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save">
+<tt class="descname">save</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to disk, in a format determined by the filename extension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory. The extension will
+be parsed and will control the format.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first"><strong>lossy</strong> : bool</p>
+<blockquote>
+<div><p>For .h5 or .lh5, whether or not to use compression.</p>
+</div></blockquote>
+<p><strong>no_models: bool</strong> :</p>
+<blockquote>
+<div><p>For .pdb. TODO: Document this?</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool</p>
+<blockquote class="last">
+<div><p>For .binpos, .xtc, .dcd. If <cite>filename</cite> already exists, overwrite it.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_binpos">
+<tt class="descname">save_binpos</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_binpos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to AMBER BINPOS format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_dcd">
+<tt class="descname">save_dcd</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_dcd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to CHARMM/NAMD DCD format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filenames, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_hdf5">
+<tt class="descname">save_hdf5</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to MDTraj HDF5 format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_netcdf">
+<tt class="descname">save_netcdf</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory in AMBER NetCDF format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_pdb">
+<tt class="descname">save_pdb</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to RCSB PDB format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_trr">
+<tt class="descname">save_trr</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_trr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to Gromacs TRR format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Only the xyz coordinates and the time are saved, the velocities
+and forces in the trr will be zeros</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.save_xtc">
+<tt class="descname">save_xtc</tt><big>(</big><em>filename</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.save_xtc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save trajectory to Gromacs XTC format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filesystem path in which to save the trajectory</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Overwrite anything that exists at filename, if its already there</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.Trajectory.slice">
+<tt class="descname">slice</tt><big>(</big><em>key</em>, <em>copy=True</em><big>)</big><a class="headerlink" href="#mdtraj.Trajectory.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slice trajectory, by extracting one or more frames into a separate object</p>
+<p>This method can also be called using index bracket notation, i.e
+<cite>traj[1] == traj.slice(1)</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>key</strong> : {int, np.ndarray, slice}</p>
+<blockquote>
+<div><p>The slice to take. Can be either an int, a list of ints, or a slice
+object.</p>
+</div></blockquote>
+<p><strong>copy</strong> : bool, default=True</p>
+<blockquote class="last">
+<div><p>Copy the arrays after slicing. If you set this to false, then if
+you modify a slice, you&#8217;ll modify the original array since they
+point to the same data.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.time">
+<tt class="descname">time</tt><a class="headerlink" href="#mdtraj.Trajectory.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>The simulation time corresponding to each frame, in picoseconds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>time</strong> : np.ndarray, shape=(n_frames,)</p>
+<blockquote class="last">
+<div><p>The simulation time corresponding to each frame, in picoseconds</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.timestep">
+<tt class="descname">timestep</tt><a class="headerlink" href="#mdtraj.Trajectory.timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep between frames, in picoseconds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>timestep</strong> : float</p>
+<blockquote class="last">
+<div><p>The timestep between frames, in picoseconds.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.top">
+<tt class="descname">top</tt><a class="headerlink" href="#mdtraj.Trajectory.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for self.topology, describing the organization of atoms into residues, bonds, etc</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>topology</strong> : md.Topology</p>
+<blockquote class="last">
+<div><p>The topology object, describing the organization of atoms into
+residues, bonds, etc</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.topology">
+<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.Trajectory.topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Topology of the system, describing the organization of atoms into residues, bonds, etc</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>topology</strong> : md.Topology</p>
+<blockquote class="last">
+<div><p>The topology object, describing the organization of atoms into
+residues, bonds, etc</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.unitcell_angles">
+<tt class="descname">unitcell_angles</tt><a class="headerlink" href="#mdtraj.Trajectory.unitcell_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angles that define the shape of the unit cell in each frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>lengths</strong> : np.ndarray, shape=(n_frames, 3)</p>
+<blockquote class="last">
+<div><p>The angles between the three unitcell vectors in each frame,
+<tt class="docutils literal"><span class="pre">alpha</span></tt>, <tt class="docutils literal"><span class="pre">beta</span></tt>, and <tt class="docutils literal"><span class="pre">gamma</span></tt>. <tt class="docutils literal"><span class="pre">alpha'</span> <span class="pre">gives</span> <span class="pre">the</span> <span class="pre">angle</span>
+<span class="pre">between</span> <span class="pre">vectors</span> <span class="pre">``b</span></tt> and <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">beta</span></tt> gives the angle between
+vectors <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">a</span></tt>, and <tt class="docutils literal"><span class="pre">gamma</span></tt> gives the angle between
+vectors <tt class="docutils literal"><span class="pre">a</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt>. The angles are in degrees.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.unitcell_lengths">
+<tt class="descname">unitcell_lengths</tt><a class="headerlink" href="#mdtraj.Trajectory.unitcell_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lengths that define the shape of the unit cell in each frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>lengths</strong> : {np.ndarray, shape=(n_frames, 3), None}</p>
+<blockquote class="last">
+<div><p>Lengths of the unit cell in each frame, in nanometers, or None
+if the Trajectory contains no unitcell information.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.unitcell_vectors">
+<tt class="descname">unitcell_vectors</tt><a class="headerlink" href="#mdtraj.Trajectory.unitcell_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>The vectors that define the shape of the unit cell in each frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>vectors</strong> : np.ndarray, shape(n_frames, 3, 3)</p>
+<blockquote class="last">
+<div><p>Vectors definiing the shape of the unit cell in each frame.
+The semantics of this array are that the shape of the unit cell
+in frame <tt class="docutils literal"><span class="pre">i</span></tt> are given by the three vectors, <tt class="docutils literal"><span class="pre">value[i,</span> <span class="pre">0,</span> <span class="pre">:]</span></tt>,
+<tt class="docutils literal"><span class="pre">value[i,</span> <span class="pre">1,</span> <span class="pre">:]</span></tt>, and <tt class="docutils literal"><span class="pre">value[i,</span> <span class="pre">2,</span> <span class="pre">:]</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.Trajectory.xyz">
+<tt class="descname">xyz</tt><a class="headerlink" href="#mdtraj.Trajectory.xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cartesian coordinates of each atom in each simulation frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>xyz</strong> : np.ndarray, shape=(n_frames, n_atoms, 3)</p>
+<blockquote class="last">
+<div><p>A three dimensional numpy array, with the cartesian coordinates
+of each atoms in each frame.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="loading.html"
+                        title="previous chapter">Loading Trajectories</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/trajectory.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/trajectory.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="loading.html" title="Loading Trajectories"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

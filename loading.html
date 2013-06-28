@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Loading Trajectories &mdash; MDTraj 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="next" title="mdtraj.Trajectory" href="trajectory.html" />
+    <link rel="prev" title="HDF5TrajectoryFile" href="hdf5.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="trajectory.html" title="mdtraj.Trajectory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="loading-trajectories">
+<h1>Loading Trajectories<a class="headerlink" href="#loading-trajectories" title="Permalink to this headline">¶</a></h1>
+<p>MDTraj supports loading (and saving) molecular dynamics trajectories in a
+variety of formats. Each of these functions loads a file from disk, returning
+a <tt class="docutils literal"><span class="pre">Trajectory</span></tt> object. Low level details like unit conversion into MDTraj
+standard units (nanometers, degrees, picoseconds) are handled for you.</p>
+<p>Only the PDB and HDF5 formats contains the topology information in the trajectory file on disk. Thus to load a trajectory in another format, it&#8217;s obligatory that you also supply information from which a topology can be extracted, such as a corresponding PDB file.</p>
+<p>For low-level access to the files on disk, without the amenities like unit conversion, see the <tt class="docutils literal"><span class="pre">XXXTrajectoryFile</span></tt> classes, e.g. <a class="reference internal" href="hdf5.html#hdf5trajectoryfile"><em>HDF5TrajectoryFile</em></a>, <a class="reference internal" href="pdb.html#pdbtrajectoryfile"><em>PDBTrajectoryFile</em></a>,  <a class="reference internal" href="xtc.html#xtctrajectoryfile"><em>XTCTrajectoryFile</em></a>, <a class="reference internal" href="dcd.html#dcdtrajectoryfile"><em>DCDTrajectoryFile</em></a>, <a class="reference internal" href="trr.html#trrtrajectoryfile"><em>TRRTrajectoryFile</em></a>, <a class="reference internal" href="netcdf.html#netcdftrajectoryfile"><em>NetCDFTrajectoryFile</em></a>, <a class="reference internal" href="binpos.html#binpostrajectoryfile"><em>BINPOSTrajectoryFile</em></a>,</p>
+<dl class="function">
+<dt id="mdtraj.load">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load</tt><big>(</big><em>filename_or_filenames</em>, <em>discard_overlapping_frames=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a trajectory from one or more files on disk.</p>
+<p>This function dispatches to one of the specialized trajectory loaders based
+on the extension on the filename. Because different trajectory formats save
+different information on disk, the specific keyword argument options supported
+depend on the specific loaded.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename_or_filenames</strong> : {str, list of strings}</p>
+<blockquote>
+<div><p>filename or list of filenames containing trajectory files of a single format.</p>
+</div></blockquote>
+<p><strong>discard_overlapping_frames</strong> : bool, default=False</p>
+<blockquote>
+<div><p>Look for overlapping frames between the last frame of one filename and
+the first frame of a subsequent filename and discard them</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote>
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first last"><strong>DEPENDS ON THE LOADER. NOT FILLED IN YET. NEED TO ADD STRIDING AND SUCH</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#mdtraj.load_pdb" title="mdtraj.load_pdb"><tt class="xref py py-obj docutils literal"><span class="pre">load_pdb</span></tt></a>, <a class="reference internal" href="#mdtraj.load_xtc" title="mdtraj.load_xtc"><tt class="xref py py-obj docutils literal"><span class="pre">load_xtc</span></tt></a>, <a class="reference internal" href="#mdtraj.load_trr" title="mdtraj.load_trr"><tt class="xref py py-obj docutils literal"><span class="pre">load_trr</span></tt></a>, <a class="reference internal" href="#mdtraj.load_hdf5" title="mdtraj.load_hdf5"><tt class="xref py py-obj docutils literal"><span class="pre">load_hdf5</span></tt></a>, <a class="reference internal" href="#mdtraj.load_netcdf" title="mdtraj.load_netcdf"><tt class="xref py py-obj docutils literal"><span class="pre">load_netcdf</span></tt></a>, <a class="reference internal" href="#mdtraj.load_dcd" title="mdtraj.load_dcd"><tt class="xref py py-obj docutils literal"><span class="pre">load_dcd</span></tt></a>, <a class="reference internal" href="#mdtraj.load_binpos" title="mdtraj.load_binpos"><tt class="xref py py-obj docutils literal"><span class="pre">load_binpos</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_pdb">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_pdb</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#mdtraj.load_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a RCSB Protein Data Bank file from disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Path to the PDB file on disk.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="pdb.html#mdtraj.PDBTrajectoryFile" title="mdtraj.PDBTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.PDBTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to PDB files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_hdf5">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_hdf5</tt><big>(</big><em>filename</em>, <em>stride=None</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an MDTraj hdf5 trajectory file from disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>String filename of HDF Trajectory file.</p>
+</div></blockquote>
+<p><strong>stride</strong> : int, default=None</p>
+<blockquote>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>frame</strong> : {None, int}, default=None</p>
+<blockquote>
+<div><p>Use this option to load only a single frame from a trajectory on disk.
+If frame is None, the default, the entire trajectory will be loaded.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="hdf5.html#mdtraj.HDF5TrajectoryFile" title="mdtraj.HDF5TrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.HDF5TrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to HDF5 files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_xtc">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_xtc</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_xtc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an Gromacs XTC file from disk.</p>
+<p>Since the Gromacs XTC format doesn&#8217;t contain information to specify the
+topolgy, you need to supply the topology yourself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Filename (string) of xtc trajectory.</p>
+</div></blockquote>
+<p><strong>top</strong> : {str, Trajectory, Topology}</p>
+<blockquote>
+<div><p>The XTC format does not contain topology information. Pass in either the
+path to a RCSB PDB file, a trajectory, or a topology to supply this
+information.</p>
+</div></blockquote>
+<p><strong>chunk</strong> : None</p>
+<blockquote>
+<div><p>This option is depricated.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="xtc.html#mdtraj.XTCTrajectoryFile" title="mdtraj.XTCTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.XTCTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to XTC files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_trr">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_trr</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_trr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a trr file. Since the trr doesn&#8217;t contain information
+to specify the topolgy, you need to supply the topology yourself</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Filename of TRR trajectory file.</p>
+</div></blockquote>
+<p><strong>top</strong> : {str, Trajectory, Topology}</p>
+<blockquote>
+<div><p>The TRR format does not contain topology information. Pass in either the
+path to a pdb file, a trajectory, or a topology to supply this information.</p>
+</div></blockquote>
+<p><strong>chunk</strong> : None</p>
+<blockquote>
+<div><p>This option is depricated.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="trr.html#mdtraj.TRRTrajectoryFile" title="mdtraj.TRRTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.TRRTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to TRR files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_dcd">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_dcd</tt><big>(</big><em>filename</em>, <em>top=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_dcd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an xtc file. Since the dcd format doesn&#8217;t contain information
+to specify the topolgy, you need to supply a pdb_filename</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>String filename of DCD file.</p>
+</div></blockquote>
+<p><strong>top</strong> : {str, Trajectoray, Topology}</p>
+<blockquote>
+<div><p>DCD XTC format does not contain topology information. Pass in either
+the path to a pdb file, a trajectory, or a topology to supply this
+information.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="dcd.html#mdtraj.DCDTrajectoryFile" title="mdtraj.DCDTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.DCDTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to DCD files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_netcdf">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_netcdf</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an AMBER NetCDF file. Since the NetCDF format doesn&#8217;t contain
+information to specify the topolgy, you need to supply a topology</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>filename of AMBER NetCDF file.</p>
+</div></blockquote>
+<p><strong>top</strong> : {str, Trajectory, Topology}</p>
+<blockquote>
+<div><p>The NetCDF format does not contain topology information. Pass in either
+the path to a pdb file, a trajectory, or a topology to supply this
+information.</p>
+</div></blockquote>
+<p><strong>stride</strong> : int, default=None</p>
+<blockquote>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="netcdf.html#mdtraj.NetCDFTrajectoryFile" title="mdtraj.NetCDFTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.NetCDFTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to NetCDF files</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.load_binpos">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_binpos</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=500</em><big>)</big><a class="headerlink" href="#mdtraj.load_binpos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an AMBER BINPOS file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>String filename of AMBER binpos file.</p>
+</div></blockquote>
+<p><strong>top</strong> : {str, Trajectory, Topology}</p>
+<blockquote>
+<div><p>The BINPOS format does not contain topology information. Pass in either
+the path to a pdb file, a trajectory, or a topology to supply this
+information.</p>
+</div></blockquote>
+<p><strong>chunk</strong> : int, default=500</p>
+<blockquote>
+<div><p>Size of the chunk to use for loading the xtc file. Memory is allocated
+in units of the chunk size, so larger chunk can be more time-efficient.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote class="last">
+<div><p>The resulting trajectory, as an md.Trajectory object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="binpos.html#mdtraj.BINPOSTrajectoryFile" title="mdtraj.BINPOSTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.BINPOSTrajectoryFile</span></tt></a></dt>
+<dd>Low level interface to BINPOS files</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hdf5.html"
+                        title="previous chapter">HDF5TrajectoryFile</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="trajectory.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/loading.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/loading.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="trajectory.html" title="mdtraj.Trajectory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
