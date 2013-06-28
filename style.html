@@ -131,7 +131,7 @@ site-packages directory.</p>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;2EQQ.pdb&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;2EQQ.pdb&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>    <span class="c"># this runs the assert, using the eq() func.</span>
 </pre></div>
 </div>
