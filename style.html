@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Programing Style &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
+    <link rel="prev" title="Building the documentation" href="building_docs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="building_docs.html" title="Building the documentation"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="programing-style">
+<h1>Programing Style<a class="headerlink" href="#programing-style" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pep8">
+<h2>PEP8<a class="headerlink" href="#pep8" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a> is the python style guide. Follow it. Having consistent style makes the code easy to read and easy to use. This is especially important for public methods (i.e. they should use <tt class="docutils literal"><span class="pre">underlines_to_separate_words</span></tt> and not <tt class="docutils literal"><span class="pre">camelCase</span></tt>), but its also important for internal variable names, so that the code is easy to read and not jarring.</p>
+<p>There are a few static code checkers that can help you with PEP8 compliance.
+I like <tt class="docutils literal"><span class="pre">flake8</span></tt>. There&#8217;s also pylint.</p>
+<div class="highlight-python"><pre>pip install flake8 pylint</pre>
+</div>
+<p>There are a few stupid flake8 errors that you can overlook, but most of them should be corrected. The ones that are probably alright to skip are E501 (line too ling), E231, and a few others. Sometimes you just need more than 80 characters. Readability is what counts. Use your judgement. But err on the side of following PEP8. To ignore specific warnings with <tt class="docutils literal"><span class="pre">flake8</span></tt>, you can run it as so.</p>
+<div class="highlight-python"><pre>flake8 --ignore=errors=E501,E231 MDTraj/</pre>
+</div>
+</div>
+<div class="section" id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<p>This is not java. Don&#8217;t write <tt class="docutils literal"><span class="pre">get_myattribute</span></tt> and <tt class="docutils literal"><span class="pre">set_myattribute</span></tt> methods. Use the <tt class="docutils literal"><span class="pre">&#64;property</span></tt> decorator. See the <a class="reference external" href="http://docs.astropy.org/en/latest/development/codeguide.html#properties-vs-get-set">atropy coding guidelines</a> for details.</p>
+</div>
+<div class="section" id="writing-tests">
+<h2>Writing Tests<a class="headerlink" href="#writing-tests" title="Permalink to this headline">¶</a></h2>
+<p>Untested code is broken code. So testing isn&#8217;t really a feature of programming style, it&#8217;s about correctness. Even tested code <cite>might</cite> be broken code, but untested code is by definition broken, and that&#8217;s worse. Writing tests is annoying, but it pays off big time. <a class="reference external" href="https://nose.readthedocs.org/en/latest/">Nose</a> makes writing tests pretty easy, and MDTraj has some testing infrastructure to make it easier.</p>
+<p>Tests should go in a file named <tt class="docutils literal"><span class="pre">test_modulename.py</span></tt>, either in <tt class="docutils literal"><span class="pre">MDTraj/test/</span></tt> or in the <tt class="docutils literal"><span class="pre">test</span></tt> directory in a subpackage, like <tt class="docutils literal"><span class="pre">MDTraj/geometry/test</span></tt>. If a subpackage only contains one test module, then it&#8217;s fine to put the test module in the package directory directly, without making a <tt class="docutils literal"><span class="pre">test</span></tt> subdirectory. This is how the <tt class="docutils literal"><span class="pre">mdtraj.pdb</span></tt> subpackage&#8217;s tests are organized currently.</p>
+<p>MDTraj contains some infrastructure to help with testing. The most useful is the function <tt class="docutils literal"><span class="pre">mdtraj.testing.eq</span></tt>,</p>
+<dl class="function">
+<dt id="mdtraj.testing.eq">
+<tt class="descclassname">mdtraj.testing.</tt><tt class="descname">eq</tt><big>(</big><em>o1</em>, <em>o2</em>, <em>decimal=6</em>, <em>err_msg=''</em><big>)</big><a class="headerlink" href="#mdtraj.testing.eq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function for asserting that two objects are equal to oneaanother</p>
+<p>If the objects are both arrays or sparse matricies, this method will
+dispatch to an appropriate handler, which makes it a little bit more
+useful than just calling <tt class="docutils literal"><span class="pre">assert</span> <span class="pre">o1</span> <span class="pre">==</span> <span class="pre">o2</span></tt> (which wont work for numpy
+arrays &#8211; it returns an array of bools, not a single True or False)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>o1</strong> : object</p>
+<blockquote>
+<div><p>The first object</p>
+</div></blockquote>
+<p><strong>o2</strong> : object</p>
+<blockquote>
+<div><p>The second object</p>
+</div></blockquote>
+<p><strong>decimal</strong> : int</p>
+<blockquote>
+<div><p>If the two objects are floats or arrays of floats, they&#8217;ll be checked for
+equality up to this decimal place.</p>
+</div></blockquote>
+<p><strong>err_msg</strong> : str</p>
+<blockquote class="last">
+<div><p>Custom error message</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj.testing.get_fn">
+<tt class="descclassname">mdtraj.testing.</tt><tt class="descname">get_fn</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#mdtraj.testing.get_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the full path to one of the reference files shipped for testing</p>
+<p>In the source distribution, these files are in <tt class="docutils literal"><span class="pre">MDTraj/testing/reference</span></tt>,
+but on installation, they&#8217;re moved to somewhere in the user&#8217;s python
+site-packages directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote class="last">
+<div><p>Name of the file to load (with respect to the reference/ folder).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;2EQQ.pdb&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>    <span class="c"># this runs the assert, using the eq() func.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="docstrings">
+<h2>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this headline">¶</a></h2>
+<p>Every function should have a docstring. This is critical. Most of the information in the documentation is pulled directly from the docstrings, which means that the docstrings are really important. In order
+to have sphinx properly parse the docstrings, they need to be written in the numpy format. A detailed description of the numpy docstring format is available <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">here</a>.</p>
+<div class="section" id="cython-docstrings">
+<h3>Cython Docstrings<a class="headerlink" href="#cython-docstrings" title="Permalink to this headline">¶</a></h3>
+<p>in cython code, the function signature cannot be introspected directly, due to limitations of python. We get around that by writing the signature manually on the first line of the docstring. For instance, the docstring for <tt class="docutils literal"><span class="pre">XTCTrajectoryFormat.read()</span></tt> is below. Note that the signature comes before the 1 line summary.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;read(n_frames=None, stride=1, atom_indices=None)</span>
+
+<span class="sd">Read data from an XTC file</span>
+
+<span class="sd">Parameters</span>
+<span class="sd">----------</span>
+<span class="sd">n_frames : int, None</span>
+<span class="sd">    The number of frames you would like to read from the file.</span>
+<span class="sd">    If None, all of the remaining frames will be loaded.</span>
+<span class="sd">stride : int, optional</span>
+<span class="sd">    Read only every stride-th frame.</span>
+<span class="sd">atom_indices : array_like, optional</span>
+<span class="sd">    If not none, then read only a subset of the atoms coordinates from the</span>
+<span class="sd">    file. This may be slightly slower than the standard read because it required</span>
+<span class="sd">    an extra copy, but will save memory.</span>
+
+<span class="sd">Returns</span>
+<span class="sd">-------</span>
+<span class="sd">xyz : np.ndarray, shape=(n_frames, n_atoms, 3), dtype=np.float32</span>
+<span class="sd">    The cartesian coordinates, in nanometers</span>
+<span class="sd">time : np.ndarray, shape=(n_frames), dtype=np.float32</span>
+<span class="sd">    The simulation time, in picoseconds, corresponding to each frame</span>
+<span class="sd">step : np.ndarray, shape=(n_frames), dtype=np.int32</span>
+<span class="sd">    The step in the simulation corresponding to each frame</span>
+<span class="sd">box : np.ndarray, shape=(n_frames, 3, 3), dtype=np.float32</span>
+<span class="sd">    The box vectors in each frame.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="class-docstrings">
+<h3>Class Docstrings<a class="headerlink" href="#class-docstrings" title="Permalink to this headline">¶</a></h3>
+<p>Make sure to include the constructor parameters in the class docstring, not the <tt class="docutils literal"><span class="pre">__init__</span></tt> docstring. This is more consistent with how the constructor is actually invoked, since users don&#8217;t call <tt class="docutils literal"><span class="pre">cls.__init__(...)</span></tt>, they call <tt class="docutils literal"><span class="pre">cls(...)</span></tt>.</p>
+<p>Also, it&#8217;s a good idea to put an attributes section in the class docstring, even if the attributes are <tt class="docutils literal"><span class="pre">&#64;property</span></tt> decorated functions.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Programing Style</a><ul>
+<li><a class="reference internal" href="#pep8">PEP8</a></li>
+<li><a class="reference internal" href="#properties">Properties</a></li>
+<li><a class="reference internal" href="#writing-tests">Writing Tests</a></li>
+<li><a class="reference internal" href="#docstrings">Docstrings</a><ul>
+<li><a class="reference internal" href="#cython-docstrings">Cython Docstrings</a></li>
+<li><a class="reference internal" href="#class-docstrings">Class Docstrings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="building_docs.html"
+                        title="previous chapter">Building the documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/style.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/style.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="building_docs.html" title="Building the documentation"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
