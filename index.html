@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDTraj &mdash; MDTraj 0.2 documentation</title>
+    <title>MDTraj &mdash; MDTraj 0.3 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.2 documentation" href="#" />
+    <link rel="top" title="MDTraj 0.3 documentation" href="#" />
     <link rel="next" title="Getting started" href="getting_started.html" /> 
   </head>
   <body>
@@ -35,9 +35,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="getting_started.html" title="Getting started"
              accesskey="N">next</a> |</li>
-<li><a href="#">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="#">MDTraj 0.3 documentation</a> &raquo;</li>
  
       </ul>
     </div>  
@@ -66,17 +72,25 @@ formats.</p>
 square deviation (RMSD) distances, the calculation of bond lengths, bond
 angles, dihedral angles, non-redundant internal coordinates, and radius
 of gyration.</p>
+<p>MDTraj also ships with a flexible command-line application for converting
+trajectories between formats. When you install MDTraj, the script will be
+installed under the name <tt class="docutils literal"><span class="pre">mdconvert</span></tt>.</p>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdconvert.html">Command line trajectory conversion: <tt class="docutils literal"><span class="pre">mdconvert</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="hdf5_format.html">MDTraj HDF5 Format Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="file_formats.html">Low-level access to files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loading.html">Loading Trajectories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trajectory.html"><tt class="docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html"><tt class="docutils literal"><span class="pre">mdtraj.Topology</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Generic (Compressed) Array IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">MSMBuilder2 Compatibility (.lh5)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reporters.html">OpenMM Reporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </div>
 </div>
@@ -150,6 +164,14 @@ only alpha carbons present, you can do that pretty easily.</p>
 on github. Don&#8217;t hesitate to fork the repository, make some changes, and
 submit a pull request!</p>
 </div>
+<div class="section" id="developer">
+<h2>Developer<a class="headerlink" href="#developer" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the documentation</a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -168,6 +190,9 @@ submit a pull request!</p>
 <li><a class="reference internal" href="#example-usage">Example Usage</a></li>
 <li><a class="reference internal" href="#source-code">Source Code</a></li>
 <li><a class="reference internal" href="#feedback">Feedback</a></li>
+<li><a class="reference internal" href="#developer">Developer</a><ul>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -209,9 +234,15 @@ submit a pull request!</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="getting_started.html" title="Getting started"
              >next</a> |</li>
-<li><a href="#">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="#">MDTraj 0.3 documentation</a> &raquo;</li>
  
       </ul>
     </div>

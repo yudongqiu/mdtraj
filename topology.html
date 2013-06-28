@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdtraj.Topology &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
+    <link rel="next" title="Generic (Compressed) Array IO" href="io.html" />
+    <link rel="prev" title="mdtraj.Trajectory" href="trajectory.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="Generic (Compressed) Array IO"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="trajectory.html" title="mdtraj.Trajectory"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-mdtraj.topology">
+<span id="mdtraj-topology"></span><h1><tt class="xref py py-class docutils literal"><span class="pre">mdtraj.Topology</span></tt><a class="headerlink" href="#module-mdtraj.topology" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mdtraj.topology.Topology">
+<em class="property">class </em><tt class="descclassname">mdtraj.topology.</tt><tt class="descname">Topology</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Topology stores the topological information about a system.</p>
+<p>The structure of a Topology object is similar to that of a PDB file.  It consists of a set of Chains
+(often but not always corresponding to polymer chains).  Each Chain contains a set of Residues,
+and each Residue contains a set of Atoms.  In addition, the Topology stores a list of which atom
+pairs are bonded to each other, and the dimensions of the crystallographic unit cell.</p>
+<p>Atom and residue names should follow the PDB 3.0 nomenclature for all molecules for which one exists.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.chains" title="mdtraj.topology.Topology.chains"><tt class="xref py py-obj docutils literal"><span class="pre">chains</span></tt></a></td>
+<td>Iterator over all Chains in the Topology.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.topology.Topology.residues" title="mdtraj.topology.Topology.residues"><tt class="xref py py-obj docutils literal"><span class="pre">residues</span></tt></a></td>
+<td>Iterator over all Residues in the Topology.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.atoms" title="mdtraj.topology.Topology.atoms"><tt class="xref py py-obj docutils literal"><span class="pre">atoms</span></tt></a></td>
+<td>Iterator over all Atoms in the Topology.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.add_atom" title="mdtraj.topology.Topology.add_atom"><tt class="xref py py-obj docutils literal"><span class="pre">add_atom</span></tt></a>(name,&nbsp;element,&nbsp;residue)</td>
+<td>Create a new Atom and add it to the Topology.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.topology.Topology.add_bond" title="mdtraj.topology.Topology.add_bond"><tt class="xref py py-obj docutils literal"><span class="pre">add_bond</span></tt></a>(atom1,&nbsp;atom2)</td>
+<td>Create a new bond and add it to the Topology.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.add_chain" title="mdtraj.topology.Topology.add_chain"><tt class="xref py py-obj docutils literal"><span class="pre">add_chain</span></tt></a></td>
+<td>Create a new Chain and add it to the Topology.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.topology.Topology.add_residue" title="mdtraj.topology.Topology.add_residue"><tt class="xref py py-obj docutils literal"><span class="pre">add_residue</span></tt></a>(name,&nbsp;chain)</td>
+<td>Create a new Residue and add it to the Topology.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.create_disulfide_bonds" title="mdtraj.topology.Topology.create_disulfide_bonds"><tt class="xref py py-obj docutils literal"><span class="pre">create_disulfide_bonds</span></tt></a>(positions)</td>
+<td>Identify disulfide bonds based on proximity and add them to the Topology.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.topology.Topology.create_standard_bonds" title="mdtraj.topology.Topology.create_standard_bonds"><tt class="xref py py-obj docutils literal"><span class="pre">create_standard_bonds</span></tt></a></td>
+<td>Create bonds based on the atom and residue names for all standard residue types.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Topology.subset" title="mdtraj.topology.Topology.subset"><tt class="xref py py-obj docutils literal"><span class="pre">subset</span></tt></a>(atom_indices)</td>
+<td>Create a new Topology from a subset of the atoms in an existing topology.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.topology.Topology.add_chain">
+<tt class="descname">add_chain</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.add_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.add_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Chain and add it to the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>chain</strong> : mdtraj.topology.Chain</p>
+<blockquote class="last">
+<div><p>the newly created Chain</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.add_residue">
+<tt class="descname">add_residue</tt><big>(</big><em>name</em>, <em>chain</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.add_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.add_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Residue and add it to the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>The name of the residue to add</p>
+</div></blockquote>
+<p><strong>chain</strong> : mdtraj.topology.Chain</p>
+<blockquote>
+<div><p>The Chain to add it to</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>residue</strong> : mdtraj.topology.Residue</p>
+<blockquote class="last">
+<div><p>The newly created Residue</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.add_atom">
+<tt class="descname">add_atom</tt><big>(</big><em>name</em>, <em>element</em>, <em>residue</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.add_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.add_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Atom and add it to the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>The name of the atom to add</p>
+</div></blockquote>
+<p><strong>element</strong> : mdtraj.pdb.element.Element</p>
+<blockquote>
+<div><p>The element of the atom to add</p>
+</div></blockquote>
+<p><strong>residue</strong> : mdtraj.topology.Residue</p>
+<blockquote>
+<div><p>The Residue to add it to</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>atom</strong> : mdtraj.topology.Atom</p>
+<blockquote class="last">
+<div><p>the newly created Atom</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.add_bond">
+<tt class="descname">add_bond</tt><big>(</big><em>atom1</em>, <em>atom2</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.add_bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.add_bond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new bond and add it to the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>atom1</strong> : mdtraj.topology.Atom</p>
+<blockquote>
+<div><p>The first Atom connected by the bond</p>
+</div></blockquote>
+<p><strong>atom2</strong> : mdtraj.topology.Atom</p>
+<blockquote class="last">
+<div><p>The second Atom connected by the bond</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.topology.Topology.chains">
+<tt class="descname">chains</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Chains in the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>chainiter</strong> : listiterator</p>
+<blockquote class="last">
+<div><p>Iterator over all Chains in the Topology.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.topology.Topology.residues">
+<tt class="descname">residues</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Residues in the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>residueiter</strong> : generator</p>
+<blockquote class="last">
+<div><p>Iterator over all Residues in the Topology.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.topology.Topology.atoms">
+<tt class="descname">atoms</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Atoms in the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>atomiter</strong> : generator</p>
+<blockquote class="last">
+<div><p>Iterator over all Atoms in the Topology.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.topology.Topology.bonds">
+<tt class="descname">bonds</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all bonds (each represented as a tuple of two Atoms) in the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>atomiter</strong> : generator</p>
+<blockquote class="last">
+<div><p>Iterator over all tuple of Atoms in the Trajectory involved in a bond.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.create_standard_bonds">
+<tt class="descname">create_standard_bonds</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.create_standard_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.create_standard_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bonds based on the atom and residue names for all standard residue types.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.create_disulfide_bonds">
+<tt class="descname">create_disulfide_bonds</tt><big>(</big><em>positions</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.create_disulfide_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.create_disulfide_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify disulfide bonds based on proximity and add them to the Topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>positions</strong> : list</p>
+<blockquote class="last">
+<div><p>The list of atomic positions based on which to identify bonded atoms</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.topology.Topology.subset">
+<tt class="descname">subset</tt><big>(</big><em>atom_indices</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Topology.subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Topology.subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Topology from a subset of the atoms in an existing topology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>atom_indices array_like</strong> :</p>
+<blockquote class="last">
+<div><p>A list of the indices corresponding to the atoms in that you&#8217;d
+like to retain.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The existing topology will not be altered.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mdtraj.topology.Chain">
+<em class="property">class </em><tt class="descclassname">mdtraj.topology.</tt><tt class="descname">Chain</tt><big>(</big><em>index</em>, <em>topology</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Chain object represents a chain within a Topology.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Chain.residues" title="mdtraj.topology.Chain.residues"><tt class="xref py py-obj docutils literal"><span class="pre">residues</span></tt></a></td>
+<td>Iterator over all Residues in the Chain.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.topology.Chain.atoms" title="mdtraj.topology.Chain.atoms"><tt class="xref py py-obj docutils literal"><span class="pre">atoms</span></tt></a></td>
+<td>Iterator over all Atoms in the Chain.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="23%" />
+<col width="65%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>index</td>
+<td>int</td>
+<td>The index of the Chain within its Topology</td>
+</tr>
+<tr class="row-even"><td>topology</td>
+<td>mdtraj.Topology</td>
+<td>The Topology this Chain belongs to</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mdtraj.topology.Chain.residues">
+<tt class="descname">residues</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Chain.residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Chain.residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Residues in the Chain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>residueiter</strong> : listiterator</p>
+<blockquote class="last">
+<div><p>Iterator over all Residues in the Topology.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.topology.Chain.atoms">
+<tt class="descname">atoms</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Chain.atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Chain.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Atoms in the Chain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>atomiter</strong> : generator</p>
+<blockquote class="last">
+<div><p>Iterator over all Atoms in the Chain.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mdtraj.topology.Residue">
+<em class="property">class </em><tt class="descclassname">mdtraj.topology.</tt><tt class="descname">Residue</tt><big>(</big><em>name</em>, <em>index</em>, <em>chain</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Residue object represents a residue within a Topology.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.topology.Residue.atoms" title="mdtraj.topology.Residue.atoms"><tt class="xref py py-obj docutils literal"><span class="pre">atoms</span></tt></a></td>
+<td>Iterator over all Atoms in the Residue.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mdtraj.topology.Residue.atoms">
+<tt class="descname">atoms</tt><a class="reference internal" href="_modules/mdtraj/topology.html#Residue.atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Residue.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all Atoms in the Residue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>atomiter</strong> : listiterator</p>
+<blockquote class="last">
+<div><p>Iterator over all Atoms in the Residue.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mdtraj.topology.Atom">
+<em class="property">class </em><tt class="descclassname">mdtraj.topology.</tt><tt class="descname">Atom</tt><big>(</big><em>name</em>, <em>element</em>, <em>index</em>, <em>residue</em><big>)</big><a class="reference internal" href="_modules/mdtraj/topology.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.topology.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Atom object represents a residue within a Topology.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="35%" />
+<col width="55%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>name</td>
+<td>str</td>
+<td>The name of the Atom</td>
+</tr>
+<tr class="row-even"><td>element</td>
+<td>mdtraj.pdb.element.Element</td>
+<td>The element of the Atoms</td>
+</tr>
+<tr class="row-odd"><td>index</td>
+<td>int</td>
+<td>The index of the Atom within its Topology</td>
+</tr>
+<tr class="row-even"><td>residue</td>
+<td>mdtraj.topology.Residue</td>
+<td>The Residue this Atom belongs to</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="trajectory.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="io.html"
+                        title="next chapter">Generic (Compressed) Array IO</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/topology.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/topology.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="Generic (Compressed) Array IO"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="trajectory.html" title="mdtraj.Trajectory"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

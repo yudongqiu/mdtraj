@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>PDBTrajectoryFile &mdash; MDTraj 0.2 documentation</title>
+    <title>PDBTrajectoryFile &mdash; MDTraj 0.3 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
     <link rel="up" title="Low-level access to files" href="file_formats.html" />
     <link rel="next" title="DCDTrajectoryFile" href="dcd.html" />
     <link rel="prev" title="Low-level access to files" href="file_formats.html" /> 
@@ -37,12 +37,18 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="dcd.html" title="DCDTrajectoryFile"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="file_formats.html" title="Low-level access to files"
              accesskey="P">previous</a> |</li>
-<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
 
           <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
@@ -115,39 +121,15 @@ exists on disk, should we overwrite it?</p>
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.close" title="mdtraj.PDBTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
 <td>Close the PDB file</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.write" title="mdtraj.PDBTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(positions,&nbsp;topology,&nbsp;modelIndex)</td>
-<td>Write a PDB file</td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.PDBTrajectoryFile.write" title="mdtraj.PDBTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(positions,&nbsp;topology[,&nbsp;modelIndex,&nbsp;...])</td>
+<td>Write a PDB file to disk</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="mdtraj.PDBTrajectoryFile.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the PDB file</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.PDBTrajectoryFile.closed">
-<tt class="descname">closed</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.closed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whether the file is closed</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.PDBTrajectoryFile.positions">
-<tt class="descname">positions</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>The cartesian coordinates of all of the atoms in each frame. Available when a file is opened in mode=&#8217;r&#8217;</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.PDBTrajectoryFile.topology">
-<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.topology" title="Permalink to this definition">¶</a></dt>
-<dd><p>The topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="mdtraj.PDBTrajectoryFile.write">
-<tt class="descname">write</tt><big>(</big><em>positions</em>, <em>topology</em>, <em>modelIndex</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a PDB file</p>
+<tt class="descname">write</tt><big>(</big><em>positions</em>, <em>topology</em>, <em>modelIndex=None</em>, <em>unitcell_lengths=None</em>, <em>unitcell_vectors=None</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a PDB file to disk</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -169,6 +151,36 @@ with this index</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.positions">
+<tt class="descname">positions</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cartesian coordinates of all of the atoms in each frame. Available when a file is opened in mode=&#8217;r&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.topology">
+<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>The topology from this PDB file. Available when a file is opened in mode=&#8217;r&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.unitcell_vectors">
+<tt class="descname">unitcell_vectors</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.unitcell_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unitcell vectors in this PDB file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.closed">
+<tt class="descname">closed</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the file is closed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.PDBTrajectoryFile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the PDB file</p>
 </dd></dl>
 
 </dd></dl>
@@ -221,12 +233,18 @@ with this index</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="dcd.html" title="DCDTrajectoryFile"
              >next</a> |</li>
         <li class="right" >
           <a href="file_formats.html" title="Low-level access to files"
              >previous</a> |</li>
-<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
 
           <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>

@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdtraj.io &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="../../index.html" />
+    <link rel="up" title="mdtraj" href="../mdtraj.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><a href="../../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../mdtraj.html" accesskey="U">mdtraj</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for mdtraj.io</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2012 mdtraj developers</span>
+<span class="c">#</span>
+<span class="c"># This file is part of mdtraj</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is free software: you can redistribute it and/or modify it under the</span>
+<span class="c"># terms of the GNU General Public License as published by the Free Software</span>
+<span class="c"># Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c"># version.</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is distributed in the hope that it will be useful, but WITHOUT ANY</span>
+<span class="c"># WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR</span>
+<span class="c"># A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License along with</span>
+<span class="c"># mdtraj. If not, see http://www.gnu.org/licenses/.</span>
+
+<span class="c"># Portions of this code were copied from the Numpy source</span>
+<span class="c"># those portions are owned by the numpy developers, and released</span>
+<span class="c"># under the following license:</span>
+
+<span class="c"># Copyright 2005-2012, NumPy Developers.</span>
+<span class="c"># All rights reserved.</span>
+<span class="c"># Redistribution and use in source and binary forms, with or without</span>
+<span class="c"># modification, are permitted provided that the following conditions are met:</span>
+
+<span class="c"># Redistributions of source code must retain the above copyright notice, this</span>
+<span class="c"># list of conditions and the following disclaimer.</span>
+<span class="c"># Redistributions in binary form must reproduce the above copyright notice,</span>
+<span class="c"># this list of conditions and the following disclaimer in the documentation</span>
+<span class="c"># and/or other materials provided with the distribution.</span>
+<span class="c"># Neither the name of the NumPy Developers nor the names of any contributors</span>
+<span class="c"># may be used to endorse or promote products derived from this software without</span>
+<span class="c"># specific prior written permission.</span>
+<span class="c"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span class="c"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</span>
+<span class="c"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+<span class="c"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+<span class="c"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span>
+<span class="c"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+<span class="c"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span>
+<span class="c"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF</span>
+<span class="c"># THE POSSIBILITY OF SUCH DAMAGE.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">mdtraj.io provides IO for generic arrays via the functions ``mdtraj.io.loadh``</span>
+<span class="sd">and ``mdtraj.io.saveh``, for loading and saving generic arrays to disk.</span>
+<span class="sd">These functions act like ``numpy.savez`` and ``numpy.loadz``, but use a</span>
+<span class="sd">PyTables HDF5 for supperior performance and compression.</span>
+
+<span class="sd">Nothing in this module is specific to molecular dynamics trajectories.</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">&gt;&gt;&gt; import numpy as np</span>
+<span class="sd">&gt;&gt;&gt; from mdtraj import io</span>
+<span class="sd">&gt;&gt;&gt; x = np.random.randn(100, 3)</span>
+<span class="sd">&gt;&gt;&gt; io.saveh(&#39;file.hdf5&#39;, x=x)                                  # doctest: +SKIP</span>
+<span class="sd">&gt;&gt;&gt; np.all(x == io.loadh(&#39;file.hdf5&#39;)[&#39;x&#39;])                     # doctest: +SKIP</span>
+<span class="sd">True</span>
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;saveh&#39;</span><span class="p">,</span> <span class="s">&#39;loadh&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mdtraj.utils</span> <span class="kn">import</span> <span class="n">import_</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="n">import_</span><span class="p">(</span><span class="s">&#39;tables&#39;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">COMPRESSION</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">complevel</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">complib</span><span class="o">=</span><span class="s">&#39;blosc&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c">#type?</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Missing BLOSC; no compression will used.&quot;</span><span class="p">)</span>
+    <span class="n">COMPRESSION</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Filters</span><span class="p">()</span>
+
+<div class="viewcode-block" id="saveh"><a class="viewcode-back" href="../../io.html#mdtraj.io.saveh">[docs]</a><span class="k">def</span> <span class="nf">saveh</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save several numpy arrays into a single file in compressed ``.hdf`` format.</span>
+
+<span class="sd">    If arguments are passed in with no keywords, the corresponding variable</span>
+<span class="sd">    names, in the ``.hdf`` file, are &#39;arr_0&#39;, &#39;arr_1&#39;, etc. If keyword arguments</span>
+<span class="sd">    are given, the corresponding variable names, in the ``.hdf`` file will</span>
+<span class="sd">    match the keyword names.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : str or tables.File</span>
+<span class="sd">        Either the file name (string) or an open pytables file</span>
+<span class="sd">        (file-like object opened with tables.openFile(...))</span>
+<span class="sd">        where the data will be saved.</span>
+<span class="sd">    args : Arguments, optional</span>
+<span class="sd">        Arrays to save to the file. Since it is not possible for Python to</span>
+<span class="sd">        know the names of the arrays outside `savez`, the arrays will be saved</span>
+<span class="sd">        with names &quot;arr_0&quot;, &quot;arr_1&quot;, and so on. These arguments can be any</span>
+<span class="sd">        expression.</span>
+<span class="sd">    kwds : Keyword arguments, optional</span>
+<span class="sd">        Arrays to save to the file. Arrays will be saved in the file with the</span>
+<span class="sd">        keyword names.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    `saveh` will overwrite files by default. If you have an hdf5 that contains the</span>
+<span class="sd">    arrays `arr_0` and `arr_1` and you attempt to save a new array `x`, it will</span>
+<span class="sd">    go in side by side. But if you save a new `arr_0`, it will overwrite your</span>
+<span class="sd">    previous array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        When arrays are of an unsupported type</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    numpy.savez : Save several arrays into a single file in uncompressed ``.npz`` format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+        <span class="n">own_fid</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;file must be either a string &#39;</span>
+                <span class="s">&#39;or an open tables.File: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">file</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="nb">file</span>
+        <span class="n">own_fid</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># name all the arrays</span>
+    <span class="n">namedict</span> <span class="o">=</span> <span class="n">kwargs</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;arr_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">namedict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">own_fid</span><span class="p">:</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Cannot use un-named variables &#39;</span>
+                <span class="s">&#39; and keyword </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+        <span class="n">namedict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="c"># ensure that they don&#39;t already exist</span>
+    <span class="n">current_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">listNodes</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">namedict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">current_nodes</span><span class="p">:</span>
+            <span class="n">handle</span><span class="o">.</span><span class="n">removeNode</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+            <span class="c"># per discussion on github, https://github.com/rmcgibbo/mdtraj/issues/5</span>
+            <span class="c"># silent overwriting appears to be the desired functionality</span>
+            <span class="c"># raise IOError(&#39;Array already exists in file: %s&#39; % key)</span>
+
+    <span class="c"># save all the arrays</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">namedict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Only numpy arrays can &#39;</span>
+                    <span class="s">&#39;be saved: type(</span><span class="si">%s</span><span class="s">) is </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">atom</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Arrays of this dtype &#39;</span>
+                    <span class="s">&#39;cannot be saved: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">val</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+            <span class="n">node</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">createCArray</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                <span class="n">atom</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">COMPRESSION</span><span class="p">)</span>
+            <span class="n">node</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">own_fid</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+    <span class="n">handle</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">own_fid</span><span class="p">:</span>
+        <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="loadh"><a class="viewcode-back" href="../../io.html#mdtraj.io.loadh">[docs]</a><span class="k">def</span> <span class="nf">loadh</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">deferred</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load one or more array(s) from HDF5 format files</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : string or tables.File</span>
+<span class="sd">        The file to read. It must be either a string, or a an open PyTables</span>
+<span class="sd">        file handle</span>
+<span class="sd">    name : string, optional</span>
+<span class="sd">        The name of a single to read from the file. If not supplied, all arrays</span>
+<span class="sd">        will be read</span>
+<span class="sd">    deferred : bool, optional</span>
+<span class="sd">        If true, and you did not request just a single name, the result will</span>
+<span class="sd">        be lazyily loaded.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : array or dict-like</span>
+<span class="sd">        If name is a single string, a single array will be returned. Otherwise,</span>
+<span class="sd">        the return value is a dict-like mapping the name(s) to the array(s) of</span>
+<span class="sd">        data.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    IOError</span>
+<span class="sd">        If file does not exist</span>
+<span class="sd">    KeyError</span>
+<span class="sd">        If the request name does not exist</span>
+<span class="sd">        </span>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    numpy.load : Load an array(s) or pickled objects from .npy, .npz, or pickled files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">own_fid</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;file must be either a string &#39;</span>
+                <span class="s">&#39;or an open tables.File: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">file</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="nb">file</span>
+        <span class="n">own_fid</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># if name is a single string, deferred loading is not used</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">tables</span><span class="o">.</span><span class="n">NoSuchNodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;Node &quot;</span><span class="si">%s</span><span class="s">&quot; does not exist &#39;</span>
+                <span class="s">&#39;in file </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">file</span><span class="p">))</span>
+
+        <span class="n">return_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">node</span><span class="p">[:])</span>
+        <span class="k">if</span> <span class="n">own_fid</span><span class="p">:</span>
+            <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">return_value</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">deferred</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">walkNodes</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+                <span class="c"># note that we want to strip off the leading &quot;/&quot;</span>
+                <span class="c"># also, we&#39;re skipping Tables and other hdf5 structures</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">_v_pathname</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">node</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">own_fid</span><span class="p">:</span>
+            <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">DeferredTable</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">own_fid</span><span class="p">)</span>
+
+</div>
+<span class="k">class</span> <span class="nc">DeferredTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">,</span> <span class="n">own_fid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">handle</span>
+
+        <span class="c"># get the paths of all of the nodes that are arrays (note that)</span>
+        <span class="c"># we&#39;re skipping Tables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">_v_pathname</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">walkNodes</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">tables</span><span class="o">.</span><span class="n">Array</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_own_fid</span> <span class="o">=</span> <span class="n">own_fid</span>
+
+        <span class="n">repr_strings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="p">:</span>
+            <span class="n">repr_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;  </span><span class="si">%s</span><span class="s">: [shape=</span><span class="si">%s</span><span class="s">, dtype=</span><span class="si">%s</span><span class="s">]&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">handle</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repr_string</span> <span class="o">=</span> <span class="s">&#39;{</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s">}&#39;</span> <span class="o">%</span> <span class="s">&#39;,</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">repr_strings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_string</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_own_fid&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_fid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> not in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">)[:]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span>
+
+    <span class="k">def</span> <span class="nf">iterkeys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_names</span><span class="o">.</span><span class="n">__contains__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><a href="../../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../mdtraj.html" >mdtraj</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

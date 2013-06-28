@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>HDF5TrajectoryFile &mdash; MDTraj 0.2 documentation</title>
+    <title>HDF5TrajectoryFile &mdash; MDTraj 0.3 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.2 documentation" href="index.html" />
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
     <link rel="up" title="Low-level access to files" href="file_formats.html" />
     <link rel="next" title="Loading Trajectories" href="loading.html" />
     <link rel="prev" title="NetCDFTrajectoryFile" href="netcdf.html" /> 
@@ -37,12 +37,18 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="loading.html" title="Loading Trajectories"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="netcdf.html" title="NetCDFTrajectoryFile"
              accesskey="P">previous</a> |</li>
-<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
 
           <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> &raquo;</li> 
       </ul>
@@ -157,15 +163,59 @@ cost too many cpu cycles, so it&#8217;s recommended.</p>
 </tbody>
 </table>
 <dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.root">
+<tt class="descname">root</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direct access to the root group of the underlying Tables HDF5 file handle.</p>
+<p>This can be used for random or specific access to the underlying arrays
+on disk</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.title">
+<tt class="descname">title</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>User-defined title for the data represented in the file</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="mdtraj.HDF5TrajectoryFile.application">
 <tt class="descname">application</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Suite of programs that created the file</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="mdtraj.HDF5TrajectoryFile.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the HDF5 file handle</p>
+<dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.topology">
+<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the topology out from the file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>topology</strong> : mdtraj.Topology</p>
+<blockquote class="last">
+<div><p>A topology object</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.randomState">
+<tt class="descname">randomState</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.randomState" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of the creators internal random number generator at the start of the simulation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.forcefield">
+<tt class="descname">forcefield</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.forcefield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Description of the hamiltonian used. A short, human readable string, like AMBER99sbildn.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.HDF5TrajectoryFile.reference">
+<tt class="descname">reference</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>A published reference that documents the program or parameters used to generate the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -187,24 +237,6 @@ is in the file, the return value is None.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mdtraj.HDF5TrajectoryFile.flush">
-<tt class="descname">flush</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write all buffered data in the to the disk file.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.forcefield">
-<tt class="descname">forcefield</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.forcefield" title="Permalink to this definition">¶</a></dt>
-<dd><p>Description of the hamiltonian used. A short, human readable string, like AMBER99sbildn.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.randomState">
-<tt class="descname">randomState</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.randomState" title="Permalink to this definition">¶</a></dt>
-<dd><p>State of the creators internal random number generator at the start of the simulation</p>
 </dd></dl>
 
 <dl class="method">
@@ -254,44 +286,6 @@ n units of &#8220;nanometers&#8221;, &#8220;picoseconds&#8221;, &#8220;kelvin&#8
 <p>If you&#8217;d like more flexible access to the data, that is available by
 using the pytables group directly, which is accessible via the
 <cite>root</cite> property on this class.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.reference">
-<tt class="descname">reference</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.reference" title="Permalink to this definition">¶</a></dt>
-<dd><p>A published reference that documents the program or parameters used to generate the data</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.root">
-<tt class="descname">root</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Direct access to the root group of the underlying Tables HDF5 file handle.</p>
-<p>This can be used for random or specific access to the underlying arrays
-on disk</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.title">
-<tt class="descname">title</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.title" title="Permalink to this definition">¶</a></dt>
-<dd><p>User-defined title for the data represented in the file</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mdtraj.HDF5TrajectoryFile.topology">
-<tt class="descname">topology</tt><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.topology" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the topology out from the file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>topology</strong> : mdtraj.Topology</p>
-<blockquote class="last">
-<div><p>A topology object</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -370,6 +364,18 @@ have no units, but are generally between zero and one.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the HDF5 file handle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.HDF5TrajectoryFile.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.HDF5TrajectoryFile.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write all buffered data in the to the disk file.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -420,12 +426,18 @@ have no units, but are generally between zero and one.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="loading.html" title="Loading Trajectories"
              >next</a> |</li>
         <li class="right" >
           <a href="netcdf.html" title="NetCDFTrajectoryFile"
              >previous</a> |</li>
-<li><a href="index.html">MDTraj 0.2 documentation</a> &raquo;</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
 
           <li><a href="file_formats.html" >Low-level access to files</a> &raquo;</li> 
       </ul>

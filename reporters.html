@@ -1,0 +1,530 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>OpenMM Reporters &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
+    <link rel="next" title="Utilities" href="utils.html" />
+    <link rel="prev" title="MSMBuilder2 Compatibility (.lh5)" href="compatibility.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utilities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="openmm-reporters">
+<h1>OpenMM Reporters<a class="headerlink" href="#openmm-reporters" title="Permalink to this headline">¶</a></h1>
+<p>MDTraj provides a few flexible reporters for use with the <a class="reference external" href="https://simtk.org/home/openmm">OpenMM</a> python app. OpenMM is a toolkit for molecular simulation using high performance GPU code. OpenMM itself ships with a <a class="reference external" href="https://simtk.org/api_docs/openmm/api5_0/python/classsimtk_1_1openmm_1_1app_1_1dcdreporter_1_1DCDReporter.html">DCD reporter</a>, but it lacks the ability to, for instance, report on only a subset of the atoms, which might be desired to print only the protein coordinates and discard water during a simulation.</p>
+<p>MDTraj currently provides three reporters, <tt class="docutils literal"><span class="pre">HDF5Reporter</span></tt>, <tt class="docutils literal"><span class="pre">NetCDFReporter</span></tt> and <tt class="docutils literal"><span class="pre">DCDReporter</span></tt>. Of these, <tt class="docutils literal"><span class="pre">`HDF5Reporter</span></tt> is the most flexible, because the <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>HDF5 Format</em></a> is the most full-featured trajectory file format available.</p>
+<div class="section" id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># todo: add more examples of how to use these classes</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="hdf5reporter"></span><dl class="class">
+<dt id="mdtraj.reporters.HDF5Reporter">
+<em class="property">class </em><tt class="descclassname">mdtraj.reporters.</tt><tt class="descname">HDF5Reporter</tt><big>(</big><em>file</em>, <em>reportInterval</em>, <em>coordinates=True</em>, <em>time=True</em>, <em>cell=True</em>, <em>potentialEnergy=True</em>, <em>kineticEnergy=True</em>, <em>temperature=True</em>, <em>velocities=False</em>, <em>atomSubset=None</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.HDF5Reporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>HDF5Reporter stores a molecular dynamics trajectory in the HDF5 format.</p>
+<p>This object supports saving all kinds of information from the simulation &#8211;
+more than any other trajectory format. In addition to all of the options,
+the topology of the system will also (of course) be stored in the file. All
+of the information is compressed, so the size of the file is not much
+different than DCD, despite the added flexibility.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>file</strong> : str, or HDF5Trajectory</p>
+<blockquote>
+<div><p>Either an open HDF5Trajecory object to write to, or a string
+specifying the filename of a new HDF5 file to save the trajectory to.</p>
+</div></blockquote>
+<p><strong>reportInterval</strong> : int</p>
+<blockquote>
+<div><p>The interval (in time steps) at which to write frames.</p>
+</div></blockquote>
+<p><strong>coordinates</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the coordinates to the file.</p>
+</div></blockquote>
+<p><strong>time</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the current time to the file.</p>
+</div></blockquote>
+<p><strong>cell</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the current unit cell dimensions to the file.</p>
+</div></blockquote>
+<p><strong>potentialEnergy</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the potential energy to the file.</p>
+</div></blockquote>
+<p><strong>kineticEnergy</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the kinetic energy to the file.</p>
+</div></blockquote>
+<p><strong>temperature</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the instantaneous temperature to the file.</p>
+</div></blockquote>
+<p><strong>atomSubset</strong> : array_like, default=None</p>
+<blockquote class="last">
+<div><p>Only write a subset of the atoms, with these (zero based) indices
+to the file. If None, <em>all</em> of the atoms will be written to disk.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If you use the <tt class="docutils literal"><span class="pre">atomSubset</span></tt> option to write only a subset of the atoms
+to disk, the <tt class="docutils literal"><span class="pre">kineticEnergy</span></tt>, <tt class="docutils literal"><span class="pre">potentialEnergy</span></tt>, and <tt class="docutils literal"><span class="pre">temperature</span></tt>
+fields will not change. They will still refer to the energy and temperature
+of the <em>whole</em> system, and are not &#8220;subsetted&#8221; to only include the energy
+of your subsystem.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h5_reporter</span> <span class="o">=</span> <span class="n">HDF5Reporter</span><span class="p">(</span><span class="s">&#39;traj.h5&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>            
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h5_reporter</span><span class="p">)</span>              
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>                                
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">traj</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;traj.lh5&#39;</span><span class="p">)</span>             
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.HDF5Reporter.close" title="mdtraj.reporters.HDF5Reporter.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<td>Close the underlying trajectory file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.reporters.HDF5Reporter.describeNextReport" title="mdtraj.reporters.HDF5Reporter.describeNextReport"><tt class="xref py py-obj docutils literal"><span class="pre">describeNextReport</span></tt></a>(simulation)</td>
+<td>Get information about the next report this object will generate.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.HDF5Reporter.report" title="mdtraj.reporters.HDF5Reporter.report"><tt class="xref py py-obj docutils literal"><span class="pre">report</span></tt></a>(simulation,&nbsp;state)</td>
+<td>Generate a report.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.reporters.HDF5Reporter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.reporters.HDF5Reporter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the underlying trajectory file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.HDF5Reporter.describeNextReport">
+<tt class="descname">describeNextReport</tt><big>(</big><em>simulation</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.HDF5Reporter.describeNextReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the next report this object will generate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>report_description</strong> : tuple</p>
+<blockquote class="last">
+<div><p>A five element tuple.  The first element is the number of steps
+until the next report.  The remaining elements specify whether
+that report will require positions, velocities, forces, and
+energies respectively.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.HDF5Reporter.report">
+<tt class="descname">report</tt><big>(</big><em>simulation</em>, <em>state</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.HDF5Reporter.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a report.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+<p><strong>state</strong> : simtk.openmm.State</p>
+<blockquote class="last">
+<div><p>The current state of the simulation</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="netcdfreporter"></span><dl class="class">
+<dt id="mdtraj.reporters.NetCDFReporter">
+<em class="property">class </em><tt class="descclassname">mdtraj.reporters.</tt><tt class="descname">NetCDFReporter</tt><big>(</big><em>file</em>, <em>reportInterval</em>, <em>coordinates=True</em>, <em>time=True</em>, <em>cell=True</em>, <em>atomSubset=None</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.NetCDFReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>NetCDFReporter stores a molecular dynamics trajectory in the AMBER
+NetCDF format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>file</strong> : str, or HDF5Trajectory</p>
+<blockquote>
+<div><p>Either an open NetCDFFile object to write to, or a string
+specifying the filename of a new HDF5 file</p>
+</div></blockquote>
+<p><strong>reportInterval</strong> : int</p>
+<blockquote>
+<div><p>The interval (in time steps) at which to write frames.</p>
+</div></blockquote>
+<p><strong>coordinates</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the coordinates to the file.</p>
+</div></blockquote>
+<p><strong>time</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the current time to the file.</p>
+</div></blockquote>
+<p><strong>cell</strong> : bool</p>
+<blockquote>
+<div><p>Whether to write the current unitcell dimensions to the file.</p>
+</div></blockquote>
+<p><strong>atomSubset</strong> : array_like, default=None</p>
+<blockquote class="last">
+<div><p>Only write a subset of the atoms, with these (zero based) indices
+to the file. If None, <em>all</em> of the atoms will be written.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h5_reporter</span> <span class="o">=</span> <span class="n">NetCDFReporter</span><span class="p">(</span><span class="s">&#39;traj.h5&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>          
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h5_reporter</span><span class="p">)</span>              
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>                                
+<span class="gp">&gt;&gt;&gt; </span><span class="n">traj</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;traj.nc&#39;</span><span class="p">)</span>              
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.NetCDFReporter.close" title="mdtraj.reporters.NetCDFReporter.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<td>Close the underlying trajectory file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.reporters.NetCDFReporter.describeNextReport" title="mdtraj.reporters.NetCDFReporter.describeNextReport"><tt class="xref py py-obj docutils literal"><span class="pre">describeNextReport</span></tt></a>(simulation)</td>
+<td>Get information about the next report this object will generate.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.NetCDFReporter.report" title="mdtraj.reporters.NetCDFReporter.report"><tt class="xref py py-obj docutils literal"><span class="pre">report</span></tt></a>(simulation,&nbsp;state)</td>
+<td>Generate a report.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.reporters.NetCDFReporter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.reporters.NetCDFReporter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the underlying trajectory file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.NetCDFReporter.describeNextReport">
+<tt class="descname">describeNextReport</tt><big>(</big><em>simulation</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.NetCDFReporter.describeNextReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the next report this object will generate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>report_description</strong> : tuple</p>
+<blockquote class="last">
+<div><p>A five element tuple.  The first element is the number of steps
+until the next report.  The remaining elements specify whether
+that report will require positions, velocities, forces, and
+energies respectively.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.NetCDFReporter.report">
+<tt class="descname">report</tt><big>(</big><em>simulation</em>, <em>state</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.NetCDFReporter.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a report.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+<p><strong>state</strong> : simtk.openmm.State</p>
+<blockquote class="last">
+<div><p>The current state of the simulation</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="dcdreporter"></span><dl class="class">
+<dt id="mdtraj.reporters.DCDReporter">
+<em class="property">class </em><tt class="descclassname">mdtraj.reporters.</tt><tt class="descname">DCDReporter</tt><big>(</big><em>file</em>, <em>reportInterval</em>, <em>atomSubset=None</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.DCDReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>DCDReporter stores a molecular dynamics trajectory in the CHARMM / NAMD
+DCD Format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>file</strong> : str, or HDF5Trajectory</p>
+<blockquote>
+<div><p>Either an open HDF5Trajecory object to write to, or a string
+specifying the filename of a new HDF5 file to save the trajectory to.</p>
+</div></blockquote>
+<p><strong>reportInterval</strong> : int</p>
+<blockquote>
+<div><p>The interval (in time steps) at which to write frames.</p>
+</div></blockquote>
+<p><strong>atomSubset</strong> : array_like, default=None</p>
+<blockquote class="last">
+<div><p>Only write a subset of the atoms, with these (zero based) indices
+to the file. If None, <em>all</em> of the atoms will be written to disk.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dcd_reporter</span> <span class="o">=</span> <span class="n">DCDReporter</span><span class="p">(</span><span class="s">&#39;traj.dcd&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>           
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dcd_reporter</span><span class="p">)</span>             
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>                                
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">traj</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;traj.dcd&#39;</span><span class="p">)</span>              
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.DCDReporter.close" title="mdtraj.reporters.DCDReporter.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<td>Close the underlying trajectory file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.reporters.DCDReporter.describeNextReport" title="mdtraj.reporters.DCDReporter.describeNextReport"><tt class="xref py py-obj docutils literal"><span class="pre">describeNextReport</span></tt></a>(simulation)</td>
+<td>Get information about the next report this object will generate.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.reporters.DCDReporter.report" title="mdtraj.reporters.DCDReporter.report"><tt class="xref py py-obj docutils literal"><span class="pre">report</span></tt></a>(simulation,&nbsp;state)</td>
+<td>Generate a report.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.reporters.DCDReporter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.reporters.DCDReporter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the underlying trajectory file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.DCDReporter.describeNextReport">
+<tt class="descname">describeNextReport</tt><big>(</big><em>simulation</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.DCDReporter.describeNextReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the next report this object will generate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>report_description</strong> : tuple</p>
+<blockquote class="last">
+<div><p>A five element tuple.  The first element is the number of steps
+until the next report.  The remaining elements specify whether
+that report will require positions, velocities, forces, and
+energies respectively.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.reporters.DCDReporter.report">
+<tt class="descname">report</tt><big>(</big><em>simulation</em>, <em>state</em><big>)</big><a class="headerlink" href="#mdtraj.reporters.DCDReporter.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a report.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>simulation</strong> : simtk.openmm.app.Simulation</p>
+<blockquote>
+<div><p>The Simulation to generate a report for</p>
+</div></blockquote>
+<p><strong>state</strong> : simtk.openmm.State</p>
+<blockquote class="last">
+<div><p>The current state of the simulation</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">OpenMM Reporters</a><ul>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compatibility.html"
+                        title="previous chapter">MSMBuilder2 Compatibility (.lh5)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">Utilities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/reporters.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<ul class="this-page-menu">
+  <li><a href="/numpy/docs/numpy-docs/reporters.rst">Edit page</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utilities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
