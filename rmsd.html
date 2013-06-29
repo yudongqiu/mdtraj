@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RMSD : Fast SSE2/SSE3-based code for RMSD computation &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="index.html" />
+    <link rel="next" title="Generic (Compressed) Array IO" href="io.html" />
+    <link rel="prev" title="mdtraj.Topology" href="topology.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="Generic (Compressed) Array IO"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="topology.html" title="mdtraj.Topology"
+             accesskey="P">previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rmsd-fast-sse2-sse3-based-code-for-rmsd-computation">
+<h1>RMSD : Fast SSE2/SSE3-based code for RMSD computation<a class="headerlink" href="#rmsd-fast-sse2-sse3-based-code-for-rmsd-computation" title="Permalink to this headline">¶</a></h1>
+<p>MDTraj includes the <a class="reference external" href="https://github.com/simtk/irmsd">IRMSD</a> library for computing the optimal root-mean-square-deviation between pairs of protein conformations. It is based on the Theobald QCP method, and because of an efficient matrix multiply routine, is several-fold faster than other RMSD packages using off-the-shelf naive or generic high-performance matrix multiplies. In particular:</p>
+<ul class="simple">
+<li>With one thread, IRMSD is 4x the speed of the original Theobald code and over 3x as fast as Theobald code modified to use GotoBLAS.</li>
+<li>IRMSD features automatic parallelization over multiple RMSD computations; with four threads, it is twice the speed of similarly parallelized Theobald code using GotoBLAS.</li>
+<li>IRMSD reaches the machine theoretical peak arithmetic performance when using multiple threads and small structures that fit into L1 cache.</li>
+<li>IRMSD reaches the machine limit of memory bandwidth when dealing with very large structures that do not fit into cache.</li>
+</ul>
+<p>IRMSD also fixes a small numerical instability in the Theobald QCP method that manifests as a lack of convergence in approximately one in 10^9 RMSD computations.</p>
+<p>The IRMSD code was written by Imran S. Haque. <strong>If you use this code in computations that result in publication, please cite our paper: [upcoming]</strong></p>
+<div class="section" id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj.testing</span>
+<span class="go"># load up a little trajectory that&#39;s distributed with mdtraj, just for this example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">mdtraj</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;traj.h5&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span>
+<span class="go">&lt;mdtraj.Trajectory with 100 frames, 22 atoms&gt;</span>
+</pre></div>
+</div>
+<p>It&#8217;s alanine dipeptide. if you were doing this in your own code, you&#8217;d probably want to discard the coordinates for the hydrogens. In general, RMSD doesn&#8217;t take into account the exchange symmetry of identical atoms, for example the hydrogens on a methyl group.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># prepare the trajectory for RMSD computations. this aligns the</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># data to the appropriate btye-boundaries in memory, and adds extra</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># &quot;padding atoms&quot; at (0, 0, 0) to facilitate the use of fast SSE2/3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># instructions.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">rmsds_to</span></tt> computes the RMSD from each conformation in the cache to
+one of the conformations in a different cache. Here, we compute the
+distance from the first conformation to all of the others.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">values</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">rmsds_to</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(100,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="go">array([ 0.0001041 ,  0.00474321,  0.00918401,  0.01253726,  0.01449224,</span>
+<span class="go">        0.01535706,  0.01565618,  0.01561841,  0.01534577,  0.01479676], dtype=float32)</span>
+</pre></div>
+</div>
+<p>You might notice that the distance between the zero-th frame and itself is not exactly zero, its 0.0001041 nm. This is to be expected. The numerical precision is about one one-hundredth of an angstrom.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="mdtraj.rmsd_cache">
+<tt class="descclassname">mdtraj.</tt><tt class="descname">rmsd_cache</tt><big>(</big><em>trajectory</em>, <em>major='axis'</em><big>)</big><a class="headerlink" href="#mdtraj.rmsd_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a specialized copy of a trajectory&#8217;s cartesian coordinates for fast RMSD calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trajectory</strong> : md.Trajectory</p>
+<blockquote>
+<div><p>A Trajectory object, containing the cartesian coordinates of the system.</p>
+</div></blockquote>
+<p><strong>major</strong> : {&#8216;atom&#8217; or &#8216;axis&#8217;}</p>
+<blockquote>
+<div><p>Resulting memory layout for the coordinates array. Axis-major ordering
+performs better for typical structure sizes. Axis-major ordering has
+all the x-coordinates, followed by all the y-coordinates, followed by
+all the z-coordinates. Atom-major ordering has each atom&#8217;s coordinates
+in atom order.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>cache</strong> : RMSDCache</p>
+<blockquote class="last">
+<div><p>The returned data structured contains the coordinate data from the
+trajectory, prepared for the RMSD calculation. This includes alignment
+to the appropriate byte boundaries, and other low-level stuff.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#mdtraj.rmsd.RMSDCache" title="mdtraj.rmsd.RMSDCache"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.rmsd.RMSDCache</span></tt></a></dt>
+<dd>The constructed RMSDCache object. Note that you can manually construct an RMSDCache without a trajectory, using that classes&#8217;s constructor.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>This operation will make a copy of the cartesian coordinates. This can be
+problematic if you have a lot of data (and limited memory). In that case,
+you can construct the RMSDCache directory from its constructor in a
+copy-free manner.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;trajectory.h5&#39;</span><span class="p">)</span>                          
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>                                  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">rmsds_to</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>                                      
+<span class="go">array([0.0001953,  0.1906953, 0.37336711, ...,  0.29543064,</span>
+<span class="go">       0.68428138, 0.35189939], dtype=float32)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="mdtraj.rmsd.RMSDCache">
+<em class="property">class </em><tt class="descclassname">mdtraj.rmsd.</tt><tt class="descname">RMSDCache</tt><big>(</big><em>coordinates</em>, <em>major</em>, <em>n_atoms</em><big>)</big><a class="headerlink" href="#mdtraj.rmsd.RMSDCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure to store coordinates and compute RMSDs between conformations.</p>
+<p>RMSDCache wraps a 3-dimensional numpy array of coordinates, transparently
+handling structure centering and G (matrix trace) computation required to
+use the IRMSD fast-Theobald RMSD routines.</p>
+<p>Note that <cite>RMSDCache</cite> will modify the array of coordinates it
+is given, when those structures are centered!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>coordinates</strong> : np.ndarray, shape=(M, N, P)</p>
+<blockquote>
+<div><p>an M x N x P numpy ndarray of type float32. See <cite>major</cite> for
+definition of dimensions.</p>
+</div></blockquote>
+<p><strong>major: {&#8216;atom&#8217; or &#8216;axis&#8217;}</strong> :</p>
+<blockquote>
+<div><p>Specifies the storage format of M x N x P ndarray <tt class="docutils literal"><span class="pre">coordinates</span></tt>.
+If <tt class="docutils literal"><span class="pre">major=='axis'</span></tt>, then coordinates should be of shape
+<tt class="docutils literal"><span class="pre">(n_conformations,</span> <span class="pre">3,</span> <span class="pre">n_padded_atoms)</span></tt>. If <tt class="docutils literal"><span class="pre">major=='atom'</span></tt>, then
+coordinates should be of shape <tt class="docutils literal"><span class="pre">(n_conformations,</span> <span class="pre">n_padded_atoms,</span> <span class="pre">3)</span></tt></p>
+</div></blockquote>
+<p><strong>n_atoms</strong> : int</p>
+<blockquote class="last">
+<div><p>the number of actual, not padding, atoms in each structure in the
+array</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#mdtraj.rmsd_cache" title="mdtraj.rmsd_cache"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.rmsd_cache</span></tt></a></dt>
+<dd>Convenience function to construct an RMSDCache from a Trajectory</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>There are special restrictions on <tt class="docutils literal"><span class="pre">coordinates</span></tt> to use the IRMSD
+routines. First, if the number of atoms <tt class="docutils literal"><span class="pre">n_atoms</span></tt> is not a multiple of
+4, then n_padded_atoms should be the next multiple of 4 that is larger
+than <tt class="docutils literal"><span class="pre">n_atoms</span></tt>, and the corresponding &#8216;padding atoms&#8217; in the coordinates
+array must be all-zero. Second, the coordinates array must be aligned
+to a 16-byte boundary.</p>
+<p>If your input array does not satisfy these requirements, you may use
+the <tt class="docutils literal"><span class="pre">mdtraj.rmsd.align_array</span></tt> function to create a copy meeting them.
+<tt class="docutils literal"><span class="pre">mdtraj.rmsd.align_array</span></tt> is NOT automatically called in this
+constructor, to avoid silently allocating/copying large memory structures.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mdtraj.rmsd</span> <span class="kn">import</span> <span class="n">RMSDCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axis_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">axis_coords</span>                                     
+<span class="go"> [[[ 0.          0.84147098  0.90929743  0.14112001 -0.7568025 ]</span>
+<span class="go">   [-0.95892427 -0.2794155   0.6569866   0.98935825  0.41211849]</span>
+<span class="go">   [-0.54402111 -0.99999021 -0.53657292  0.42016704  0.99060736]]</span>
+
+<span class="go">  [[ 0.65028784 -0.28790332 -0.96139749 -0.75098725  0.14987721]</span>
+<span class="go">   [ 0.91294525  0.83665564 -0.00885131 -0.8462204  -0.90557836]</span>
+<span class="go">   [-0.13235175  0.76255845  0.95637593  0.27090579 -0.66363388]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">RMSDCache</span><span class="p">(</span><span class="n">md</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">align_array</span><span class="p">(</span><span class="n">axis_coords</span><span class="p">,</span> <span class="s">&#39;axis&#39;</span><span class="p">),</span> <span class="s">&#39;axis&#39;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">rmsds_to</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">array([ 0.        ,  0.17355414], dtype=float32)</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="16%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>n_atoms</td>
+<td>int</td>
+<td>The number of real atoms in the conformations</td>
+</tr>
+<tr class="row-even"><td>n_padded_atoms</td>
+<td>int</td>
+<td>The number of atoms, including padding atoms which are added
+to the conformations (with coordinates 0) so that the number of atoms
+is a multiple of four.</td>
+</tr>
+<tr class="row-odd"><td>n_frames</td>
+<td>int</td>
+<td>The number of conformations in the RMSDCache</td>
+</tr>
+<tr class="row-even"><td>n_dims</td>
+<td>int</td>
+<td>The number of cartesian dimensions. This is always three.</td>
+</tr>
+<tr class="row-odd"><td>major</td>
+<td>{&#8216;axis&#8217;, &#8216;atom&#8217;}</td>
+<td>Specifies the memory layout of the coordinates.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.rmsd.RMSDCache.rmsds_to" title="mdtraj.rmsd.RMSDCache.rmsds_to"><tt class="xref py py-obj docutils literal"><span class="pre">rmsds_to</span></tt></a>(other_cache,&nbsp;other_index)</td>
+<td>Compute RMSD of all conformations to a reference conformation.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.rmsd.RMSDCache.rmsds_to">
+<tt class="descname">rmsds_to</tt><big>(</big><em>other_cache</em>, <em>other_index</em><big>)</big><a class="headerlink" href="#mdtraj.rmsd.RMSDCache.rmsds_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute RMSD of all conformations to a reference conformation.</p>
+<p>The underlying computation uses OpenMP and so will automatically
+parallelize across cores; it parallelizes over independent
+conformations in this Conformations object.</p>
+<p>To be compared, two Conformations objects must have the same atom/axis
+majority, the same number of atoms, and the same number of padded
+atoms. If the structures have not been centered or G values have not
+been calculated, they will be transparently computed here before the
+RMSDs are computed, and the results saved for future invocations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>other_cache</strong> : RMSDCache</p>
+<blockquote>
+<div><p>For each conformation in this RMSDCache object compute the RMSD
+to a particular &#8216;reference&#8217; conformation in another RMSDCache
+object <tt class="docutils literal"><span class="pre">other_cache</span></tt>, identified by index <tt class="docutils literal"><span class="pre">other_index</span></tt>.</p>
+</div></blockquote>
+<p><strong>other_index</strong> : int</p>
+<blockquote>
+<div><p>The index of the conformation in <tt class="docutils literal"><span class="pre">other_cache</span></tt> to measure
+distances to</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>rmsds</strong> : np.ndarray, shape=(n_frames,)</p>
+<blockquote class="last">
+<div><p>A 1-D numpy array of the RMSDs.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function uses OpenMP to parallelize the calculation across
+multiple cores. To control the number of threads launched by OpenMP,
+you can set the environment variable <tt class="docutils literal"><span class="pre">OMP_NUM_THREADS</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="low-level-c-code">
+<h2>Low Level C-Code<a class="headerlink" href="#low-level-c-code" title="Permalink to this headline">¶</a></h2>
+<p>The compiled code is written in C, and wrapped for python accessibility in cython. Both the C and Cython codes are compiled together into a single shared object file, accessible at <tt class="docutils literal"><span class="pre">mdtraj._rmsd</span></tt>. Two public functions are declared.</p>
+<span class="target" id="module-mdtraj._rmsd"></span><dl class="function">
+<dt id="mdtraj._rmsd.getMultipleRMSDs_atom_major">
+<tt class="descclassname">mdtraj._rmsd.</tt><tt class="descname">getMultipleRMSDs_atom_major</tt><big>(</big><em>xyz1</em>, <em>xyz2</em>, <em>g1</em>, <em>g2</em>, <em>n_atoms</em>, <em>frame</em>, <em>parallel=True</em><big>)</big><a class="headerlink" href="#mdtraj._rmsd.getMultipleRMSDs_atom_major" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the RMSD of several frames to a single frame, with the
+coordinates laid out in atom-major orders</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>xyz1</strong> : np.ndarray, shape=(n_frames, n_atoms_padded, 3), dtype=float32</p>
+<blockquote>
+<div><p>Coordinates of reference frame.</p>
+</div></blockquote>
+<p><strong>xyz2</strong> : np.ndarray, shape=(n_frames, n_atoms_padded, 3), dtype=float32</p>
+<blockquote>
+<div><p>Coordinates of frames to iterate over</p>
+</div></blockquote>
+<p><strong>g1</strong> : np.ndarray, shape = (n_frames), dtype=float32</p>
+<blockquote>
+<div><p>Pre-calculated G factors (traces) for each frame in xyz1</p>
+</div></blockquote>
+<p><strong>g2</strong> : np.ndarray, shape = (n_frames), dtype=float32</p>
+<blockquote>
+<div><p>Pre-calculated G factors (traces) for each frame in xyz2</p>
+</div></blockquote>
+<p><strong>n_atoms</strong> : int</p>
+<blockquote>
+<div><p>The number of atoms in the system.</p>
+</div></blockquote>
+<p><strong>frame</strong> : int</p>
+<blockquote>
+<div><p>Index of the desired reference frame in xyz1.</p>
+</div></blockquote>
+<p><strong>parallel</strong> : bool, default True</p>
+<blockquote>
+<div><p>If True, use OpenMP parallelization.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>rmsds: np.ndarray, shape=(len(xyz2),)</strong> :</p>
+<blockquote class="last">
+<div><p>RMSDS between xyz1[frame] and all of xyz2</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mdtraj._rmsd.getMultipleRMSDs_axis_major">
+<tt class="descclassname">mdtraj._rmsd.</tt><tt class="descname">getMultipleRMSDs_axis_major</tt><big>(</big><em>xyz1</em>, <em>xyz2</em>, <em>g1</em>, <em>g2</em>, <em>n_atoms</em>, <em>frame</em>, <em>parallel=True</em><big>)</big><a class="headerlink" href="#mdtraj._rmsd.getMultipleRMSDs_axis_major" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the RMSD of several frames to a single frame, with the
+coordinates laid out in axis-major orders</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>xyz1</strong> : np.ndarray, shape=(n_frames, 3, n_atoms_padded), dtype=float32</p>
+<blockquote>
+<div><p>Coordinates of reference frame.</p>
+</div></blockquote>
+<p><strong>xyz2</strong> : np.ndarray, shape=(n_frames, 3, n_atoms_padded), dtype=float32</p>
+<blockquote>
+<div><p>Coordinates of frames to iterate over</p>
+</div></blockquote>
+<p><strong>g1</strong> : np.ndarray, shape = (n_frames), dtype=float32</p>
+<blockquote>
+<div><p>Pre-calculated G factors (traces) for each frame in xyz1</p>
+</div></blockquote>
+<p><strong>g2</strong> : np.ndarray, shape = (n_frames), dtype=float32</p>
+<blockquote>
+<div><p>Pre-calculated G factors (traces) for each frame in xyz2</p>
+</div></blockquote>
+<p><strong>n_atoms</strong> : int</p>
+<blockquote>
+<div><p>The number of atoms in the system.</p>
+</div></blockquote>
+<p><strong>frame</strong> : int</p>
+<blockquote>
+<div><p>Index of the desired reference frame in xyz1.</p>
+</div></blockquote>
+<p><strong>parallel</strong> : bool, default True</p>
+<blockquote>
+<div><p>If True, use OpenMP parallelization.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>rmsds: np.ndarray, shape=(len(xyz2),)</strong> :</p>
+<blockquote class="last">
+<div><p>RMSDS between xyz1[frame] and all of xyz2</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/mdtraj_logo-small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">RMSD : Fast SSE2/SSE3-based code for RMSD computation</a><ul>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+<li><a class="reference internal" href="#low-level-c-code">Low Level C-Code</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="topology.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">mdtraj.Topology</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="io.html"
+                        title="next chapter">Generic (Compressed) Array IO</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rmsd.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="Generic (Compressed) Array IO"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="topology.html" title="mdtraj.Topology"
+             >previous</a> |</li>
+<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

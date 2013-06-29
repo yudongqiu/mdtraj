@@ -128,7 +128,7 @@ exists on disk, should we overwrite it?</p>
 </table>
 <dl class="method">
 <dt id="mdtraj.PDBTrajectoryFile.write">
-<tt class="descname">write</tt><big>(</big><em>positions</em>, <em>topology</em>, <em>modelIndex=None</em>, <em>unitcell_lengths=None</em>, <em>unitcell_vectors=None</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>positions</em>, <em>topology</em>, <em>modelIndex=None</em>, <em>unitcell_lengths=None</em>, <em>unitcell_angles=None</em><big>)</big><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a PDB file to disk</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -143,9 +143,17 @@ exists on disk, should we overwrite it?</p>
 <div><p>The Topology defining the model to write.</p>
 </div></blockquote>
 <p><strong>modelIndex</strong> : {int, None}</p>
-<blockquote class="last">
+<blockquote>
 <div><p>If not None, the model will be surrounded by MODEL/ENDMDL records
 with this index</p>
+</div></blockquote>
+<p><strong>unitcell_lengths</strong> : {tuple, None}</p>
+<blockquote>
+<div><p>Lengths of the three unit cell vectors, or None for a non-periodic system</p>
+</div></blockquote>
+<p><strong>unitcell_angles</strong> : {tuple, None}</p>
+<blockquote class="last">
+<div><p>Angles between the three unit cell vectors, or None for a non-periodic system</p>
 </div></blockquote>
 </td>
 </tr>
@@ -166,9 +174,15 @@ with this index</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mdtraj.PDBTrajectoryFile.unitcell_vectors">
-<tt class="descname">unitcell_vectors</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.unitcell_vectors" title="Permalink to this definition">¶</a></dt>
-<dd><p>The unitcell vectors in this PDB file.</p>
+<dt id="mdtraj.PDBTrajectoryFile.unitcell_lengths">
+<tt class="descname">unitcell_lengths</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.unitcell_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unitcell lengths (3-tuple) in this PDB file. May be None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mdtraj.PDBTrajectoryFile.unitcell_angles">
+<tt class="descname">unitcell_angles</tt><a class="headerlink" href="#mdtraj.PDBTrajectoryFile.unitcell_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unitcell angles (3-tuple) in this PDB file. May be None</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -207,9 +221,6 @@ with this index</p>
     <li><a href="_sources/pdb.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<ul class="this-page-menu">
-  <li><a href="/numpy/docs/numpy-docs/pdb.rst">Edit page</a></li>
-</ul>
 
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
