@@ -94,7 +94,22 @@ the first frame of a subsequent filename and discard them</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first last"><strong>DEPENDS ON THE LOADER. NOT FILLED IN YET. NEED TO ADD STRIDING AND SUCH</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Other Params:</th><td class="field-body"><p class="first"><strong>top</strong> : {str, Trajectory, Topology}</p>
+<blockquote>
+<div><p>Most trajectory formats do not contain topology information. Pass in
+either the path to a RCSB PDB file, a trajectory, or a topology to
+supply this information.</p>
+</div></blockquote>
+<p><strong>stride</strong> : int, default=None</p>
+<blockquote>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote class="last">
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
@@ -107,7 +122,7 @@ the first frame of a subsequent filename and discard them</p>
 
 <dl class="function">
 <dt id="mdtraj.load_pdb">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_pdb</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#mdtraj.load_pdb" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_pdb</tt><big>(</big><em>filename</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_pdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a RCSB Protein Data Bank file from disk.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -116,6 +131,17 @@ the first frame of a subsequent filename and discard them</p>
 <tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
 <blockquote>
 <div><p>Path to the PDB file on disk.</p>
+</div></blockquote>
+<p><strong>stride</strong> : int, default=None</p>
+<blockquote>
+<div><p>Only read every stride-th model from the file</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. These indices are zero-based (not 1 based, as used by the PDB
+format). So if you want to load only the first atom in the file, you
+would supply <tt class="docutils literal"><span class="pre">atom_indices</span> <span class="pre">=</span> <span class="pre">np.array([0])</span></tt>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -138,7 +164,7 @@ the first frame of a subsequent filename and discard them</p>
 
 <dl class="function">
 <dt id="mdtraj.load_hdf5">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_hdf5</tt><big>(</big><em>filename</em>, <em>stride=None</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_hdf5" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_hdf5</tt><big>(</big><em>filename</em>, <em>stride=None</em>, <em>atom_indices=None</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load an MDTraj hdf5 trajectory file from disk.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -152,10 +178,17 @@ the first frame of a subsequent filename and discard them</p>
 <blockquote>
 <div><p>Only read every stride-th frame</p>
 </div></blockquote>
-<p><strong>frame</strong> : {None, int}, default=None</p>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
+</div></blockquote>
+<p><strong>frame</strong> : int, optional</p>
 <blockquote>
 <div><p>Use this option to load only a single frame from a trajectory on disk.
-If frame is None, the default, the entire trajectory will be loaded.</p>
+If frame is None, the default, the entire trajectory will be loaded.
+If supplied, <tt class="docutils literal"><span class="pre">stride</span></tt> and <tt class="docutils literal"><span class="pre">atom_indices</span></tt> will be ignored.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -178,7 +211,7 @@ If frame is None, the default, the entire trajectory will be loaded.</p>
 
 <dl class="function">
 <dt id="mdtraj.load_xtc">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_xtc</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_xtc" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_xtc</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_xtc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load an Gromacs XTC file from disk.</p>
 <p>Since the Gromacs XTC format doesn&#8217;t contain information to specify the
 topolgy, you need to supply the topology yourself.</p>
@@ -196,9 +229,15 @@ topolgy, you need to supply the topology yourself.</p>
 path to a RCSB PDB file, a trajectory, or a topology to supply this
 information.</p>
 </div></blockquote>
-<p><strong>chunk</strong> : None</p>
+<p><strong>stride</strong> : int, default=None</p>
 <blockquote>
-<div><p>This option is depricated.</p>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -221,7 +260,7 @@ information.</p>
 
 <dl class="function">
 <dt id="mdtraj.load_trr">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_trr</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_trr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_trr</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_trr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a trr file. Since the trr doesn&#8217;t contain information
 to specify the topolgy, you need to supply the topology yourself</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -237,9 +276,15 @@ to specify the topolgy, you need to supply the topology yourself</p>
 <div><p>The TRR format does not contain topology information. Pass in either the
 path to a pdb file, a trajectory, or a topology to supply this information.</p>
 </div></blockquote>
-<p><strong>chunk</strong> : None</p>
+<p><strong>stride</strong> : int, default=None</p>
 <blockquote>
-<div><p>This option is depricated.</p>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -262,7 +307,7 @@ path to a pdb file, a trajectory, or a topology to supply this information.</p>
 
 <dl class="function">
 <dt id="mdtraj.load_dcd">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_dcd</tt><big>(</big><em>filename</em>, <em>top=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_dcd" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_dcd</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_dcd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load an xtc file. Since the dcd format doesn&#8217;t contain information
 to specify the topolgy, you need to supply a pdb_filename</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -278,6 +323,16 @@ to specify the topolgy, you need to supply a pdb_filename</p>
 <div><p>DCD XTC format does not contain topology information. Pass in either
 the path to a pdb file, a trajectory, or a topology to supply this
 information.</p>
+</div></blockquote>
+<p><strong>stride</strong> : int, default=None</p>
+<blockquote>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -300,7 +355,7 @@ information.</p>
 
 <dl class="function">
 <dt id="mdtraj.load_netcdf">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_netcdf</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_netcdf" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_netcdf</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_netcdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load an AMBER NetCDF file. Since the NetCDF format doesn&#8217;t contain
 information to specify the topolgy, you need to supply a topology</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -320,6 +375,12 @@ information.</p>
 <p><strong>stride</strong> : int, default=None</p>
 <blockquote>
 <div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -342,7 +403,7 @@ information.</p>
 
 <dl class="function">
 <dt id="mdtraj.load_binpos">
-<tt class="descclassname">mdtraj.</tt><tt class="descname">load_binpos</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>chunk=500</em><big>)</big><a class="headerlink" href="#mdtraj.load_binpos" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">mdtraj.</tt><tt class="descname">load_binpos</tt><big>(</big><em>filename</em>, <em>top=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.load_binpos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load an AMBER BINPOS file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -358,10 +419,15 @@ information.</p>
 the path to a pdb file, a trajectory, or a topology to supply this
 information.</p>
 </div></blockquote>
-<p><strong>chunk</strong> : int, default=500</p>
+<p><strong>stride</strong> : int, default=None</p>
 <blockquote>
-<div><p>Size of the chunk to use for loading the xtc file. Memory is allocated
-in units of the chunk size, so larger chunk can be more time-efficient.</p>
+<div><p>Only read every stride-th frame</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from the
+file. This may be slightly slower than the standard read because it
+requires an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>

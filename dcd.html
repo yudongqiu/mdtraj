@@ -133,7 +133,7 @@ already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.close" title="mdtraj.DCDTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
 <td>Close the DCD file handle</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.read" title="mdtraj.DCDTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;atom_indices])</td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.read" title="mdtraj.DCDTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;stride,&nbsp;atom_indices])</td>
 <td>Read the data from a DCD file</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.DCDTrajectoryFile.write" title="mdtraj.DCDTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz[,&nbsp;cell_lengths,&nbsp;cell_angles])</td>
@@ -149,7 +149,7 @@ already exists? if <cite>force_overwrite=True</cite>, it will be overwritten.</p
 
 <dl class="method">
 <dt id="mdtraj.DCDTrajectoryFile.read">
-<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>int stride=1</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.DCDTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the data from a DCD file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

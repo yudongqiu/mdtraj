@@ -131,7 +131,7 @@ This parameter inflates the guess by a multiplicative factor.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.close" title="mdtraj.BINPOSTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a>()</td>
 <td>Close the BINPOS file</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.read" title="mdtraj.BINPOSTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames])</td>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.read" title="mdtraj.BINPOSTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;stride,&nbsp;atom_indices])</td>
 <td>Read data from a BINPOS file</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#mdtraj.BINPOSTrajectoryFile.write" title="mdtraj.BINPOSTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz)</td>
@@ -147,7 +147,7 @@ This parameter inflates the guess by a multiplicative factor.</p>
 
 <dl class="method">
 <dt id="mdtraj.BINPOSTrajectoryFile.read">
-<tt class="descname">read</tt><big>(</big><em>n_frames=None</em><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>stride=None</em>, <em>atom_indices=1</em><big>)</big><a class="headerlink" href="#mdtraj.BINPOSTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from a BINPOS file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -157,6 +157,16 @@ This parameter inflates the guess by a multiplicative factor.</p>
 <blockquote>
 <div><p>The number of frames you would like to read from the file.
 If None, all of the remaining frames will be loaded.</p>
+</div></blockquote>
+<p><strong>stride</strong> : np.ndarray, optional</p>
+<blockquote>
+<div><p>Read only every stride-th frame.</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates from
+the file. This may be slightly slower than the standard read
+because it required an extra copy, but will save memory.</p>
 </div></blockquote>
 </td>
 </tr>
