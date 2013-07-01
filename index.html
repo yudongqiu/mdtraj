@@ -46,7 +46,8 @@
         <li><a href="#">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
  
 
       </ul>
@@ -59,24 +60,13 @@
             
   <div class="section" id="mdtraj">
 <h1>MDTraj<a class="headerlink" href="#mdtraj" title="Permalink to this headline">¶</a></h1>
-<p>MDTraj is a python library for loading, saving, and manipulating molecular
-dynamics trajectories.</p>
+<p>MDTraj is a library for loading, saving, and manipulating molecular
+dynamics trajectories in the python programming language.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<p>MDTraj currently supports loading and saving trajectories in the following
-formats.</p>
-<ul class="simple">
-<li>PDB</li>
-<li>GROMACS XTC and TRR</li>
-<li>CHARMM / NAMD DCD</li>
-<li>AMBER binpos, NetCDF</li>
-<li>MDTraj HDF5</li>
-</ul>
-<p>The MDTraj geometry library gives you access to fast cartesian root-mean
-square deviation (RMSD) distances, the calculation of bond lengths, bond
-angles, dihedral angles, non-redundant internal coordinates, and radius
-of gyration.</p>
-<p>MDTraj also ships with a flexible command-line application for converting
+<p>MDTraj currently supports loading and saving trajectories in the RCSB PDB, GROMACS XTC and TRR, CHARMM / NAMD DCD, AMBER binpos, NetCDF and <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>MDTraj HDF5</em></a> formats.</p>
+<p>MTraj is structured around a convent numpy-based <tt class="docutils literal"><span class="pre">Trajectory</span></tt> object.  Its RMSD (optimal cartesian root-mean-square deviation) library gives you access to <cite>fast</cite> parallel SSE3-based structural deviations using the quaternion characteristic polynomial (Theobald QCP) method at 4x the speed of the original Theobald code and over 3x as fast as Theobald code modified to use GotoBLAS.</p>
+<p>The library also ships with a flexible command-line application for converting
 trajectories between formats. When you install MDTraj, the script will be
 installed under the name <tt class="docutils literal"><span class="pre">mdconvert</span></tt>.</p>
 </div>
@@ -86,17 +76,17 @@ installed under the name <tt class="docutils literal"><span class="pre">mdconver
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">MDTraj Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mdconvert.html">Command line trajectory conversion: <tt class="docutils literal"><span class="pre">mdconvert</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdconvert.html">Command-line trajectory conversion: <tt class="docutils literal"><span class="pre">mdconvert</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="hdf5_format.html">MDTraj HDF5 Format Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="file_formats.html">Low-level access to files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loading.html">Loading Trajectories</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory.html"><tt class="docutils literal"><span class="pre">mdtraj.Trajectory</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology.html"><tt class="docutils literal"><span class="pre">mdtraj.Topology</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory.html">The Trajectory Object : <tt class="docutils literal"><span class="pre">md.Trajectory</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">Protein Topology : <tt class="docutils literal"><span class="pre">md.Topology</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="rmsd.html">RMSD : Fast SSE2/SSE3-based code for RMSD computation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="io.html">Generic (Compressed) Array IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Generic (Compressed) Array IO : <tt class="docutils literal"><span class="pre">mdtraj.io</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="compatibility.html">MSMBuilder2 Compatibility (.lh5)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reporters.html">OpenMM Reporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reporters.html">OpenMM Reporters : <tt class="docutils literal"><span class="pre">md.reporters</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities : <tt class="docutils literal"><span class="pre">md.utils</span></tt></a></li>
 </ul>
 </div>
 </div>
@@ -124,7 +114,7 @@ the topology, for example a PDB file.</p>
 </div>
 <p>There&#8217;s a lot of information in the trajectory object. The most obvious is the
 cartesian coordinates. They&#8217;re stored as a numpy array under <tt class="docutils literal"><span class="pre">xyz</span></tt>. All of
-the distances in the <a class="reference internal" href="trajectory.html#trajectory"><em>mdtraj.Trajectory</em></a> are stored in nanometers. The time unit
+the distances in the <a class="reference internal" href="trajectory.html#trajectory"><em>The Trajectory Object : md.Trajectory</em></a> are stored in nanometers. The time unit
 is picoseconds. Angles are stored in degrees (not radians).</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">t</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(100, 22, 3)</span>
@@ -160,7 +150,7 @@ only alpha carbons present, you can do that pretty easily.</p>
 </div>
 <div class="section" id="source-code">
 <h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
-<p>The source code is licensed under the GPL, and available at: <a class="reference external" href="https://github.com/rmcgibbo/mdtraj">https://github.com/rmcgibbo/mdtraj</a></p>
+<p>The source code is licensed under the GPLv3+, and available at: <a class="reference external" href="https://github.com/rmcgibbo/mdtraj">https://github.com/rmcgibbo/mdtraj</a></p>
 </div>
 <div class="section" id="feedback">
 <h2>Feedback<a class="headerlink" href="#feedback" title="Permalink to this headline">¶</a></h2>
@@ -250,7 +240,8 @@ submit a pull request!</p>
         <li><a href="#">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
  
 
       </ul>

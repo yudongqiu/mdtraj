@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Command line trajectory conversion: mdconvert &mdash; MDTraj 0.3.1 documentation</title>
+    <title>Command-line trajectory conversion: mdconvert &mdash; MDTraj 0.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -50,7 +50,8 @@
         <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="#"><span class="pre">mdconvert</span></a>
  
 
       </ul>
@@ -62,11 +63,21 @@
           <div class="body">
             
   <div class="section" id="command-line-trajectory-conversion-mdconvert">
-<h1>Command line trajectory conversion: <tt class="docutils literal"><span class="pre">mdconvert</span></tt><a class="headerlink" href="#command-line-trajectory-conversion-mdconvert" title="Permalink to this headline">¶</a></h1>
-<p><tt class="docutils literal"><span class="pre">mdconvert</span></tt> is a command-line script installed with MDTraj. After installing the library, it should be in your <tt class="docutils literal"><span class="pre">$PATH</span></tt>. You can check this from the command line with this command.</p>
+<h1>Command-line trajectory conversion: <tt class="docutils literal"><span class="pre">mdconvert</span></tt><a class="headerlink" href="#command-line-trajectory-conversion-mdconvert" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">mdconvert</span></tt> is a command-line script installed with MDTraj to convert
+molecular dynamics trajectories between formats. The DCD, XTC, TRR,
+binpos, NetCDF, binpos, and HDF5 formats are supported (.xtc, .nc, .trr, .h5,
+.pdb, .binpos, .dcd). <tt class="docutils literal"><span class="pre">mdconvert</span></tt> is memory-efficient, and processes
+trajectories in a chunked, streaming fashion. It is capable of converting
+trajectory files which cannot be fully loaded into memory. It can also
+concatenate trajectories, convert only a subset of the atoms in a trajectory
+(i.e. strip solvent molecules), and down-sample trajectories by extract only a
+subset of the frames.</p>
+<p>After installing the library, it should be in your  <tt class="docutils literal"><span class="pre">$PATH</span></tt>. You can check
+this from the command line with this command.</p>
 <div class="highlight-python"><pre>$ which mdconvert</pre>
 </div>
-<p>Here&#8217;s the <tt class="docutils literal"><span class="pre">mdconvert</span></tt> help text. TODO: Document this further.</p>
+<p>Here&#8217;s the <tt class="docutils literal"><span class="pre">mdconvert</span></tt> help text.</p>
 <div class="highlight-python"><pre>$ mdconvert -h
 usage: mdconvert [-h] -o OUTPUT [-c CHUNK] [-f] [-s STRIDE] [-i INDEX]
                  [-a ATOM_INDICES] [-t TOPOLOGY]
@@ -171,7 +182,8 @@ optional arguments:
         <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="#"><span class="pre">mdconvert</span></a>
  
 
       </ul>

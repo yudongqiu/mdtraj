@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>OpenMM Reporters &mdash; MDTraj 0.3.1 documentation</title>
+    <title>OpenMM Reporters : md.reporters &mdash; MDTraj 0.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="MDTraj 0.3.1 documentation" href="index.html" />
-    <link rel="next" title="Utilities" href="utils.html" />
+    <link rel="next" title="Utilities : md.utils" href="utils.html" />
     <link rel="prev" title="MSMBuilder2 Compatibility (.lh5)" href="compatibility.html" /> 
   </head>
   <body>
@@ -42,7 +42,7 @@
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="Utilities"
+          <a href="utils.html" title="Utilities : md.utils"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
@@ -50,7 +50,8 @@
         <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
  
 
       </ul>
@@ -61,8 +62,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="openmm-reporters">
-<h1>OpenMM Reporters<a class="headerlink" href="#openmm-reporters" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="openmm-reporters-md-reporters">
+<h1>OpenMM Reporters : <tt class="xref py py-class docutils literal"><span class="pre">md.reporters</span></tt><a class="headerlink" href="#openmm-reporters-md-reporters" title="Permalink to this headline">¶</a></h1>
 <p>MDTraj provides a few flexible reporters for use with the <a class="reference external" href="https://simtk.org/home/openmm">OpenMM</a> python app. OpenMM is a toolkit for molecular simulation using high performance GPU code. OpenMM itself ships with a <a class="reference external" href="https://simtk.org/api_docs/openmm/api5_0/python/classsimtk_1_1openmm_1_1app_1_1dcdreporter_1_1DCDReporter.html">DCD reporter</a>, but it lacks the ability to, for instance, report on only a subset of the atoms, which might be desired to print only the protein coordinates and discard water during a simulation.</p>
 <p>MDTraj currently provides three reporters, <tt class="docutils literal"><span class="pre">HDF5Reporter</span></tt>, <tt class="docutils literal"><span class="pre">NetCDFReporter</span></tt> and <tt class="docutils literal"><span class="pre">DCDReporter</span></tt>. Of these, <tt class="docutils literal"><span class="pre">`HDF5Reporter</span></tt> is the most flexible, because the <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>HDF5 Format</em></a> is the most full-featured trajectory file format available.</p>
 <div class="section" id="example-usage">
@@ -466,7 +467,7 @@ energies respectively.</p>
 
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">OpenMM Reporters</a><ul>
+<li><a class="reference internal" href="#">OpenMM Reporters : <tt class="docutils literal"><span class="pre">md.reporters</span></tt></a><ul>
 <li><a class="reference internal" href="#example-usage">Example Usage</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 </ul>
@@ -508,7 +509,7 @@ energies respectively.</p>
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="Utilities"
+          <a href="utils.html" title="Utilities : md.utils"
              >next</a> |</li>
         <li class="right" >
           <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
@@ -516,7 +517,8 @@ energies respectively.</p>
         <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
-<a href="examples/index.html">Examples</a>
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
  
 
       </ul>
