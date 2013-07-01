@@ -8,7 +8,7 @@
     
     <title>mdtraj.rmsd &mdash; MDTraj 0.3 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -40,10 +40,14 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-<li><a href="../../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="../index.html" >Module code</a> |</li>
+          <li><a href="../mdtraj.html" accesskey="U">mdtraj</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../../examples/index.html">Examples</a>
+ 
 
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../mdtraj.html" accesskey="U">mdtraj</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +57,398 @@
           <div class="body">
             
   <h1>Source code for mdtraj.rmsd</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">.rmsd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c"># Copyright 2012-present mdtraj developers</span>
+<span class="c">#</span>
+<span class="c"># This file is part of mdtraj</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is free software: you can redistribute it and/or modify it under the</span>
+<span class="c"># terms of the GNU General Public License as published by the Free Software</span>
+<span class="c"># Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c"># version.</span>
+<span class="c">#</span>
+<span class="c"># mdtraj is distributed in the hope that it will be useful, but WITHOUT ANY</span>
+<span class="c"># WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR</span>
+<span class="c"># A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License along with</span>
+<span class="c"># mdtraj. If not, see http://www.gnu.org/licenses/.</span>
+
+<span class="c"># This code was written by Imran S. Haque, with some contributes by</span>
+<span class="c"># Robert McGibbon</span>
+
+
+<span class="c">##############################################################################</span>
+<span class="c"># Imports</span>
+<span class="c">##############################################################################</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mdtraj</span> <span class="kn">import</span> <span class="n">_rmsd</span>
+
+<span class="c">##############################################################################</span>
+<span class="c"># Globals</span>
+<span class="c">##############################################################################</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rmsd_cache&#39;</span><span class="p">,</span> <span class="s">&#39;RMSDCache&#39;</span><span class="p">,</span> <span class="s">&#39;align_array&#39;</span><span class="p">]</span>
+
+<span class="c">##############################################################################</span>
+<span class="c"># Code</span>
+<span class="c">##############################################################################</span>
+
+
+<span class="k">def</span> <span class="nf">rmsd_cache</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">major</span><span class="o">=</span><span class="s">&#39;axis&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a specialized copy of a trajectory&#39;s cartesian coordinates for fast RMSD calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    trajectory : md.Trajectory</span>
+<span class="sd">        A Trajectory object, containing the cartesian coordinates of the system.</span>
+<span class="sd">    major : {&#39;atom&#39; or &#39;axis&#39;}</span>
+<span class="sd">        Resulting memory layout for the coordinates array. Axis-major ordering</span>
+<span class="sd">        performs better for typical structure sizes. Axis-major ordering has</span>
+<span class="sd">        all the x-coordinates, followed by all the y-coordinates, followed by</span>
+<span class="sd">        all the z-coordinates. Atom-major ordering has each atom&#39;s coordinates</span>
+<span class="sd">        in atom order.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cache : RMSDCache</span>
+<span class="sd">        The returned data structured contains the coordinate data from the</span>
+<span class="sd">        trajectory, prepared for the RMSD calculation. This includes alignment</span>
+<span class="sd">        to the appropriate byte boundaries, and other low-level stuff.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This operation will make a copy of the cartesian coordinates. This can be</span>
+<span class="sd">    problematic if you have a lot of data (and limited memory). In that case,</span>
+<span class="sd">    you can construct the RMSDCache directory from its constructor in a</span>
+<span class="sd">    copy-free manner.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import mdtraj as md</span>
+<span class="sd">    &gt;&gt;&gt; t = md.load(&#39;trajectory.h5&#39;)                          # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; c = md.rmsd_cache(t)                                  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; c.rmsds_to(r, 0)                                      # doctest: +SKIP</span>
+<span class="sd">    array([0.0001953,  0.1906953, 0.37336711, ...,  0.29543064,</span>
+<span class="sd">           0.68428138, 0.35189939], dtype=float32)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    mdtraj.rmsd.RMSDCache : The constructed RMSDCache object. Note that you can manually construct an RMSDCache without a trajectory, using that classes&#39;s constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;atom&#39;</span><span class="p">:</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="n">align_array</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">major</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;axis&#39;</span><span class="p">:</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="n">_allocate_aligned_array</span><span class="p">((</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">major</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="n">aligned</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">]</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Must specify &#39;atom&#39; or &#39;axis&#39; major ordering&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">RMSDCache</span><span class="p">(</span><span class="n">aligned</span><span class="p">,</span> <span class="n">major</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_allocate_aligned_array</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">major</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Allocate an array with 16-byte alignment and padding for IRMSD routines.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        shape of the array to allocate. The returned array may be larger than</span>
+<span class="sd">        requested if the number of atoms (as specified by the shape and</span>
+<span class="sd">        majority) is not a multiple of four; in this case, the number of</span>
+<span class="sd">        elements along the atoms dimension of the array will be rounded up to</span>
+<span class="sd">        the nearest multiple of four.</span>
+<span class="sd">    major : {&#39;axis&#39;, &#39;atoms&#39;}</span>
+<span class="sd">        See RMSDCache.__init__` for the definition of axis and atom</span>
+<span class="sd">        majority.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array : np.ndarray</span>
+<span class="sd">        An np.ndarray of three dimensions and float32 dtype, such that the</span>
+<span class="sd">        first element of each conformation is aligned to a 16-byte boundary,</span>
+<span class="sd">        the number of elements along the atom axis is the number of atoms (as</span>
+<span class="sd">        specified in ``shape`` rounded up to the nearest multiple of four),</span>
+<span class="sd">        and all padding atoms (atom elements not corresponding to an actual</span>
+<span class="sd">        atom) are set to zero.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">alignment</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">/</span> <span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
+    <span class="k">if</span> <span class="n">major</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;atom&#39;</span><span class="p">,</span> <span class="s">&#39;axis&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Must specify atom or axis major coordinates&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;axis&#39;</span><span class="p">:</span>
+        <span class="n">n_confs</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_confs</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_dims</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="n">n_padded_atoms</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="n">alignment</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">alignment</span> <span class="o">*</span> <span class="n">alignment</span>
+    <span class="n">n_floats</span> <span class="o">=</span> <span class="n">n_dims</span> <span class="o">*</span> <span class="n">n_padded_atoms</span> <span class="o">*</span> <span class="n">n_confs</span>
+    <span class="n">nbytes</span> <span class="o">=</span> <span class="n">n_floats</span> <span class="o">*</span> <span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nbytes</span> <span class="o">+</span> <span class="n">alignment</span> <span class="o">*</span> <span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">start_index</span> <span class="o">=</span> <span class="o">-</span><span class="n">buf</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span> <span class="o">%</span> <span class="p">(</span><span class="n">alignment</span> <span class="o">*</span> <span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span>
+    <span class="n">aligned</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">nbytes</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c"># Reshape the array to the correct majority and zero out the padding atoms</span>
+    <span class="k">if</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;axis&#39;</span><span class="p">:</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="n">aligned</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_confs</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">n_padded_atoms</span><span class="p">)</span>
+        <span class="n">aligned</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">n_atoms</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="n">aligned</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_confs</span><span class="p">,</span> <span class="n">n_padded_atoms</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">)</span>
+        <span class="n">aligned</span><span class="p">[:,</span> <span class="n">n_atoms</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">aligned</span>
+
+
+<span class="k">def</span> <span class="nf">align_array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">major</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Given an ndarray of coords, return a copy satisfying IRMSD requirements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates: np.ndarray, ndim=3</span>
+<span class="sd">        a 3-D ndarray of coordinates for one or more structures</span>
+<span class="sd">    major: {&#39;axis&#39;, &#39;atom&#39;}</span>
+<span class="sd">        Specifies the meaning of each dimension of the `coordinates` argument.</span>
+<span class="sd">        See `Conformations.__init__` for the definition of atom and axis</span>
+<span class="sd">        majority.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coord_copy : np.ndarray</span>
+<span class="sd">        A copy of the given coordinates such that the copy satisfies the</span>
+<span class="sd">        alignment, padding, and data-type requirements for IRMSD.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">aligned</span> <span class="o">=</span> <span class="n">_allocate_aligned_array</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">major</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;axis&#39;</span><span class="p">:</span>
+        <span class="n">aligned</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">aligned</span><span class="p">[:,</span> <span class="p">:</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="k">return</span> <span class="n">aligned</span>
+
+
+<div class="viewcode-block" id="RMSDCache"><a class="viewcode-back" href="../../rmsd.html#mdtraj.rmsd.RMSDCache">[docs]</a><span class="k">class</span> <span class="nc">RMSDCache</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Structure to store coordinates and compute RMSDs between conformations.</span>
+
+<span class="sd">    RMSDCache wraps a 3-dimensional numpy array of coordinates, transparently</span>
+<span class="sd">    handling structure centering and G (matrix trace) computation required to</span>
+<span class="sd">    use the IRMSD fast-Theobald RMSD routines.</span>
+
+<span class="sd">    Note that `RMSDCache` will modify the array of coordinates it</span>
+<span class="sd">    is given, when those structures are centered!</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : np.ndarray, shape=(M, N, P)</span>
+<span class="sd">        an M x N x P numpy ndarray of type float32. See `major` for</span>
+<span class="sd">        definition of dimensions.</span>
+<span class="sd">    major: {&#39;atom&#39; or &#39;axis&#39;}</span>
+<span class="sd">        Specifies the storage format of M x N x P ndarray ``coordinates``.</span>
+<span class="sd">        If ``major==&#39;axis&#39;``, then coordinates should be of shape</span>
+<span class="sd">        ``(n_conformations, 3, n_padded_atoms)``. If ``major==&#39;atom&#39;``, then</span>
+<span class="sd">        coordinates should be of shape ``(n_conformations, n_padded_atoms, 3)``</span>
+<span class="sd">    n_atoms : int</span>
+<span class="sd">        the number of actual, not padding, atoms in each structure in the</span>
+<span class="sd">        array</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There are special restrictions on ``coordinates`` to use the IRMSD</span>
+<span class="sd">    routines. First, if the number of atoms ``n_atoms`` is not a multiple of</span>
+<span class="sd">    4, then n_padded_atoms should be the next multiple of 4 that is larger</span>
+<span class="sd">    than ``n_atoms``, and the corresponding &#39;padding atoms&#39; in the coordinates</span>
+<span class="sd">    array must be all-zero. Second, the coordinates array must be aligned</span>
+<span class="sd">    to a 16-byte boundary.</span>
+
+<span class="sd">    If your input array does not satisfy these requirements, you may use</span>
+<span class="sd">    the ``mdtraj.rmsd.align_array`` function to create a copy meeting them.</span>
+<span class="sd">    ``mdtraj.rmsd.align_array`` is NOT automatically called in this</span>
+<span class="sd">    constructor, to avoid silently allocating/copying large memory structures.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_atoms : int</span>
+<span class="sd">        The number of real atoms in the conformations</span>
+<span class="sd">    n_padded_atoms : int</span>
+<span class="sd">        The number of atoms, including padding atoms which are added</span>
+<span class="sd">        to the conformations (with coordinates 0) so that the number of atoms</span>
+<span class="sd">        is a multiple of four.</span>
+<span class="sd">    n_frames : int</span>
+<span class="sd">        The number of conformations in the RMSDCache</span>
+<span class="sd">    n_dims : int</span>
+<span class="sd">        The number of cartesian dimensions. This is always three.</span>
+<span class="sd">    major : {&#39;axis&#39;, &#39;atom&#39;}</span>
+<span class="sd">        Specifies the memory layout of the coordinates.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    mdtraj.rmsd_cache : Convenience function to construct an RMSDCache from a Trajectory</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import mdtraj as md</span>
+<span class="sd">    &gt;&gt;&gt; from mdtraj.rmsd import RMSDCache</span>
+<span class="sd">    &gt;&gt;&gt; axis_coords = np.sin(np.arange(30).reshape(2, 3, 5))</span>
+<span class="sd">    &gt;&gt;&gt; print axis_coords                                     # doctest: +SKIP</span>
+<span class="sd">     [[[ 0.          0.84147098  0.90929743  0.14112001 -0.7568025 ]</span>
+<span class="sd">       [-0.95892427 -0.2794155   0.6569866   0.98935825  0.41211849]</span>
+<span class="sd">       [-0.54402111 -0.99999021 -0.53657292  0.42016704  0.99060736]]</span>
+<span class="sd">     &lt;BLANKLINE&gt;</span>
+<span class="sd">      [[ 0.65028784 -0.28790332 -0.96139749 -0.75098725  0.14987721]</span>
+<span class="sd">       [ 0.91294525  0.83665564 -0.00885131 -0.8462204  -0.90557836]</span>
+<span class="sd">       [-0.13235175  0.76255845  0.95637593  0.27090579 -0.66363388]]]</span>
+<span class="sd">    &gt;&gt;&gt; c = RMSDCache(md.rmsd.align_array(axis_coords, &#39;axis&#39;), &#39;axis&#39;, n_atoms=5)</span>
+<span class="sd">    &gt;&gt;&gt; c.rmsds_to(c, 0)</span>
+<span class="sd">    array([ 0.        ,  0.17355414], dtype=float32)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">major</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a `RMSDCache` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">major</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;atom&#39;</span><span class="p">,</span> <span class="s">&#39;axis&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Must specify atom or axis major coordinates&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;IRMSD can only handle single-precision float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Coordinates must have three dimensions &quot;</span>
+                             <span class="s">&quot;(conformations, atoms, axes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">major</span> <span class="o">==</span> <span class="s">&#39;axis&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_padded_atoms</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis_major</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atom_major</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_padded_atoms</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis_major</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atom_major</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">major</span> <span class="o">=</span> <span class="n">major</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cords</span> <span class="o">=</span> <span class="n">coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_g</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_centered</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_major</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_major</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dims</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;IRMSD only supports operation in 3 dimensions&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_padded_atoms</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;(Padded) number of atoms must be a multiple &quot;</span>
+                             <span class="s">&quot;of 4 to use IRMSD routines&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span> <span class="o">%</span> <span class="mi">16</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Coordinate array must be aligned to a 16-byte &quot;</span>
+                             <span class="s">&quot;boundary to use IRMSD routines&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+
+    <span class="k">def</span> <span class="nf">_center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform conformations so that each is centered about 0.</span>
+
+<span class="sd">        This function is automatically called if necessary for an alignment to</span>
+<span class="sd">        proceed, but is exposed in case the user wants to center structures at</span>
+<span class="sd">        a different time.</span>
+
+<span class="sd">        Modifies data in-place since it might be very large.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ci</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_major</span><span class="p">:</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">ci</span><span class="p">,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> \
+                             <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">repcent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">centroid</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">ci</span><span class="p">,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-=</span> <span class="n">repcent</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">ci</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> \
+                             <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">repcent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">centroid</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">ci</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">]</span> <span class="o">-=</span> <span class="n">repcent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_centered</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Conformation traces. These are also known as the &quot;G values&quot;</span>
+
+<span class="sd">        For a structure S made of column vectors Sx, Sy, Sz representing the x,</span>
+<span class="sd">        y, and z coordinates of each atom in the structure, G(S) = tr(S&#39;S) =</span>
+<span class="sd">        dot(x,x) + dot(y,y) + dot(z,z). This quantity is related to the radius</span>
+<span class="sd">        of gyration and is needed in the Theobald RMSD computation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_g</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_traces</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_g</span>
+
+    <span class="k">def</span> <span class="nf">_compute_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_centered</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_dims</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_major</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:],</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">],</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">])</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="RMSDCache.rmsds_to"><a class="viewcode-back" href="../../rmsd.html#mdtraj.rmsd.RMSDCache.rmsds_to">[docs]</a>    <span class="k">def</span> <span class="nf">rmsds_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_cache</span><span class="p">,</span> <span class="n">other_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute RMSD of all conformations to a reference conformation.</span>
+
+<span class="sd">        The underlying computation uses OpenMP and so will automatically</span>
+<span class="sd">        parallelize across cores; it parallelizes over independent</span>
+<span class="sd">        conformations in this Conformations object.</span>
+
+<span class="sd">        To be compared, two Conformations objects must have the same atom/axis</span>
+<span class="sd">        majority, the same number of atoms, and the same number of padded</span>
+<span class="sd">        atoms. If the structures have not been centered or G values have not</span>
+<span class="sd">        been calculated, they will be transparently computed here before the</span>
+<span class="sd">        RMSDs are computed, and the results saved for future invocations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other_cache : RMSDCache</span>
+<span class="sd">            For each conformation in this RMSDCache object compute the RMSD</span>
+<span class="sd">            to a particular &#39;reference&#39; conformation in another RMSDCache</span>
+<span class="sd">            object ``other_cache``, identified by index ``other_index``.</span>
+<span class="sd">        other_index : int</span>
+<span class="sd">            The index of the conformation in ``other_cache`` to measure</span>
+<span class="sd">            distances to</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function uses OpenMP to parallelize the calculation across</span>
+<span class="sd">        multiple cores. To control the number of threads launched by OpenMP,</span>
+<span class="sd">        you can set the environment variable ``OMP_NUM_THREADS``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rmsds : np.ndarray, shape=(n_frames,)</span>
+<span class="sd">            A 1-D numpy array of the RMSDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">other_cache</span><span class="o">.</span><span class="n">major</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">major</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot align two conformation sets of differing &quot;</span>
+                             <span class="s">&quot;atom/axis majority&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other_cache</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot align two conformation sets of differing &quot;</span>
+                             <span class="s">&quot;number of atoms&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other_cache</span><span class="o">.</span><span class="n">n_padded_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_padded_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot align two conformation sets of differing &quot;</span>
+                             <span class="s">&quot;number of padded atoms&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_major</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_rmsd</span><span class="o">.</span><span class="n">getMultipleRMSDs_axis_major</span><span class="p">(</span><span class="n">other_cache</span><span class="o">.</span><span class="n">cords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">,</span>
+                        <span class="n">other_cache</span><span class="o">.</span><span class="n">_traces</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traces</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                        <span class="n">other_index</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_major</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_rmsd</span><span class="o">.</span><span class="n">getMultipleRMSDs_atom_major</span><span class="p">(</span><span class="n">other_cache</span><span class="o">.</span><span class="n">cords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords</span><span class="p">,</span>
+                        <span class="n">other_cache</span><span class="o">.</span><span class="n">_traces</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traces</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                        <span class="n">other_index</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>
@@ -61,9 +456,7 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/mdtraj_logo-small.png" alt="Logo"/>
-            </a></p>
+<img src="../../_static/mdtraj_logo-small.png" alt="Logo"/>
 
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -78,7 +471,6 @@
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -95,10 +487,14 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-<li><a href="../../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="../index.html" >Module code</a> |</li>
+          <li><a href="../mdtraj.html" >mdtraj</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../../examples/index.html">Examples</a>
+ 
 
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../mdtraj.html" >mdtraj</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

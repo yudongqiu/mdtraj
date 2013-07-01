@@ -8,7 +8,7 @@
     
     <title>mdtraj &mdash; MDTraj 0.3 documentation</title>
     
-    <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -40,9 +40,13 @@
         <li class="right" >
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-<li><a href="../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="index.html" accesskey="U">Module code</a> |</li>
+<a href="../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../examples/index.html">Examples</a>
+ 
 
-          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,9 +76,6 @@
 <span class="sd">DCD, AMBER BINPOS, PDB, and HDF5.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;binpos&#39;</span><span class="p">,</span> <span class="s">&#39;xtc&#39;</span><span class="p">,</span> <span class="s">&#39;dcd&#39;</span><span class="p">,</span> <span class="s">&#39;io&#39;</span><span class="p">,</span> <span class="s">&#39;pdb&#39;</span><span class="p">,</span> <span class="s">&#39;netcdf&#39;</span><span class="p">,</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> <span class="s">&quot;hdf5&quot;</span>
-            <span class="s">&#39;testing&#39;</span><span class="p">,</span> <span class="s">&#39;trajectory&#39;</span><span class="p">,</span> <span class="s">&#39;topology&#39;</span><span class="p">,</span> <span class="s">&#39;reporters&#39;</span><span class="p">,</span> <span class="s">&#39;geometry&#39;</span><span class="p">]</span>
-
 <span class="kn">from</span> <span class="nn">mdtraj.xtc</span> <span class="kn">import</span> <span class="n">XTCTrajectoryFile</span>
 <span class="kn">from</span> <span class="nn">mdtraj.trr</span> <span class="kn">import</span> <span class="n">TRRTrajectoryFile</span>
 <span class="kn">from</span> <span class="nn">.hdf5</span> <span class="kn">import</span> <span class="n">HDF5TrajectoryFile</span>
@@ -87,9 +88,24 @@
 <span class="kn">from</span> <span class="nn">.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">.trajectory</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-    <span class="kn">import</span> <span class="nn">nose</span>
-    <span class="n">nose</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;full&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run tests for mdtraj using nose.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    label : {&#39;fast&#39;, &#39;full&#39;}</span>
+<span class="sd">        Identifies the tests to run. The fast tests take about 10 seconds,</span>
+<span class="sd">        and the full test suite takes about two minutes (as of this writing).</span>
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Verbosity value for test outputs, in the range 1-10. Default is 2. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">mdtraj</span>
+    <span class="kn">from</span> <span class="nn">mdtraj.testing.nosetester</span> <span class="kn">import</span> <span class="n">MDTrajTester</span>
+    <span class="n">tester</span> <span class="o">=</span> <span class="n">MDTrajTester</span><span class="p">(</span><span class="n">mdtraj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tester</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">extra_argv</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;--exe&#39;</span><span class="p">,))</span>
+<span class="c"># prevent nose from discovering this function, or otherwise when its run</span>
+<span class="c"># the test suite in an infinite loop</span>
+<span class="n">test</span><span class="o">.</span><span class="n">__test__</span> <span class="o">=</span> <span class="bp">False</span>  
 </pre></div>
 
           </div>
@@ -97,9 +113,7 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/mdtraj_logo-small.png" alt="Logo"/>
-            </a></p>
+<img src="../_static/mdtraj_logo-small.png" alt="Logo"/>
 
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
@@ -114,7 +128,6 @@
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -131,9 +144,13 @@
         <li class="right" >
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-<li><a href="../index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="index.html" >Module code</a> |</li>
+<a href="../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../examples/index.html">Examples</a>
+ 
 
-          <li><a href="index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

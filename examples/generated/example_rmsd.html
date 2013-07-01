@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Plotting RMSD drift &mdash; MDTraj 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.3 documentation" href="../../index.html" />
+    <link rel="up" title="MDTraj Examples" href="../index.html" />
+    <link rel="next" title="Command line trajectory conversion: mdconvert" href="../../mdconvert.html" />
+    <link rel="prev" title="MDTraj Examples" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../mdconvert.html" title="Command line trajectory conversion: mdconvert"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="MDTraj Examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="../index.html" accesskey="U">MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a>
+ 
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="plotting-rmsd-drift">
+<h1>Plotting RMSD drift<a class="headerlink" href="#plotting-rmsd-drift" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+</pre></div>
+</div>
+<p>Find two files that are distributed with MDTraj for testing purposes &#8211;
+we can us them to make our plot</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">mdtraj.testing</span>
+
+<span class="gp">In [3]: </span><span class="n">crystal_fn</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;native.pdb&#39;</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">trajectory_fn</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;frame0.xtc&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Load up the trajectories from disk</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [5]: </span><span class="n">crystal</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">crystal_fn</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">trajectory_fn</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">crystal</span><span class="p">)</span>  <span class="c"># load the xtc. the crystal structure defines the topology</span>
+
+<span class="gp">In [7]: </span><span class="k">print</span> <span class="n">trajectory</span>
+<span class="go">&lt;mdtraj.Trajectory with 501 frames, 22 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Let&#8217;s also try loading only the heavy atoms from disk, because calculating
+RMSD with exchangeable hydrogen atoms is generally not a good idea</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [8]: </span><span class="n">heavy_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">crystal</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">symbol</span> <span class="o">!=</span> <span class="s">&#39;H&#39;</span><span class="p">]</span>
+
+<span class="gp">In [9]: </span><span class="n">heavy_crystal</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">crystal_fn</span><span class="p">,</span> <span class="n">atom_indices</span><span class="o">=</span><span class="n">heavy_atoms</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">heavy_trajectory</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">trajectory_fn</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">crystal</span><span class="p">,</span> <span class="n">atom_indices</span><span class="o">=</span><span class="n">heavy_atoms</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="k">print</span> <span class="n">heavy_trajectory</span>
+<span class="go">&lt;mdtraj.Trajectory with 501 frames, 10 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Format the data for the RMSD calculation by building an RMSDCache.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [12]: </span><span class="n">crystal_cache</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">crystal</span><span class="p">)</span>
+
+<span class="gp">In [13]: </span><span class="n">trajectory_cache</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+
+<span class="gp">In [14]: </span><span class="n">crystal_heavy_cache</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">heavy_crystal</span><span class="p">)</span>
+
+<span class="gp">In [15]: </span><span class="n">trajectory_heavy_cache</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">rmsd_cache</span><span class="p">(</span><span class="n">heavy_trajectory</span><span class="p">)</span>
+
+<span class="gp">In [16]: </span><span class="n">rmsds_to_crystal</span> <span class="o">=</span> <span class="n">trajectory_cache</span><span class="o">.</span><span class="n">rmsds_to</span><span class="p">(</span><span class="n">crystal_cache</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="gp">In [17]: </span><span class="n">heavy_rmds_to_crystal</span> <span class="o">=</span> <span class="n">trajectory_heavy_cache</span><span class="o">.</span><span class="n">rmsds_to</span><span class="p">(</span><span class="n">crystal_heavy_cache</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot the results</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [18]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pp</span>
+
+<span class="gp">In [19]: </span><span class="n">pp</span><span class="o">.</span><span class="n">figure</span><span class="p">();</span>
+
+<span class="gp">In [20]: </span><span class="n">pp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsds_to_crystal</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;all atom&#39;</span><span class="p">);</span>
+
+<span class="gp">In [21]: </span><span class="n">pp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">heavy_trajectory</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">heavy_rmds_to_crystal</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;heavy atom&#39;</span><span class="p">);</span>
+
+<span class="gp">In [22]: </span><span class="n">pp</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+
+<span class="gp">In [23]: </span><span class="n">pp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;RMSDs to crystal&#39;</span><span class="p">);</span>
+
+<span class="gp">In [24]: </span><span class="n">pp</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;simulation time (ps)&#39;</span><span class="p">);</span>
+
+<span class="gp">In [25]: </span><span class="n">pp</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;RMSD (nm)&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="../../_images/rmsds_to_crystal.png" src="../../_images/rmsds_to_crystal.png" />
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<img src="../../_static/mdtraj_logo-small.png" alt="Logo"/>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/examples/generated/example_rmsd.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../mdconvert.html" title="Command line trajectory conversion: mdconvert"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="MDTraj Examples"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.3 documentation</a> |</li>
+          <li><a href="../index.html" >MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a>
+ 
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

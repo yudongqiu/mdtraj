@@ -8,7 +8,7 @@
     
     <title>RMSD : Fast SSE2/SSE3-based code for RMSD computation &mdash; MDTraj 0.3 documentation</title>
     
-    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -47,8 +47,12 @@
         <li class="right" >
           <a href="topology.html" title="mdtraj.Topology"
              accesskey="P">previous</a> |</li>
-<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="index.html">MDTraj 0.3 documentation</a> |</li>
+<a href="getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="examples/index.html">Examples</a>
  
+
       </ul>
     </div>  
 
@@ -158,7 +162,7 @@ copy-free manner.</p>
 
 <dl class="class">
 <dt id="mdtraj.rmsd.RMSDCache">
-<em class="property">class </em><tt class="descclassname">mdtraj.rmsd.</tt><tt class="descname">RMSDCache</tt><big>(</big><em>coordinates</em>, <em>major</em>, <em>n_atoms</em><big>)</big><a class="headerlink" href="#mdtraj.rmsd.RMSDCache" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">mdtraj.rmsd.</tt><tt class="descname">RMSDCache</tt><big>(</big><em>coordinates</em>, <em>major</em>, <em>n_atoms</em><big>)</big><a class="reference internal" href="_modules/mdtraj/rmsd.html#RMSDCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.rmsd.RMSDCache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Structure to store coordinates and compute RMSDs between conformations.</p>
 <p>RMSDCache wraps a 3-dimensional numpy array of coordinates, transparently
 handling structure centering and G (matrix trace) computation required to
@@ -271,7 +275,7 @@ is a multiple of four.</td>
 </table>
 <dl class="method">
 <dt id="mdtraj.rmsd.RMSDCache.rmsds_to">
-<tt class="descname">rmsds_to</tt><big>(</big><em>other_cache</em>, <em>other_index</em><big>)</big><a class="headerlink" href="#mdtraj.rmsd.RMSDCache.rmsds_to" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">rmsds_to</tt><big>(</big><em>other_cache</em>, <em>other_index</em><big>)</big><a class="reference internal" href="_modules/mdtraj/rmsd.html#RMSDCache.rmsds_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mdtraj.rmsd.RMSDCache.rmsds_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute RMSD of all conformations to a reference conformation.</p>
 <p>The underlying computation uses OpenMP and so will automatically
 parallelize across cores; it parallelizes over independent
@@ -425,9 +429,8 @@ coordinates laid out in axis-major orders</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/mdtraj_logo-small.png" alt="Logo"/>
-            </a></p>
+<img src="_static/mdtraj_logo-small.png" alt="Logo"/>
+
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">RMSD : Fast SSE2/SSE3-based code for RMSD computation</a><ul>
@@ -438,18 +441,11 @@ coordinates laid out in axis-major orders</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="topology.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">mdtraj.Topology</span></tt></a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="io.html"
-                        title="next chapter">Generic (Compressed) Array IO</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/rmsd.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -463,7 +459,6 @@ coordinates laid out in axis-major orders</p>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
       <div class="clearer"></div>
@@ -486,8 +481,12 @@ coordinates laid out in axis-major orders</p>
         <li class="right" >
           <a href="topology.html" title="mdtraj.Topology"
              >previous</a> |</li>
-<li><a href="index.html">MDTraj 0.3 documentation</a> &raquo;</li>
+        <li><a href="index.html">MDTraj 0.3 documentation</a> |</li>
+<a href="getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="examples/index.html">Examples</a>
  
+
       </ul>
     </div>
     <div class="footer">
