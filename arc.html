@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ArcTrajectoryFile &mdash; MDTraj 0.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="index.html" />
+    <link rel="up" title="Low-level access to files" href="file_formats.html" />
+    <link rel="next" title="Loading Trajectories" href="loading.html" />
+    <link rel="prev" title="HDF5TrajectoryFile" href="hdf5.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loading.html" title="Loading Trajectories"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="file_formats.html" accesskey="U">Low-level access to files</a> |</li>
+<a href="getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="arctrajectoryfile">
+<span id="id1"></span><h1>ArcTrajectoryFile<a class="headerlink" href="#arctrajectoryfile" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mdtraj.ArcTrajectoryFile">
+<em class="property">class </em><tt class="descclassname">mdtraj.</tt><tt class="descname">ArcTrajectoryFile</tt><big>(</big><em>filename</em>, <em>mode='r'</em>, <em>force_overwrite=True</em><big>)</big><a class="headerlink" href="#mdtraj.ArcTrajectoryFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for reading and writing to an TINKER archive files.
+(Note that the TINKER .xyz format is identical to this.)  This is
+a file-like object, that both reading or writing depending on the
+<cite>mode</cite> flag. It implements the context manager protocol, so you
+can also use it with the python &#8216;with&#8217; statement.</p>
+<p>The conventional units in the arc file is angstrom. The format only
+supports storing the cartesian coordinates and box lengths.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>The filename to open. A path to a file on disk.</p>
+</div></blockquote>
+<p><strong>mode</strong> : {&#8216;r&#8217;}</p>
+<blockquote>
+<div><p>The mode in which to open the file, only &#8216;r&#8217; for read is supported.</p>
+</div></blockquote>
+<p><strong>force_overwrite</strong> : bool</p>
+<blockquote class="last">
+<div><p>If opened in write mode, and a file by the name of <cite>filename</cite> already
+exists on disk, should we overwrite it?</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.ArcTrajectoryFile.close" title="mdtraj.ArcTrajectoryFile.close"><tt class="xref py py-obj docutils literal"><span class="pre">close</span></tt></a></td>
+<td>Close the .arc file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mdtraj.ArcTrajectoryFile.read" title="mdtraj.ArcTrajectoryFile.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a>([n_frames,&nbsp;stride,&nbsp;atom_indices])</td>
+<td>Read data from a TINKER .arc file.  Note that only the</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mdtraj.ArcTrajectoryFile.write" title="mdtraj.ArcTrajectoryFile.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a>(xyz)</td>
+<td>The ArcTrajectoryFile does not have a write method,</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mdtraj.ArcTrajectoryFile.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#mdtraj.ArcTrajectoryFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the .arc file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.ArcTrajectoryFile.read">
+<tt class="descname">read</tt><big>(</big><em>n_frames=None</em>, <em>stride=None</em>, <em>atom_indices=None</em><big>)</big><a class="headerlink" href="#mdtraj.ArcTrajectoryFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from a TINKER .arc file.  Note that only the
+Cartesian coordinates are read in.  The .arc file also
+contains TINKER-specific numeric atom types and some bonding
+information, which we do not read in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>n_frames</strong> : int, None</p>
+<blockquote>
+<div><p>The number of frames you would like to read from the file.
+If None, all of the remaining frames will be loaded.</p>
+</div></blockquote>
+<p><strong>stride</strong> : np.ndarray, optional</p>
+<blockquote>
+<div><p>Read only every stride-th frame.</p>
+</div></blockquote>
+<p><strong>atom_indices</strong> : array_like, optional</p>
+<blockquote>
+<div><p>If not none, then read only a subset of the atoms coordinates
+from the file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>xyz</strong> : np.ndarray, shape=(n_frames, n_atoms, 3), dtype=np.float32</p>
+<blockquote class="last">
+<div><p>The cartesian coordinates, in angstroms</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mdtraj.ArcTrajectoryFile.write">
+<tt class="descname">write</tt><big>(</big><em>xyz</em><big>)</big><a class="headerlink" href="#mdtraj.ArcTrajectoryFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ArcTrajectoryFile does not have a write method,
+because TINKER .arc files have special numerical atom types
+which are not shared by any other trajectory file format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>xyz</strong> : np.ndarray, shape=(n_frames, n_atoms, 3)</p>
+<blockquote class="last">
+<div><p>The cartesian coordinates of the atoms to write.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<a href="index.html"><img src="_static/mdtraj_logo-small.png" alt="Logo"/></a>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/arc.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loading.html" title="Loading Trajectories"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hdf5.html" title="HDF5TrajectoryFile"
+             >previous</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="file_formats.html" >Low-level access to files</a> |</li>
+<a href="getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="examples/index.html">Examples</a> |
+<a href="mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42143125-1', 'rmcgibbo.github.io');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdtraj.geometry &mdash; MDTraj 0.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="../../index.html" />
+    <link rel="up" title="mdtraj" href="../mdtraj.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" >Module code</a> |</li>
+          <li><a href="../mdtraj.html" accesskey="U">mdtraj</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../../examples/index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for mdtraj.geometry</h1><div class="highlight"><pre>
+<span class="c"># This file is part of MDTraj.</span>
+<span class="c">#</span>
+<span class="c"># Copyright 2013 Stanford University</span>
+<span class="c">#</span>
+<span class="c"># MDTraj is free software; you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation; either version 2 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with this program; if not, write to the Free Software</span>
+<span class="c"># Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;compute_distances&#39;</span><span class="p">,</span> <span class="s">&#39;compute_angles&#39;</span><span class="p">,</span> <span class="s">&#39;compute_dihedrals&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cffi</span> <span class="kn">as</span> <span class="nn">_cffi</span>
+    <span class="kn">from</span> <span class="nn">mdtraj.utils.ffi</span> <span class="kn">import</span> <span class="n">find_library</span> <span class="k">as</span> <span class="n">_find_library</span>
+    <span class="n">_HAVE_OPT</span> <span class="o">=</span> <span class="bp">None</span>   <span class="c"># not sure if we have the library yet</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Optimized distance library requires the &quot;cffi&quot; package, &#39;</span>
+                  <span class="s">&#39;which is installable with easy_install or pip via &#39;</span>
+                  <span class="s">&#39;&quot;pip install cffi&quot; or &quot;easy_install cffi&quot;.&#39;</span><span class="p">)</span>
+    <span class="n">_HAVE_OPT</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c"># we definitely don&#39;t have the library</span>
+
+<span class="k">if</span> <span class="n">_HAVE_OPT</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">False</span><span class="p">:</span>
+    <span class="c"># lets try to open the library</span>
+    <span class="n">ffi</span> <span class="o">=</span> <span class="n">_cffi</span><span class="o">.</span><span class="n">FFI</span><span class="p">()</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int dist_mic(const float* xyz, const int* pairs, const float* box_matrix,</span>
+<span class="s">                             float* distance_out, float* displacement_out,</span>
+<span class="s">                             const int n_frames, const int n_atoms, const int n_pairs);&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int dist(const float* xyz, const int* pairs, float* distance_out,</span>
+<span class="s">                         float* displacement_out, const int n_frames, const int n_atoms,</span>
+<span class="s">                          const int n_pairs);&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int angle(const float* xyz, const int* triplets, float* out,</span>
+<span class="s">                          const int n_frames, const int n_atoms, const int n_pairs);&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int dihedral(const float* xyz, const int* quartets, float* out,</span>
+<span class="s">                             const int n_frames, const int n_atoms, const int n_pairs);&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int kabsch_sander(const float* xyz, const int* nco_indices, const int* ca_indices,</span>
+<span class="s">                                  const int n_frames, const int n_atoms, const int n_residues,</span>
+<span class="s">                                  int* hbonds, float* henergies);&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="s">&#39;&#39;&#39;int sasa(const int n_frames, const int n_atoms, const float* xyzlist,</span>
+<span class="s">                         const float* atom_radii, const int n_sphere_points, float* array_of_areas);&#39;&#39;&#39;</span><span class="p">)</span>
+
+
+    <span class="n">_here</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    <span class="n">_libpath</span> <span class="o">=</span> <span class="n">_find_library</span><span class="p">(</span><span class="n">_here</span><span class="p">,</span> <span class="s">&#39;geometry&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_libpath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">dlopen</span><span class="p">(</span><span class="n">_libpath</span><span class="p">)</span>
+        <span class="n">_HAVE_OPT</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_HAVE_OPT</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_HAVE_OPT</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Optimized distance library was not imported sucessfully.&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">rg</span><span class="o">,</span> <span class="nn">internal</span><span class="o">,</span> <span class="nn">alignment</span>
+<span class="kn">from</span> <span class="nn">.angle</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.distance</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.dihedral</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.hbond</span> <span class="kn">import</span> <span class="n">kabsch_sander</span>
+<span class="kn">from</span> <span class="nn">.sasa</span> <span class="kn">import</span> <span class="n">shrake_rupley</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<a href="../../index.html"><img src="../../_static/mdtraj_logo-small.png" alt="Logo"/></a>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" >Module code</a> |</li>
+          <li><a href="../mdtraj.html" >mdtraj</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../../examples/index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42143125-1', 'rmcgibbo.github.io');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>

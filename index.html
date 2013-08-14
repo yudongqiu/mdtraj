@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDTraj &mdash; MDTraj 0.3.1 documentation</title>
+    <title>MDTraj &mdash; MDTraj 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.3.1 documentation" href="#" />
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="#" />
     <link rel="next" title="Getting started" href="getting_started.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="getting_started.html" title="Getting started"
              accesskey="N">next</a> |</li>
-        <li><a href="#">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="#">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |
@@ -64,7 +64,7 @@
 dynamics trajectories in the python programming language.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<p>MDTraj currently supports loading and saving trajectories in the RCSB PDB, GROMACS XTC and TRR, CHARMM / NAMD DCD, AMBER binpos, NetCDF and <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>MDTraj HDF5</em></a> formats.</p>
+<p>MDTraj currently supports loading and saving trajectories in the RCSB PDB, GROMACS XTC and TRR, CHARMM / NAMD DCD, AMBER binpos, AMBER NetCDF, AMBER mdcrd, TINKER arc and <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>MDTraj HDF5</em></a> formats.</p>
 <p>MTraj is structured around a convent numpy-based <tt class="docutils literal"><span class="pre">Trajectory</span></tt> object.  Its RMSD (optimal cartesian root-mean-square deviation) library gives you access to <cite>fast</cite> parallel SSE3-based structural deviations using the quaternion characteristic polynomial (Theobald QCP) method at 4x the speed of the original Theobald code and over 3x as fast as Theobald code modified to use GotoBLAS.</p>
 <p>The library also ships with a flexible command-line application for converting
 trajectories between formats. When you install MDTraj, the script will be
@@ -84,6 +84,7 @@ installed under the name <tt class="docutils literal"><span class="pre">mdconver
 <li class="toctree-l1"><a class="reference internal" href="topology.html">Protein Topology : <tt class="docutils literal"><span class="pre">md.Topology</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="rmsd.html">RMSD : Fast SSE2/SSE3-based code for RMSD computation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">Generic (Compressed) Array IO : <tt class="docutils literal"><span class="pre">mdtraj.io</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry : <tt class="docutils literal"><span class="pre">mdtraj.geometry</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="compatibility.html">MSMBuilder2 Compatibility (.lh5)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reporters.html">OpenMM Reporters : <tt class="docutils literal"><span class="pre">md.reporters</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities : <tt class="docutils literal"><span class="pre">md.utils</span></tt></a></li>
@@ -237,7 +238,7 @@ submit a pull request!</p>
         <li class="right" >
           <a href="getting_started.html" title="Getting started"
              >next</a> |</li>
-        <li><a href="#">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="#">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |

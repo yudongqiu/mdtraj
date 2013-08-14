@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>OpenMM Reporters : md.reporters &mdash; MDTraj 0.3.1 documentation</title>
+    <title>OpenMM Reporters : md.reporters &mdash; MDTraj 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.3.1 documentation" href="index.html" />
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="index.html" />
     <link rel="next" title="Utilities : md.utils" href="utils.html" />
     <link rel="prev" title="MSMBuilder2 Compatibility (.lh5)" href="compatibility.html" /> 
   </head>
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |
@@ -68,7 +68,21 @@
 <p>MDTraj currently provides three reporters, <tt class="docutils literal"><span class="pre">HDF5Reporter</span></tt>, <tt class="docutils literal"><span class="pre">NetCDFReporter</span></tt> and <tt class="docutils literal"><span class="pre">DCDReporter</span></tt>. Of these, <tt class="docutils literal"><span class="pre">`HDF5Reporter</span></tt> is the most flexible, because the <a class="reference internal" href="hdf5_format.html#hdf5formatspec"><em>HDF5 Format</em></a> is the most full-featured trajectory file format available.</p>
 <div class="section" id="example-usage">
 <h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># todo: add more examples of how to use these classes</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">simtk.openmm.app</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">simtk.unit</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">mdtraj.reporters</span> <span class="kn">import</span> <span class="n">NetCDFReporter</span>         <span class="c"># &lt;-- new import from mdtraj</span>
+
+<span class="n">pdb</span> <span class="o">=</span> <span class="n">PDBFile</span><span class="p">(</span><span class="s">&#39;input.pdb&#39;</span><span class="p">)</span>
+<span class="n">forcefield</span> <span class="o">=</span> <span class="n">ForceField</span><span class="p">(</span><span class="s">&#39;amber99sb.xml&#39;</span><span class="p">,</span> <span class="s">&#39;tip3p.xml&#39;</span><span class="p">)</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">forcefield</span><span class="o">.</span><span class="n">createSystem</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">nonbondedMethod</span><span class="o">=</span><span class="n">PME</span><span class="p">,</span>
+                                 <span class="n">nonbondedCutoff</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="n">nanometer</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="n">HBonds</span><span class="p">)</span>
+<span class="n">integrator</span> <span class="o">=</span> <span class="n">LangevinIntegrator</span><span class="p">(</span><span class="mi">300</span><span class="o">*</span><span class="n">kelvin</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">picosecond</span><span class="p">,</span> <span class="mf">0.002</span><span class="o">*</span><span class="n">picoseconds</span><span class="p">)</span>
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">minimizeEnergy</span><span class="p">()</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NetCDFReporter</span><span class="p">(</span><span class="s">&#39;output.nc&#39;</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>   <span class="c"># &lt;-- AMBER compatible</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -514,7 +528,7 @@ energies respectively.</p>
         <li class="right" >
           <a href="compatibility.html" title="MSMBuilder2 Compatibility (.lh5)"
              >previous</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |

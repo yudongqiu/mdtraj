@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using mdtraj and scikits-learn to run principle components analysis. &mdash; MDTraj 0.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="../../index.html" />
+    <link rel="up" title="MDTraj Examples" href="../index.html" />
+    <link rel="next" title="Rapid calculation of the RMSD drift of a simulation." href="example_rmsd.html" />
+    <link rel="prev" title="Running a simulation in OpenMM and analyzing the Ramachandran map with mdtraj." href="example_openmm.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_rmsd.html" title="Rapid calculation of the RMSD drift of a simulation."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example_openmm.html" title="Running a simulation in OpenMM and analyzing the Ramachandran map with mdtraj."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" accesskey="U">MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-mdtraj-and-scikits-learn-to-run-principle-components-analysis">
+<h1>Using mdtraj and scikits-learn to run principle components analysis.<a class="headerlink" href="#using-mdtraj-and-scikits-learn-to-run-principle-components-analysis" title="Permalink to this headline">¶</a></h1>
+<p>scikits-learn is a premier machine learning library for python, with
+a very easy to use API and great documentation.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">mdtraj</span> <span class="kn">as</span> <span class="nn">md</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+</pre></div>
+</div>
+<p>Lets load up our trajectory. This is the trajectory that we generated in
+the &#8220;Running a simulation in OpenMM and analyzing the results with mdtraj&#8221;
+example.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [3]: </span><span class="n">traj</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;ala2.h5&#39;</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="k">print</span> <span class="n">traj</span>
+<span class="go">&lt;mdtraj.Trajectory with 1000 frames, 22 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Create a two component PCA model, and project our data down into this
+reduced dimensional space. Using just the cartesian coordinates as
+input to PCA, it&#8217;s important to start with some kind of alignment.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [5]: </span><span class="n">pca1</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+<span class="gp">   ...:</span>      <span class="n">traj</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">alignment</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">traj</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">   ...:</span> 
+
+<span class="gp">In [7]: </span><span class="n">reduced_cartesian</span> <span class="o">=</span> <span class="n">pca1</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">traj</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="gp">In [8]: </span><span class="k">print</span> <span class="n">reduced_cartesian</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(1000, 2)</span>
+</pre></div>
+</div>
+<p>Now we can plot the data on this projection.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [9]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pp</span>
+
+<span class="gp">In [10]: </span><span class="n">pp</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gr">Out[10]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="n">at</span> <span class="mh">0x87f1890</span><span class="o">&gt;</span>
+
+<span class="gp">In [11]: </span><span class="n">pp</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">reduced_cartesian</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">reduced_cartesian</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">traj</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span class="gr">Out[11]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">PathCollection</span> <span class="n">at</span> <span class="mh">0x6a1c1d0</span><span class="o">&gt;</span>
+
+<span class="gp">In [12]: </span><span class="n">pp</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;PC1&#39;</span><span class="p">)</span>
+<span class="gr">Out[12]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x87fd250</span><span class="o">&gt;</span>
+
+<span class="gp">In [13]: </span><span class="n">pp</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;PC2&#39;</span><span class="p">)</span>
+<span class="gr">Out[13]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x8a8ca10</span><span class="o">&gt;</span>
+
+<span class="gp">In [14]: </span><span class="n">pp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Cartesian coordinate PCA: alanine dipeptide&#39;</span><span class="p">)</span>
+<span class="gr">Out[14]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x6a20950</span><span class="o">&gt;</span>
+
+<span class="gp">In [15]: </span><span class="n">cbar</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+<span class="gp">In [16]: </span><span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s">&#39;Time [ps]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/pca_cartesian.png" src="../../_images/pca_cartesian.png" />
+<p>Lets try cross-checking our result by using a different feature space
+that isn&#8217;t sensitive to alignment, and instead to &#8220;featurize&#8221; our
+trajectory by computing the pairwise distance between every atom
+in each frame, and using that as our high dimensional input space for PCA.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [17]: </span><span class="n">pca2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="gp">In [18]: </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+</pre></div>
+</div>
+<p>this python function gives you all unique pairs of elements from a list</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [19]: </span><span class="n">atom_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="gp">In [20]: </span><span class="n">pairwise_distances</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">compute_distances</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">atom_pairs</span><span class="p">)</span>
+
+<span class="gp">In [21]: </span><span class="k">print</span> <span class="n">pairwise_distances</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(1000, 231)</span>
+
+<span class="gp">In [22]: </span><span class="n">reduced_distances</span> <span class="o">=</span> <span class="n">pca2</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">pairwise_distances</span><span class="p">)</span>
+
+<span class="gp">In [23]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pp</span>
+
+<span class="gp">In [24]: </span><span class="n">pp</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gr">Out[24]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="n">at</span> <span class="mh">0x76d1ed0</span><span class="o">&gt;</span>
+
+<span class="gp">In [25]: </span><span class="n">pp</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">reduced_distances</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">reduced_distances</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">traj</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span class="gr">Out[25]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">PathCollection</span> <span class="n">at</span> <span class="mh">0x761e9d0</span><span class="o">&gt;</span>
+
+<span class="gp">In [26]: </span><span class="n">pp</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;PC1&#39;</span><span class="p">)</span>
+<span class="gr">Out[26]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x7ceb810</span><span class="o">&gt;</span>
+
+<span class="gp">In [27]: </span><span class="n">pp</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;PC2&#39;</span><span class="p">)</span>
+<span class="gr">Out[27]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x6a1ce50</span><span class="o">&gt;</span>
+
+<span class="gp">In [28]: </span><span class="n">pp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Pairwise distance PCA: alanine dipeptide&#39;</span><span class="p">)</span>
+<span class="gr">Out[28]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x7611250</span><span class="o">&gt;</span>
+
+<span class="gp">In [29]: </span><span class="n">cbar</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+<span class="gp">In [30]: </span><span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s">&#39;Time [ps]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/pca_distance.png" src="../../_images/pca_distance.png" />
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<a href="../../index.html"><img src="../../_static/mdtraj_logo-small.png" alt="Logo"/></a>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/examples/generated/example_pca.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_rmsd.html" title="Rapid calculation of the RMSD drift of a simulation."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example_openmm.html" title="Running a simulation in OpenMM and analyzing the Ramachandran map with mdtraj."
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" >MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42143125-1', 'rmcgibbo.github.io');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>

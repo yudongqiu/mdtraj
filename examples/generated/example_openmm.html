@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running a simulation in OpenMM and analyzing the Ramachandran map with mdtraj. &mdash; MDTraj 0.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="../../index.html" />
+    <link rel="up" title="MDTraj Examples" href="../index.html" />
+    <link rel="next" title="Using mdtraj and scikits-learn to run principle components analysis." href="example_pca.html" />
+    <link rel="prev" title="Clustering with the mdtraj RMSD engine and scipy.cluster.hierarchy." href="example_clustering.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_pca.html" title="Using mdtraj and scikits-learn to run principle components analysis."
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example_clustering.html" title="Clustering with the mdtraj RMSD engine and scipy.cluster.hierarchy."
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" accesskey="U">MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="running-a-simulation-in-openmm-and-analyzing-the-ramachandran-map-with-mdtraj">
+<h1>Running a simulation in OpenMM and analyzing the Ramachandran map with mdtraj.<a class="headerlink" href="#running-a-simulation-in-openmm-and-analyzing-the-ramachandran-map-with-mdtraj" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we&#8217;e going to actually run a short simulation with OpenMM
+and analyze the results, all in a single stript.</p>
+<p>Obviously, running this example calculation on your machine requires
+having OpenMM installed. OpenMM can be downloaded and installed from
+<a class="reference external" href="https://simtk.org/home/openmm">https://simtk.org/home/openmm</a>.</p>
+<p>Lets import some things we&#8217;re going to need from mdtraj</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">mdtraj</span>
+
+<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">mdtraj.reporters</span>
+
+<span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">mdtraj.geometry</span>
+</pre></div>
+</div>
+<p>And we need to get some packages from OpenMM</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [4]: </span><span class="kn">from</span> <span class="nn">simtk</span> <span class="kn">import</span> <span class="n">unit</span>
+
+<span class="gp">In [5]: </span><span class="kn">import</span> <span class="nn">simtk.openmm</span> <span class="kn">as</span> <span class="nn">mm</span>
+
+<span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+</pre></div>
+</div>
+<p>First, lets find a PDB for alanine dipeptide, the system we&#8217;ll
+be simulating. We happen to have one inlcuded in the mdtraj
+package for testing named &#8220;native.pdb&#8221;. Under normal circumstances
+circumstances, you shouldn&#8217;t have much need for mdtraj.testing.get_fn
+(unless you&#8217;re contributing tests to mdtraj!)</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [7]: </span><span class="kn">import</span> <span class="nn">mdtraj.testing</span>
+
+<span class="gp">In [8]: </span><span class="n">pdb</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">mdtraj</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">get_fn</span><span class="p">(</span><span class="s">&#39;native.pdb&#39;</span><span class="p">))</span>
+
+<span class="gp">In [9]: </span><span class="n">topology</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">to_openmm</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Lets use the amber99sb-ildn forcefield with implicit solvent
+and a langevin integrator. This is relatively &#8220;standard&#8221; OpenMM
+code for setting up a system.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [10]: </span><span class="n">forcefield</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">ForceField</span><span class="p">(</span><span class="s">&#39;amber99sbildn.xml&#39;</span><span class="p">,</span> <span class="s">&#39;amber99_obc.xml&#39;</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">system</span> <span class="o">=</span> <span class="n">forcefield</span><span class="o">.</span><span class="n">createSystem</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">nonbondedMethod</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">CutoffNonPeriodic</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">integrator</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">LangevinIntegrator</span><span class="p">(</span><span class="mi">330</span><span class="o">*</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">unit</span><span class="o">.</span><span class="n">picoseconds</span><span class="p">,</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">unit</span><span class="o">.</span><span class="n">femtoseconds</span><span class="p">)</span>
+
+<span class="gp">In [13]: </span><span class="n">simulation</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Simulation</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the initial positions to the &#8220;first frame&#8221; of the PDB
+file (it only has one frame). Note that pdb is an mdtraj trajectory
+pass in its positions to OpenMM just fine though.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [14]: </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="gp">In [15]: </span><span class="n">simulation</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">setVelocitiesToTemperature</span><span class="p">(</span><span class="mi">330</span><span class="o">*</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let&#8217;s use one of the OpenMM reporters that mdtraj provides. This is
+the hdf5 reporter, which saves all kinds of information, including
+the topology, positions, energies, etc to disk. To visualize the h5
+trajectory with a non-hdf5 enabled app like PyMol or VMD, you can
+use mdconvert on the command line to easily transform it to NetCDF, DCD,
+or any other format of your preference.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [16]: </span><span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mdtraj</span><span class="o">.</span><span class="n">reporters</span><span class="o">.</span><span class="n">HDF5Reporter</span><span class="p">(</span><span class="s">&#39;ala2.h5&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+
+<span class="gp">In [17]: </span><span class="n">simulation</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+
+<span class="gp">In [18]: </span><span class="k">del</span> <span class="n">simulation</span><span class="o">.</span><span class="n">reporters</span>
+</pre></div>
+</div>
+<p>That was easy. Let&#8217;s do a little analysis with mdtraj now.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [19]: </span><span class="n">traj</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;ala2.h5&#39;</span><span class="p">)</span>
+
+<span class="gp">In [20]: </span><span class="n">atoms</span><span class="p">,</span> <span class="n">bonds</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+
+<span class="gp">In [21]: </span><span class="k">print</span> <span class="n">atoms</span>
+<span class="go">       name element  resSeq resName  chainID</span>
+<span class="go">serial                                      </span>
+<span class="go">0        H1       H       0     ACE        0</span>
+<span class="go">1       CH3       C       0     ACE        0</span>
+<span class="go">2        H2       H       0     ACE        0</span>
+<span class="go">3        H3       H       0     ACE        0</span>
+<span class="go">4         C       C       0     ACE        0</span>
+<span class="go">5         O       O       0     ACE        0</span>
+<span class="go">6         N       N       1     ALA        0</span>
+<span class="go">7         H       H       1     ALA        0</span>
+<span class="go">8        CA       C       1     ALA        0</span>
+<span class="go">9        HA       H       1     ALA        0</span>
+<span class="go">10       CB       C       1     ALA        0</span>
+<span class="go">11      HB1       H       1     ALA        0</span>
+<span class="go">12      HB2       H       1     ALA        0</span>
+<span class="go">13      HB3       H       1     ALA        0</span>
+<span class="go">14        C       C       1     ALA        0</span>
+<span class="go">15        O       O       1     ALA        0</span>
+<span class="go">16        N       N       2     NME        0</span>
+<span class="go">17        H       H       2     NME        0</span>
+<span class="go">18        C       C       2     NME        0</span>
+<span class="go">19       H1       H       2     NME        0</span>
+<span class="go">20       H2       H       2     NME        0</span>
+<span class="go">21       H3       H       2     NME        0</span>
+</pre></div>
+</div>
+<p>Because alanine dipeptide is a little nonstandard in the sense that
+it&#8217;s basically dominated by the ACE and NME capping residues, we
+need to find the indicies of the atoms involved in the phi and psi
+angles somewhat manually. For standard cases, see geometry.compute_phi()
+and geometry.compute_psi() for easier solutions that don&#8217;t require
+you to manually find the indices of each dihedral angle.</p>
+<p>In this case, we&#8217;re just specifying the four atoms that together
+parameterize the phi and psi dihedral angles.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [22]: </span><span class="n">psi_indices</span><span class="p">,</span> <span class="n">phi_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+
+<span class="gp">In [23]: </span><span class="n">angles</span> <span class="o">=</span> <span class="n">mdtraj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">compute_dihedrals</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="p">[</span><span class="n">phi_indices</span><span class="p">,</span> <span class="n">psi_indices</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Lets plot our dihedral angles in a scatter plot using matplotlib. What
+conformational states of Alanine dipeptide did we sample?</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [24]: </span><span class="kn">import</span> <span class="nn">matplotlib</span><span class="p">;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="gp">In [25]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pp</span>
+
+<span class="gp">In [26]: </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+
+<span class="gp">In [27]: </span><span class="n">pp</span><span class="o">.</span><span class="n">figure</span><span class="p">();</span>
+
+<span class="gp">In [28]: </span><span class="n">pp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Dihedral Map: Alanine dipeptide&#39;</span><span class="p">)</span>
+<span class="gr">Out[28]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x6a0fed0</span><span class="o">&gt;</span>
+
+<span class="gp">In [29]: </span><span class="n">pp</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">angles</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">angles</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">traj</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span class="gr">Out[29]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">PathCollection</span> <span class="n">at</span> <span class="mh">0x87c8fd0</span><span class="o">&gt;</span>
+
+<span class="gp">In [30]: </span><span class="n">cbar</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+<span class="gp">In [31]: </span><span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s">&#39;Time [ps]&#39;</span><span class="p">)</span>
+
+<span class="gp">In [32]: </span><span class="n">pp</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\Phi$ Angle [radians]&#39;</span><span class="p">)</span>
+<span class="gr">Out[32]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x69a2a10</span><span class="o">&gt;</span>
+
+<span class="gp">In [33]: </span><span class="n">pp</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span>
+<span class="gr">Out[33]: </span><span class="p">(</span><span class="o">-</span><span class="mf">3.141592653589793</span><span class="p">,</span> <span class="mf">3.141592653589793</span><span class="p">)</span>
+
+<span class="gp">In [34]: </span><span class="n">pp</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$\Psi$ Angle [radians]&#39;</span><span class="p">)</span>
+<span class="gr">Out[34]: </span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x692a7d0</span><span class="o">&gt;</span>
+
+<span class="gp">In [35]: </span><span class="n">pp</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span>
+<span class="gr">Out[35]: </span><span class="p">(</span><span class="o">-</span><span class="mf">3.141592653589793</span><span class="p">,</span> <span class="mf">3.141592653589793</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/ramachandran.png" src="../../_images/ramachandran.png" />
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<a href="../../index.html"><img src="../../_static/mdtraj_logo-small.png" alt="Logo"/></a>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/examples/generated/example_openmm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_pca.html" title="Using mdtraj and scikits-learn to run principle components analysis."
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example_clustering.html" title="Clustering with the mdtraj RMSD engine and scipy.cluster.hierarchy."
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDTraj 0.4.1 documentation</a> |</li>
+          <li><a href="../index.html" >MDTraj Examples</a> |</li>
+<a href="../../getting_started.html">Getting Started</a> |
+<a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
+<a href="../index.html">Examples</a> |
+<a href="../../mdconvert.html"><span class="pre">mdconvert</span></a>
+ 
+
+      </ul>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Robert McGibbon and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42143125-1', 'rmcgibbo.github.io');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>

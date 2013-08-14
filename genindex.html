@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; MDTraj 0.3.1 documentation</title>
+    <title>Index &mdash; MDTraj 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.3.1 documentation" href="index.html" /> 
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |
@@ -69,6 +69,7 @@
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -101,14 +102,26 @@
   <dt><a href="topology.html#mdtraj.topology.Topology.add_residue">add_residue() (mdtraj.topology.Topology method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.application">application (mdtraj.HDF5TrajectoryFile attribute)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="arc.html#mdtraj.ArcTrajectoryFile">ArcTrajectoryFile (class in mdtraj)</a>
+  </dt>
+
       
   <dt><a href="topology.html#mdtraj.topology.Atom">Atom (class in mdtraj.topology)</a>
+  </dt>
+
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.atom">atom() (mdtraj.topology.Topology method)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.dihedral.atom_sequence_finder">atom_sequence_finder() (in module mdtraj.geometry.dihedral)</a>
   </dt>
 
       
@@ -160,20 +173,32 @@
   </dt>
 
       
+  <dt><a href="topology.html#mdtraj.topology.Topology.chain">chain() (mdtraj.topology.Topology method)</a>
+  </dt>
+
+      
   <dt><a href="topology.html#mdtraj.topology.Topology.chains">chains (mdtraj.topology.Topology attribute)</a>
   </dt>
 
       
-  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.close">close() (mdtraj.BINPOSTrajectoryFile method)</a>
+  <dt><a href="arc.html#mdtraj.ArcTrajectoryFile.close">close() (mdtraj.ArcTrajectoryFile method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.close">(mdtraj.BINPOSTrajectoryFile method)</a>
+  </dt>
+
         
   <dt><a href="dcd.html#mdtraj.DCDTrajectoryFile.close">(mdtraj.DCDTrajectoryFile method)</a>
   </dt>
 
         
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.close">(mdtraj.HDF5TrajectoryFile method)</a>
+  </dt>
+
+        
+  <dt><a href="mdcrd.html#mdtraj.MDCRDTrajectoryFile.close">(mdtraj.MDCRDTrajectoryFile method)</a>
   </dt>
 
         
@@ -205,14 +230,54 @@
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="pdb.html#mdtraj.PDBTrajectoryFile.closed">closed (mdtraj.PDBTrajectoryFile attribute)</a>
   </dt>
 
       
+  <dt><a href="geometry.html#mdtraj.geometry.compute_angles">compute_angles() (in module mdtraj.geometry)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.dihedral.compute_dihedrals">compute_dihedrals() (in module mdtraj.geometry.dihedral)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.compute_distances">compute_distances() (in module mdtraj.geometry)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.dihedral.compute_omega">compute_omega() (in module mdtraj.geometry.dihedral)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="geometry.html#mdtraj.geometry.dihedral.compute_phi">compute_phi() (in module mdtraj.geometry.dihedral)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.dihedral.compute_psi">compute_psi() (in module mdtraj.geometry.dihedral)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.rg.compute_rg">compute_rg() (in module mdtraj.geometry.rg)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.compute_transformation">compute_transformation() (in module mdtraj.geometry.alignment)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.compute_translation_and_rotation">compute_translation_and_rotation() (in module mdtraj.geometry.alignment)</a>
+  </dt>
+
+      
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.constraints">constraints (mdtraj.HDF5TrajectoryFile attribute)</a>
+  </dt>
+
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.copy">copy() (mdtraj.topology.Topology method)</a>
   </dt>
 
       
@@ -285,10 +350,18 @@
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.forcefield">forcefield (mdtraj.HDF5TrajectoryFile attribute)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.forcefield">forcefield (mdtraj.HDF5TrajectoryFile attribute)</a>
+  <dt><a href="topology.html#mdtraj.topology.Topology.from_dataframe">from_dataframe() (mdtraj.topology.Topology class method)</a>
+  </dt>
+
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.from_openmm">from_openmm() (mdtraj.topology.Topology class method)</a>
   </dt>
 
   </dl></td>
@@ -354,7 +427,23 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="trajectory.html#mdtraj.Trajectory.join">join() (mdtraj.Trajectory method)</a>
+  <dt><a href="topology.html#mdtraj.topology.Topology.join">join() (mdtraj.topology.Topology method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="trajectory.html#mdtraj.Trajectory.join">(mdtraj.Trajectory method)</a>
+  </dt>
+
+      </dl></dd>
+  </dl></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="geometry.html#mdtraj.geometry.kabsch_sander">kabsch_sander() (in module mdtraj.geometry)</a>
   </dt>
 
   </dl></td>
@@ -422,6 +511,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
+  <dt><a href="mdcrd.html#mdtraj.MDCRDTrajectoryFile">MDCRDTrajectoryFile (class in mdtraj)</a>
+  </dt>
+
+      
   <dt><a href="rmsd.html#module-mdtraj._rmsd">mdtraj._rmsd (module)</a>
   </dt>
 
@@ -430,11 +523,23 @@
   </dt>
 
       
-  <dt><a href="io.html#module-mdtraj.io">mdtraj.io (module)</a>
+  <dt><a href="geometry.html#module-mdtraj.geometry.alignment">mdtraj.geometry.alignment (module)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#module-mdtraj.geometry.dihedral">mdtraj.geometry.dihedral (module)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="geometry.html#module-mdtraj.geometry.rg">mdtraj.geometry.rg (module)</a>
+  </dt>
+
+      
+  <dt><a href="io.html#module-mdtraj.io">mdtraj.io (module)</a>
+  </dt>
+
       
   <dt><a href="topology.html#module-mdtraj.topology">mdtraj.topology (module)</a>
   </dt>
@@ -450,19 +555,35 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="trajectory.html#mdtraj.Trajectory.n_atoms">n_atoms (mdtraj.Trajectory attribute)</a>
+  <dt><a href="topology.html#mdtraj.topology.Topology.n_atoms">n_atoms (mdtraj.topology.Topology attribute)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="trajectory.html#mdtraj.Trajectory.n_atoms">(mdtraj.Trajectory attribute)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.n_chains">n_chains (mdtraj.topology.Topology attribute)</a>
   </dt>
 
       
   <dt><a href="trajectory.html#mdtraj.Trajectory.n_frames">n_frames (mdtraj.Trajectory attribute)</a>
   </dt>
 
-      
-  <dt><a href="trajectory.html#mdtraj.Trajectory.n_residues">n_residues (mdtraj.Trajectory attribute)</a>
-  </dt>
-
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.n_residues">n_residues (mdtraj.topology.Topology attribute)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="trajectory.html#mdtraj.Trajectory.n_residues">(mdtraj.Trajectory attribute)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="reporters.html#mdtraj.reporters.NetCDFReporter">NetCDFReporter (class in mdtraj.reporters)</a>
   </dt>
@@ -514,16 +635,24 @@
   </dt>
 
       
-  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.read">read() (mdtraj.BINPOSTrajectoryFile method)</a>
+  <dt><a href="arc.html#mdtraj.ArcTrajectoryFile.read">read() (mdtraj.ArcTrajectoryFile method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.read">(mdtraj.BINPOSTrajectoryFile method)</a>
+  </dt>
+
         
   <dt><a href="dcd.html#mdtraj.DCDTrajectoryFile.read">(mdtraj.DCDTrajectoryFile method)</a>
   </dt>
 
         
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.read">(mdtraj.HDF5TrajectoryFile method)</a>
+  </dt>
+
+        
+  <dt><a href="mdcrd.html#mdtraj.MDCRDTrajectoryFile.read">(mdtraj.MDCRDTrajectoryFile method)</a>
   </dt>
 
         
@@ -562,6 +691,10 @@
   </dt>
 
       
+  <dt><a href="topology.html#mdtraj.topology.Topology.residue">residue() (mdtraj.topology.Topology method)</a>
+  </dt>
+
+      
   <dt><a href="topology.html#mdtraj.topology.Chain.residues">residues (mdtraj.topology.Chain attribute)</a>
   </dt>
 
@@ -579,6 +712,14 @@
 
       
   <dt><a href="rmsd.html#mdtraj.rmsd_cache">rmsd_cache() (in module mdtraj)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.rmsd_kabsch">rmsd_kabsch() (in module mdtraj.geometry.alignment)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.rmsd_qcp">rmsd_qcp() (in module mdtraj.geometry.alignment)</a>
   </dt>
 
       
@@ -616,6 +757,10 @@
   </dt>
 
       
+  <dt><a href="trajectory.html#mdtraj.Trajectory.save_mdcrd">save_mdcrd() (mdtraj.Trajectory method)</a>
+  </dt>
+
+      
   <dt><a href="trajectory.html#mdtraj.Trajectory.save_netcdf">save_netcdf() (mdtraj.Trajectory method)</a>
   </dt>
 
@@ -623,12 +768,12 @@
   <dt><a href="trajectory.html#mdtraj.Trajectory.save_pdb">save_pdb() (mdtraj.Trajectory method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="trajectory.html#mdtraj.Trajectory.save_trr">save_trr() (mdtraj.Trajectory method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="trajectory.html#mdtraj.Trajectory.save_xtc">save_xtc() (mdtraj.Trajectory method)</a>
   </dt>
@@ -638,7 +783,19 @@
   </dt>
 
       
+  <dt><a href="pdb.html#mdtraj.PDBTrajectoryFile.set_chain_names">set_chain_names() (mdtraj.PDBTrajectoryFile class method)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.shrake_rupley">shrake_rupley() (in module mdtraj.geometry)</a>
+  </dt>
+
+      
   <dt><a href="trajectory.html#mdtraj.Trajectory.slice">slice() (mdtraj.Trajectory method)</a>
+  </dt>
+
+      
+  <dt><a href="trajectory.html#mdtraj.Trajectory.stack">stack() (mdtraj.Trajectory method)</a>
   </dt>
 
       
@@ -661,6 +818,14 @@
 
       
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.title">title (mdtraj.HDF5TrajectoryFile attribute)</a>
+  </dt>
+
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.to_dataframe">to_dataframe() (mdtraj.topology.Topology method)</a>
+  </dt>
+
+      
+  <dt><a href="topology.html#mdtraj.topology.Topology.to_openmm">to_openmm() (mdtraj.topology.Topology method)</a>
   </dt>
 
       
@@ -689,6 +854,20 @@
       </dl></dd>
       
   <dt><a href="trajectory.html#mdtraj.Trajectory">Trajectory (class in mdtraj)</a>
+  </dt>
+
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.transform">transform() (in module mdtraj.geometry.alignment)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.Transformation.transform">(mdtraj.geometry.alignment.Transformation method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="geometry.html#mdtraj.geometry.alignment.Transformation">Transformation (class in mdtraj.geometry.alignment)</a>
   </dt>
 
       
@@ -734,16 +913,24 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.write">write() (mdtraj.BINPOSTrajectoryFile method)</a>
+  <dt><a href="arc.html#mdtraj.ArcTrajectoryFile.write">write() (mdtraj.ArcTrajectoryFile method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="binpos.html#mdtraj.BINPOSTrajectoryFile.write">(mdtraj.BINPOSTrajectoryFile method)</a>
+  </dt>
+
         
   <dt><a href="dcd.html#mdtraj.DCDTrajectoryFile.write">(mdtraj.DCDTrajectoryFile method)</a>
   </dt>
 
         
   <dt><a href="hdf5.html#mdtraj.HDF5TrajectoryFile.write">(mdtraj.HDF5TrajectoryFile method)</a>
+  </dt>
+
+        
+  <dt><a href="mdcrd.html#mdtraj.MDCRDTrajectoryFile.write">(mdtraj.MDCRDTrajectoryFile method)</a>
   </dt>
 
         
@@ -823,7 +1010,7 @@
         <li class="right" >
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |

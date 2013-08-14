@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDTraj HDF5 Format Specification &mdash; MDTraj 0.3.1 documentation</title>
+    <title>MDTraj HDF5 Format Specification &mdash; MDTraj 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="MDTraj 0.3.1 documentation" href="index.html" />
+    <link rel="top" title="MDTraj 0.4.1 documentation" href="index.html" />
     <link rel="next" title="Low-level access to files" href="file_formats.html" />
     <link rel="prev" title="Command-line trajectory conversion: mdconvert" href="mdconvert.html" /> 
   </head>
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="mdconvert.html" title="Command-line trajectory conversion: mdconvert"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |
@@ -73,9 +73,9 @@ format based on HDF5 which is supported by the MDTraj package.</p>
 <h2>Why HDF5?<a class="headerlink" href="#why-hdf5" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="design-goals">
 <h3>Design Goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h3>
-<p>In storing MD trajectory data for the for purposes including building
-MSMs, there are a few design goals. (1) The trajectories should be small
-and space efficient on disk. (2) The trajectories should be fast to
+<p>In storing MD trajectory data for the for purposes including very large
+scale analysis, there are a few design goals. (1) The trajectories should
+be small and space efficient on disk. (2) The trajectories should be fast to
 write and fast to read. (3) The data format should support flexible read
 options. For instance, random access to different frames in the
 trajectory should be possible. It should be possible to easily query the
@@ -89,25 +89,27 @@ breaking backwards compatibility.</p>
 </div>
 <div class="section" id="other-formats">
 <h3>Other Formats<a class="headerlink" href="#other-formats" title="Permalink to this headline">¶</a></h3>
-<p>Currently, MDTraj is able to read and write trajectories in dcd, xtc,
-trr, binpos, and amber netcdf formats, in addition to hdf5. This
+<p>Currently, MDTraj is able to read and write trajectories in DCD, XTC,
+TRR, BINPOS, and AMBER NetCDF formats, in addition to HDF5. This
 presents an opportunity to compare these formats and see how they fit
-our design goals. The most space efficient is xtc, because it uses 16bit
-fixed precision encoding. For some reason, the xtc read times are quite
-slow though. dcd is fast to read and write, but relatively inflexible.
-netcdf is fast and flexible. binpos is garbage &#8211; it&#8217;s neither fast,
-small, nor flexible.</p>
+our design goals. The most space efficient is XTC, because it uses 16 bit
+fixed precision encoding. For some reason, the XTC read times are quite
+slow though. DCD is fast to read and write, but relatively inflexible.
+NetCDF is fast and flexible. BINPOS and MDCRD are garbage &#8211; they&#8217;re
+neither fast, small, nor flexible.</p>
 </div>
 <div class="section" id="what-s-lacking">
 <h3>What&#8217;s lacking?<a class="headerlink" href="#what-s-lacking" title="Permalink to this headline">¶</a></h3>
 <p>Of the formats we currently have, AMBER NetCDF is the best, in that it
 it satisfies all of the design goals except for the first. But the
 trajectories are twice as big on disk as XTC, which is really quite
-unfortunate. For dealing with FAH data, size matters. So let&#8217;s define a
-HDF5 standard that has the benefits of AMBER NetCDF and the benefits of
-XTC mixed together. We&#8217;ll use an extensible data format (HDF5), we&#8217;ll
-provide options for lossy and lossless compression, and we&#8217;ll store the
-topology inside the trajectory.</p>
+unfortunate. For dealing with large data sets, size matters. So let&#8217;s
+define a HDF5 standard that has the benefits of AMBER NetCDF and the
+benefits of XTC mixed together. We&#8217;ll use an extensible data format
+(HDF5), we&#8217;ll provide options for lossy and lossless compression, and
+we&#8217;ll store the topology inside the trajectory, so that a single
+trajectory file always contains the information needed to understand
+(and visualize) the system.</p>
 </div>
 </div>
 <div class="section" id="details">
@@ -271,6 +273,10 @@ number of significant digits, creators shall declare the number of
 significant digits by setting the &#8220;least_significant_digit&#8221;
 attribue, which should be a positive integer.</li>
 </ul>
+<blockquote>
+<div>Extended Arrays</div></blockquote>
+<p>declare those units explicitly in the array attributes. Readers should be
+flexible, ignoring the presence of arrays that they are not equiped to handle.</p>
 </div>
 </div>
 <div class="section" id="topology">
@@ -278,7 +284,7 @@ attribue, which should be a positive integer.</li>
 <div class="section" id="rational">
 <h3>Rational<a class="headerlink" href="#rational" title="Permalink to this headline">¶</a></h3>
 <p>It is our experience that not having the topology stored in the same
-file as the the trajectory&#8217;s coordinate data is a pain. It&#8217;s just really
+file as the the trajectory&#8217;s coordinate data is a pain &#8211; tt&#8217;s just really
 inconvenient. And generally, the trajectories are long enough that it
 doesn&#8217;t take up much incremental storage space to store the topology in
 there too. The topology is not that complicated.</p>
@@ -294,12 +300,11 @@ a list of residues. Each residue is associated with a <tt class="docutils litera
 <tt class="docutils literal"><span class="pre">name</span></tt>, an <tt class="docutils literal"><span class="pre">element</span></tt>, and an <tt class="docutils literal"><span class="pre">index</span></tt>. All of the indicies should
 be zero-based.</p>
 <p>The <tt class="docutils literal"><span class="pre">name</span></tt> of a residue is not strictly proscribed, but should
-generally be one of the three letter codes for amino acids, or the
-commonly used extensions thereof, e.g. &#8220;HOH&#8221; for water. The <tt class="docutils literal"><span class="pre">element</span></tt>
-of an atom shall be one of the one or two letter element abbreviations
-from the periodic table. The <tt class="docutils literal"><span class="pre">name</span></tt> of an atom shall indicate some
-information about the type of the atom beyond just its element, such as
-&#8216;CA&#8217; for the alpha carbom, &#8216;HG&#8217; for a gamma hydrogen, etc. This format
+generally follow PDB 3.0 nomenclature. The <tt class="docutils literal"><span class="pre">element</span></tt> of an atom
+shall be one of the one or two letter element abbreviations from the
+periodic table. The <tt class="docutils literal"><span class="pre">name</span></tt> of an atom shall indicate some information
+about the type of the atom beyond just its element, such as &#8216;CA&#8217; for
+the alpha carbom, &#8216;HG&#8217; for a gamma hydrogen, etc. This format
 does not specify exactly what atom names are allowed &#8211; creators should
 follow the conventions from the forcefield they are using.</p>
 <p>In addition to the chains, the topology shall also contain a list of the
@@ -486,7 +491,7 @@ Since it&#8217;s JSON, the whitespace is optional and just for readability.</p>
         <li class="right" >
           <a href="mdconvert.html" title="Command-line trajectory conversion: mdconvert"
              >previous</a> |</li>
-        <li><a href="index.html">MDTraj 0.3.1 documentation</a> |</li>
+        <li><a href="index.html">MDTraj 0.4.1 documentation</a> |</li>
 <a href="getting_started.html">Getting Started</a> |
 <a href="https://github.com/rmcgibbo/mdtraj/issues">Bugs</a> |
 <a href="examples/index.html">Examples</a> |
