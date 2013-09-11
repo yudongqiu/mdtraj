@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -69,7 +70,7 @@ variety of formats. Each of these functions loads a file from disk, returning
 a <tt class="docutils literal"><span class="pre">Trajectory</span></tt> object. Low level details like unit conversion into MDTraj
 standard units (nanometers, degrees, picoseconds) are handled for you.</p>
 <p>Only the PDB and HDF5 formats contains the topology information in the trajectory file on disk. Thus to load a trajectory in another format, it&#8217;s obligatory that you also supply information from which a topology can be extracted, such as a corresponding PDB file.</p>
-<p>For low-level access to the files on disk, without the amenities like unit conversion, see the <tt class="docutils literal"><span class="pre">XXXTrajectoryFile</span></tt> classes, e.g. <a class="reference internal" href="hdf5.html#hdf5trajectoryfile"><em>HDF5TrajectoryFile</em></a>, <a class="reference internal" href="pdb.html#pdbtrajectoryfile"><em>PDBTrajectoryFile</em></a>,  <a class="reference internal" href="xtc.html#xtctrajectoryfile"><em>XTCTrajectoryFile</em></a>, <a class="reference internal" href="dcd.html#dcdtrajectoryfile"><em>DCDTrajectoryFile</em></a>, <a class="reference internal" href="trr.html#trrtrajectoryfile"><em>TRRTrajectoryFile</em></a>, <a class="reference internal" href="netcdf.html#netcdftrajectoryfile"><em>NetCDFTrajectoryFile</em></a>, <a class="reference internal" href="binpos.html#binpostrajectoryfile"><em>BINPOSTrajectoryFile</em></a>,</p>
+<p>For low-level access to the files on disk, without the amenities like unit conversion, see the <tt class="docutils literal"><span class="pre">XXXTrajectoryFile</span></tt> classes, e.g. <a class="reference internal" href="mdtraj-docs/docs/hdf5.html#hdf5trajectoryfile"><em>HDF5TrajectoryFile</em></a>, <a class="reference internal" href="pdb.html#pdbtrajectoryfile"><em>PDBTrajectoryFile</em></a>,  <a class="reference internal" href="xtc.html#xtctrajectoryfile"><em>XTCTrajectoryFile</em></a>, <a class="reference internal" href="mdtraj-docs/docs/dcd.html#dcdtrajectoryfile"><em>DCDTrajectoryFile</em></a>, <a class="reference internal" href="trr.html#trrtrajectoryfile"><em>TRRTrajectoryFile</em></a>, <a class="reference internal" href="netcdf.html#netcdftrajectoryfile"><em>NetCDFTrajectoryFile</em></a>, <a class="reference internal" href="mdtraj-docs/docs/binpos.html#binpostrajectoryfile"><em>BINPOSTrajectoryFile</em></a>,</p>
 <dl class="function">
 <dt id="mdtraj.load">
 <tt class="descclassname">mdtraj.</tt><tt class="descname">load</tt><big>(</big><em>filename_or_filenames</em>, <em>discard_overlapping_frames=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#mdtraj.load" title="Permalink to this definition">¶</a></dt>
@@ -119,9 +120,9 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#mdtraj.load_pdb" title="mdtraj.load_pdb"><tt class="xref py py-obj docutils literal"><span class="pre">load_pdb</span></tt></a>, <a class="reference internal" href="#mdtraj.load_xtc" title="mdtraj.load_xtc"><tt class="xref py py-obj docutils literal"><span class="pre">load_xtc</span></tt></a>, <a class="reference internal" href="#mdtraj.load_trr" title="mdtraj.load_trr"><tt class="xref py py-obj docutils literal"><span class="pre">load_trr</span></tt></a>, <a class="reference internal" href="#mdtraj.load_hdf5" title="mdtraj.load_hdf5"><tt class="xref py py-obj docutils literal"><span class="pre">load_hdf5</span></tt></a>, <a class="reference internal" href="#mdtraj.load_netcdf" title="mdtraj.load_netcdf"><tt class="xref py py-obj docutils literal"><span class="pre">load_netcdf</span></tt></a>, <a class="reference internal" href="#mdtraj.load_dcd" title="mdtraj.load_dcd"><tt class="xref py py-obj docutils literal"><span class="pre">load_dcd</span></tt></a>, <a class="reference internal" href="#mdtraj.load_binpos" title="mdtraj.load_binpos"><tt class="xref py py-obj docutils literal"><span class="pre">load_binpos</span></tt></a></p>
+<p class="last"><a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_pdb" title="mdtraj.load_pdb"><tt class="xref py py-obj docutils literal"><span class="pre">load_pdb</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_xtc" title="mdtraj.load_xtc"><tt class="xref py py-obj docutils literal"><span class="pre">load_xtc</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_trr" title="mdtraj.load_trr"><tt class="xref py py-obj docutils literal"><span class="pre">load_trr</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_hdf5" title="mdtraj.load_hdf5"><tt class="xref py py-obj docutils literal"><span class="pre">load_hdf5</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_netcdf" title="mdtraj.load_netcdf"><tt class="xref py py-obj docutils literal"><span class="pre">load_netcdf</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_dcd" title="mdtraj.load_dcd"><tt class="xref py py-obj docutils literal"><span class="pre">load_dcd</span></tt></a>, <a class="reference internal" href="mdtraj-docs/docs/loading.html#mdtraj.load_binpos" title="mdtraj.load_binpos"><tt class="xref py py-obj docutils literal"><span class="pre">load_binpos</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -158,7 +159,7 @@ would supply <tt class="docutils literal"><span class="pre">atom_indices</span> 
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="pdb.html#mdtraj.PDBTrajectoryFile" title="mdtraj.PDBTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.PDBTrajectoryFile</span></tt></a></dt>
@@ -205,10 +206,10 @@ If supplied, <tt class="docutils literal"><span class="pre">stride</span></tt> a
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="hdf5.html#mdtraj.HDF5TrajectoryFile" title="mdtraj.HDF5TrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.HDF5TrajectoryFile</span></tt></a></dt>
+<dt><a class="reference internal" href="mdtraj-docs/docs/hdf5.html#mdtraj.HDF5TrajectoryFile" title="mdtraj.HDF5TrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.HDF5TrajectoryFile</span></tt></a></dt>
 <dd>Low level interface to HDF5 files</dd>
 </dl>
 </div>
@@ -254,7 +255,7 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="xtc.html#mdtraj.XTCTrajectoryFile" title="mdtraj.XTCTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.XTCTrajectoryFile</span></tt></a></dt>
@@ -301,7 +302,7 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="trr.html#mdtraj.TRRTrajectoryFile" title="mdtraj.TRRTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.TRRTrajectoryFile</span></tt></a></dt>
@@ -349,10 +350,10 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="dcd.html#mdtraj.DCDTrajectoryFile" title="mdtraj.DCDTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.DCDTrajectoryFile</span></tt></a></dt>
+<dt><a class="reference internal" href="mdtraj-docs/docs/dcd.html#mdtraj.DCDTrajectoryFile" title="mdtraj.DCDTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.DCDTrajectoryFile</span></tt></a></dt>
 <dd>Low level interface to DCD files</dd>
 </dl>
 </div>
@@ -397,7 +398,7 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="netcdf.html#mdtraj.NetCDFTrajectoryFile" title="mdtraj.NetCDFTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.NetCDFTrajectoryFile</span></tt></a></dt>
@@ -444,10 +445,10 @@ requires an extra copy, but will save memory.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="binpos.html#mdtraj.BINPOSTrajectoryFile" title="mdtraj.BINPOSTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.BINPOSTrajectoryFile</span></tt></a></dt>
+<dt><a class="reference internal" href="mdtraj-docs/docs/binpos.html#mdtraj.BINPOSTrajectoryFile" title="mdtraj.BINPOSTrajectoryFile"><tt class="xref py py-obj docutils literal"><span class="pre">mdtraj.BINPOSTrajectoryFile</span></tt></a></dt>
 <dd>Low level interface to BINPOS files</dd>
 </dl>
 </div>
@@ -515,7 +516,7 @@ requires an extra copy, but will save memory.</p>
 
     <div class="footer">
         &copy; Copyright 2013, Robert McGibbon and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

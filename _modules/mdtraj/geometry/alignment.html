@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -78,7 +79,7 @@
 <span class="kn">import</span> <span class="nn">scipy.optimize</span>
 <span class="kn">from</span> <span class="nn">mdtraj.utils.arrays</span> <span class="kn">import</span> <span class="n">ensure_type</span>
 
-<div class="viewcode-block" id="Transformation"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.Transformation">[docs]</a><span class="k">class</span> <span class="nc">Transformation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Transformation"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.Transformation">[docs]</a><span class="k">class</span> <span class="nc">Transformation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Operator capable of rotating and translating a conformation</span>
 
 <span class="sd">    Parameters</span>
@@ -92,7 +93,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="n">rotation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">translation</span> <span class="o">=</span> <span class="n">translation</span>
 
-<div class="viewcode-block" id="Transformation.transform"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.Transformation.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<div class="viewcode-block" id="Transformation.transform"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.Transformation.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply an affine transformation to a set of coordinates.</span>
 
 <span class="sd">        Parameters</span>
@@ -113,7 +114,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="compute_transformation"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.compute_transformation">[docs]</a><span class="k">def</span> <span class="nf">compute_transformation</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_transformation"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.compute_transformation">[docs]</a><span class="k">def</span> <span class="nf">compute_transformation</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns a Transformation object to align mobile onto target.</span>
 
 <span class="sd">    Parameters</span>
@@ -131,7 +132,7 @@
     <span class="k">return</span> <span class="n">Transformation</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">translation</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="transform"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.transform">[docs]</a><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="transform"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.transform">[docs]</a><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Align mobile onto target and return transformed coordinates.</span>
 
 <span class="sd">    Parameters</span>
@@ -151,7 +152,7 @@
     <span class="k">return</span> <span class="n">mobile_prime</span>
 
 </div>
-<div class="viewcode-block" id="compute_translation_and_rotation"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.compute_translation_and_rotation">[docs]</a><span class="k">def</span> <span class="nf">compute_translation_and_rotation</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_translation_and_rotation"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.compute_translation_and_rotation">[docs]</a><span class="k">def</span> <span class="nf">compute_translation_and_rotation</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the translation and rotation mapping mobile onto target.</span>
 
 <span class="sd">    Parameters</span>
@@ -190,7 +191,7 @@
     <span class="k">return</span> <span class="n">translation</span><span class="p">,</span> <span class="n">rotation</span>
 
 </div>
-<div class="viewcode-block" id="rmsd_kabsch"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.rmsd_kabsch">[docs]</a><span class="k">def</span> <span class="nf">rmsd_kabsch</span><span class="p">(</span><span class="n">xyz1</span><span class="p">,</span> <span class="n">xyz2</span><span class="p">):</span>
+<div class="viewcode-block" id="rmsd_kabsch"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.rmsd_kabsch">[docs]</a><span class="k">def</span> <span class="nf">rmsd_kabsch</span><span class="p">(</span><span class="n">xyz1</span><span class="p">,</span> <span class="n">xyz2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the RMSD distance between conformations xyz1 and xyz2.</span>
 
 <span class="sd">    Parameters</span>
@@ -218,7 +219,7 @@
     <span class="k">return</span> <span class="n">centered</span>
 
 
-<div class="viewcode-block" id="rmsd_qcp"><a class="viewcode-back" href="../../../geometry.html#mdtraj.geometry.alignment.rmsd_qcp">[docs]</a><span class="k">def</span> <span class="nf">rmsd_qcp</span><span class="p">(</span><span class="n">conformation1</span><span class="p">,</span> <span class="n">conformation2</span><span class="p">):</span>
+<div class="viewcode-block" id="rmsd_qcp"><a class="viewcode-back" href="../../../mdtraj-docs/docs/geometry.html#mdtraj.geometry.alignment.rmsd_qcp">[docs]</a><span class="k">def</span> <span class="nf">rmsd_qcp</span><span class="p">(</span><span class="n">conformation1</span><span class="p">,</span> <span class="n">conformation2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the RMSD with Theobald&#39;s quaterion-based characteristic</span>
 <span class="sd">    polynomial</span>
 
@@ -358,7 +359,7 @@
 
     <div class="footer">
         &copy; Copyright 2013, Robert McGibbon and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
