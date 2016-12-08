@@ -91,8 +91,9 @@ def _topology_from_subset(topology, atom_indices):
             resSeq = getattr(residue, 'resSeq', None) or residue.index
             newResidue = newTopology.add_residue(residue.name, newChain,
                                                  resSeq, residue.segment_id)
-            for atom in residue._atoms:
-                if atom.index in atom_indices:
+            for atom_idx in atom_indices:
+                atom = topology._atoms[atom_idx]
+                if atom in residue._atoms:
                     try:  # OpenMM Topology objects don't have serial attributes, so we have to check first.
                         serial = atom.serial
                     except AttributeError:
@@ -1066,7 +1067,7 @@ class Topology(object):
         """
         if len(self._bonds) == 0 and any(res.n_atoms > 1 for res in self._residues):
             raise ValueError('Cannot identify molecules because this Topology does not include bonds')
-        
+
         # Make a list of every other atom to which each atom is connected.
 
         num_atoms = self.n_atoms
@@ -1452,4 +1453,3 @@ class Atom(object):
 
     def __repr__(self):
         return str(self)
-
